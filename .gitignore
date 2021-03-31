@@ -1,6 +1,8 @@
 # Файлы и папки операционной системы
 .DS_Store
 Thumbs.db
+public/bundle.js
+public/bundle.js.map
 
 # Файлы редактора
 .idea

@@ -1,9 +1,6 @@
 # Файлы и папки операционной системы
 .DS_Store
 Thumbs.db
-public/bundle.js
-public/bundle.js.map
-package-lock.json
 
 # Файлы редактора
 .idea
@@ -15,3 +12,4 @@ package-lock.json
 node_modules/
 
 # Собранные файлы (допишите самостоятельно)
+package-lock.json

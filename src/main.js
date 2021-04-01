@@ -1,30 +1,34 @@
-import {createSiteMenuTemplate} from './view/site-menu.js';
-import {createFilterTemplate} from './view/filter.js';
-import {createTaskTemplate} from './view/task.js';
-import {createTaskEditTemplate} from './view/task-edit.js';
-import {createLoadMoreButtonTemplate} from './view/load-more-button.js';
-import {createBoardTemplate} from './view/board.js';
+import {createEditForm} from './view/creating-edit-form.js';
+import {createMenu} from './view/creating-menu.js';
+import {createDestination} from './view/creating-destination.js';
+import {createPrice} from './view/creating-price.js';
+import {createFilter} from './view/creating-filter.js';
+import {createSort} from './view/creating-sort.js';
+import {createCreatingForm} from './view/creating-form.js';
+import {createWaypoints} from './view/creating-waypoint.js';
 
-const TASK_COUNT = 3;
+const WAYPOINT_COUNT = 3;
+
+const siteHeader = document.querySelector('.page-header');
+const siteBodyPageMain = document.querySelector('.page-body__page-main');
+const tripMain = siteHeader.querySelector('.trip-main');
+const tripControlsNavigation = siteHeader.querySelector('.trip-controls__navigation');
+const tripControlsFilters = siteHeader.querySelector('.trip-controls__filters');
+const tripEvents = siteBodyPageMain.querySelector('.trip-events');
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
-const siteMainElement = document.querySelector('.main');
-const siteHeaderElement = siteMainElement.querySelector('.main__control');
+render(tripControlsNavigation, createMenu(), 'beforeend');
+render(tripMain, createDestination(), 'afterbegin');
+render(tripMain, createPrice(), 'afterbegin');
+render(tripControlsFilters, createFilter(), 'beforeend');
+render(tripEvents, createSort(), 'beforeend');
+render(tripEvents, createEditForm(), 'beforeend');
+render(tripEvents, createCreatingForm(), 'beforeend');
 
-render(siteHeaderElement, createSiteMenuTemplate(), 'beforeend');
-render(siteMainElement, createFilterTemplate(), 'beforeend');
-render(siteMainElement, createBoardTemplate(), 'beforeend');
 
-const boardElement = siteMainElement.querySelector('.board');
-const taskListElement = boardElement.querySelector('.board__tasks');
-
-render(taskListElement, createTaskEditTemplate(), 'beforeend');
-
-for (let i = 0; i < TASK_COUNT; i++) {
-  render(taskListElement, createTaskTemplate(), 'beforeend');
+for (let i = 0; i < WAYPOINT_COUNT; i++) {
+  render(tripEvents, createWaypoints(), 'beforeend');
 }
-
-render(boardElement, createLoadMoreButtonTemplate(), 'beforeend');

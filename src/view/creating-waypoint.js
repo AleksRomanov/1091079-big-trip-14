@@ -4,7 +4,7 @@ const createWaypoints = () => {
       <div class="event">
         <time class="event__date" datetime="2019-03-18">MAR 18</time>
         <div class="event__type">
-          <img class="event__type-icon" width="34" height="35" src="/img/icons/flight.png" alt="Event type icon">
+          <img class="event__type-icon" width="34" height="35" src="./img/icons/flight.png" alt="Event type icon">
         </div>
         <h3 class="event__title">Flight Chamonix</h3>
         <div class="event__schedule">

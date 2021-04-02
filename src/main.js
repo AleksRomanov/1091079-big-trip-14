@@ -16,7 +16,7 @@ const tripControlsNavigation = siteHeader.querySelector('.trip-controls__navigat
 const tripControlsFilters = siteHeader.querySelector('.trip-controls__filters');
 const tripEvents = siteBodyPageMain.querySelector('.trip-events');
 
-const render = (container, template, place) => {
+const render = (container, template, place = 'beforeend') => {
   container.insertAdjacentHTML(place, template);
 };
 

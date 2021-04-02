@@ -4,7 +4,7 @@ const createCreatingForm = () => {
       <div class="event__type-wrapper">
         <label class="event__type  event__type-btn" for="event-type-toggle-1">
           <span class="visually-hidden">Choose event type</span>
-          <img class="event__type-icon" width="34" height="35" src="/img/icons/flight.png" alt="Event type icon">
+          <img class="event__type-icon" width="34" height="35" src="./img/icons/flight.png" alt="Event type icon">
         </label>
         <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
         <div class="event__type-list">
@@ -132,11 +132,11 @@ const createCreatingForm = () => {
         <p class="event__destination-description">Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.</p>
         <div class="event__photos-container">
           <div class="event__photos-tape">
-            <img class="event__photo" src="/img/photos/1.jpg" alt="Event photo">
-            <img class="event__photo" src="/img/photos/2.jpg" alt="Event photo">
-            <img class="event__photo" src="/img/photos/3.jpg" alt="Event photo">
-            <img class="event__photo" src="/img/photos/4.jpg" alt="Event photo">
-            <img class="event__photo" src="/img/photos/5.jpg" alt="Event photo">
+            <img class="event__photo" src="./img/photos/1.jpg" alt="Event photo">
+            <img class="event__photo" src="./img/photos/2.jpg" alt="Event photo">
+            <img class="event__photo" src="./img/photos/3.jpg" alt="Event photo">
+            <img class="event__photo" src="./img/photos/4.jpg" alt="Event photo">
+            <img class="event__photo" src="./img/photos/5.jpg" alt="Event photo">
           </div>
         </div>
       </section>

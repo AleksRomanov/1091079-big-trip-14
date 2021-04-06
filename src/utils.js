@@ -5,14 +5,17 @@ import {RenderPosition} from './mocks/data';
 // };
 
 const render = (container, element, position = 'beforeend') => {
+  console.log(container);
+  console.log(element);
+  console.log(position);
 
-  // container.insertAdjacentHTML(position, element);
+  container.insertAdjacentHTML(position, element);
 
-  if (position === RenderPosition.AFTERBEGIN) {
-    container.prepend(element);
-  } else {
-    container.append(element);
-  }
+  // if (position === RenderPosition.AFTERBEGIN) {
+  //   container.prepend(element);
+  // } else {
+  //   container.append(element);
+  // }
 };
 
 const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min)) + min;

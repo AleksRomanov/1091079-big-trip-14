@@ -42,8 +42,6 @@ const generateDate = () => {
 //   return getRandomInteger(Date.now(), Date.now() + day);
 // };
 
-
-
 const createElement = (template) => {
   // console.log(template);
   const element = document.createElement('div');

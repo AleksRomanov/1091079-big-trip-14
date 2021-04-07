@@ -52,6 +52,11 @@ const OFFERS = [
   },
 ];
 
+const DATA_VIEW_TYPES = [
+  'Table',
+  'Stats',
+];
+
 const DESCRIPTIONS = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   'Cras aliquet varius magna, non porta ligula feugiat eget.',
@@ -70,4 +75,4 @@ const RenderPosition = {
   BEFOREEND: 'beforeend',
 };
 
-export {EVENT_TYPES, CITIES, OFFERS, DESCRIPTIONS, RenderPosition};
+export {EVENT_TYPES, CITIES, OFFERS, DATA_VIEW_TYPES, DESCRIPTIONS, RenderPosition};

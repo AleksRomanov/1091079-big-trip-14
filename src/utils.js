@@ -1,11 +1,6 @@
 import dayjs from 'dayjs';
 
 const render = (container, element, position = 'beforeend') => {
-
-  // console.log(container);
-  // console.log(position);
-  // console.log(element, container, position);
-
   container.insertAdjacentHTML(position, element);
 };
 
@@ -16,10 +11,6 @@ const getRandomNumber = (a = 0, b = 1) => {
 
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
-
-// const getRandomNumber = (min, max) => {
-//   return Math.floor(Math.random() * (max - min)) + min;
-// };
 
 const getRandomArrayItem = (array) => array[getRandomNumber(0, array.length - 1)];
 
@@ -36,20 +27,14 @@ const generateDate = () => {
   return dayjs().add(daysGap, 'day').toDate();
 };
 //
-// const getRandomDate = () => {
-//   const day = 24 * 3600 * 1000;
+// const createElement = (template) => {
+//   // console.log(template);
+//   const element = document.createElement('div');
 //
-//   return getRandomInteger(Date.now(), Date.now() + day);
+//   element.innerHTML = template;
+//
+//   return element.firstElementChild;
 // };
-
-const createElement = (template) => {
-  // console.log(template);
-  const element = document.createElement('div');
-
-  element.innerHTML = template;
-
-  return element.firstElementChild;
-};
 
 const shuffle = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
@@ -63,5 +48,5 @@ const shuffle = (array) => {
   return array;
 };
 
-export {generateDate, getRandomNumber, render, createElement, getRandomArrayItem, shuffle};
+export {generateDate, getRandomNumber, render, getRandomArrayItem, shuffle};
 

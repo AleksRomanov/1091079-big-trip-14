@@ -22,8 +22,8 @@ const events = generateEvents(WAYPOINT_COUNT);
 render(tripMain, new CreateDestinationComponent(events).getElement(), 'afterbegin');
 // render(tripMain, createPrice(), 'afterbegin');
 const tripInfo = document.querySelector('.trip-info');
-console.log(document);
-console.log(tripInfo);
+// console.log(document);
+// console.log(tripInfo);
 render(tripInfo, createPrice());
 
 // render(tripInfo, createPrice());

@@ -19,10 +19,16 @@ const tripEvents = siteBodyPageMain.querySelector('.trip-events');
 
 const events = generateEvents(WAYPOINT_COUNT);
 
-// render(tripMain, createDestination(), 'afterbegin');
 render(tripMain, new CreateDestinationComponent(events).getElement(), 'afterbegin');
-// render(tripControlsNavigation, createMenu(), 'beforeend');
 // render(tripMain, createPrice(), 'afterbegin');
+const tripInfo = document.querySelector('.trip-info');
+console.log(document);
+console.log(tripInfo);
+render(tripInfo, createPrice());
+
+// render(tripInfo, createPrice());
+
+// render(tripControlsNavigation, createMenu(), 'beforeend');
 // render(tripControlsFilters, createFilter(), 'beforeend');
 // render(tripEvents, createSort(), 'beforeend');
 // render(tripEvents, createEditForm(), 'beforeend');

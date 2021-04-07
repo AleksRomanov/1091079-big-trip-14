@@ -2,49 +2,47 @@ import dayjs from 'dayjs';
 
 const render = (container, element, position = 'beforeend') => {
 
+  // console.log(container);
+  // console.log(position);
+  // console.log(element, container, position);
+
   container.insertAdjacentHTML(position, element);
 };
 
 const getRandomNumber = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
+  // console.log(`lower: ${lower} a: ${a} b: ${b}`);
   const upper = Math.floor(Math.max(a, b));
 
-  const result = Math.floor(lower + Math.random() * (upper - lower + 1));
-  console.log('result = ' + result);
-  return result;
+  return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-
 // const getRandomNumber = (min, max) => {
-//   const result = Math.floor(Math.random() * (max - min)) + min;
-//   console.log('result = ' + result);
-//   return result;
+//   return Math.floor(Math.random() * (max - min)) + min;
 // };
 
-const getRandomArrayItem = (array) => array[getRandomNumber(0, array.length)];
-
+const getRandomArrayItem = (array) => array[getRandomNumber(0, array.length - 1)];
 
 const generateDate = () => {
   const isDate = Boolean(getRandomNumber(0, 1));
+
   if (!isDate) {
     return null;
   }
 
-  const maxDate = 7;
-  const daysGap = getRandomNumber(-maxDate, maxDate);
+  const maxDaysGap = 7;
+  const daysGap = getRandomNumber(-maxDaysGap, maxDaysGap);
 
-  const result = dayjs().add(daysGap, 'day').toDate();
-  console.log('result = ' + result);
-
-  return result;
+  return dayjs().add(daysGap, 'day').toDate();
 };
+//
+// const getRandomDate = () => {
+//   const day = 24 * 3600 * 1000;
+//
+//   return getRandomInteger(Date.now(), Date.now() + day);
+// };
 
 
-const getRandomDate = () => {
-  const day = 24 * 3600 * 1000;
-
-  return getRandomNumber(Date.now(), Date.now() + day);
-};
 
 const createElement = (template) => {
   // console.log(template);
@@ -67,5 +65,5 @@ const shuffle = (array) => {
   return array;
 };
 
-export {generateDate, getRandomDate, getRandomNumber, render, createElement, getRandomArrayItem, shuffle};
+export {generateDate, getRandomNumber, render, createElement, getRandomArrayItem, shuffle};
 

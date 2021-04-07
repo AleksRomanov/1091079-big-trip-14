@@ -1,4 +1,4 @@
-import {createElement, getRandomArrayItem, getRandomDate, getRandomNumber, shuffle} from '../utils';
+import {getRandomArrayItem, generateDate, getRandomNumber, shuffle} from '../utils';
 import {CITIES, DESCRIPTIONS, EVENT_TYPES, OFFERS} from '../mocks/data';
 
 const SHOWING_CITIES_COUNT = 3;
@@ -16,10 +16,11 @@ const getTitle = (events) => {
 };
 
 const getDates = (startDate, endDate) => {
+  // console.log(Date(startDate));
   const month = new Date(startDate).toLocaleString('en-US', {month: 'short'});
+  // console.log(month);
   const startDay = new Date(startDate).getDate();
   const endDay = new Date(endDate).getDate();
-
   return `${month} ${startDay} &nbsp;&mdash;&nbsp; ${endDay}`;
 };
 
@@ -30,17 +31,21 @@ class CreateDestination {
   }
 
   getTemplate() {
+    // console.log(this._events);
+
     const dates = getDates(this._events[0].startDate, this._events[this._events.length - 1].endDate);
     // console.log(dates);
 
     return `
-      <div class="trip-info__main">
-        <h1 class="trip-info__title">
-          ${getTitle(this._events)}
-        </h1>
+      <section className="trip-main__trip-info trip-info">
+        <div class="trip-info__main">
+          <h1 class="trip-info__title">
+            ${getTitle(this._events)}
+          </h1>
 
-        <p class="trip-info__dates">${dates}</p>
-      </div>
+          <p class="trip-info__dates">${dates}</p>
+        </div>
+      </section>
     `;
   }
 
@@ -74,10 +79,9 @@ const generateDescription = (descriptions) => {
 };
 
 const generateEvent = () => {
-  const firstDate = getRandomDate();
-  const secondDate = getRandomDate();
-
-  return {
+  const firstDate = generateDate();
+  const secondDate = generateDate();
+  const result = {
     type: getRandomArrayItem([...EVENT_TYPES.transfers, ...EVENT_TYPES.activities]),
     city: getRandomArrayItem(CITIES),
     photos: generatePhotos(),
@@ -87,6 +91,10 @@ const generateEvent = () => {
     endDate: Math.max(firstDate, secondDate),
     price: getRandomNumber(10, 200),
   };
+  // console.log(result);
+
+
+  return result;
 };
 
 const generateEvents = (count) => {

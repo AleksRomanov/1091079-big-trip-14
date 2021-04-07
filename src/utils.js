@@ -1,26 +1,44 @@
-import {RenderPosition} from './mocks/data';
-
-// const render = (container, template, place = 'beforeend') => {
-//   container.insertAdjacentHTML(place, template);
-// };
+import dayjs from 'dayjs';
 
 const render = (container, element, position = 'beforeend') => {
-  console.log(container);
-  console.log(element);
-  console.log(position);
 
   container.insertAdjacentHTML(position, element);
-
-  // if (position === RenderPosition.AFTERBEGIN) {
-  //   container.prepend(element);
-  // } else {
-  //   container.append(element);
-  // }
 };
 
-const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min)) + min;
+const getRandomNumber = (a = 0, b = 1) => {
+  const lower = Math.ceil(Math.min(a, b));
+  const upper = Math.floor(Math.max(a, b));
+
+  const result = Math.floor(lower + Math.random() * (upper - lower + 1));
+  console.log('result = ' + result);
+  return result;
+};
+
+
+// const getRandomNumber = (min, max) => {
+//   const result = Math.floor(Math.random() * (max - min)) + min;
+//   console.log('result = ' + result);
+//   return result;
+// };
 
 const getRandomArrayItem = (array) => array[getRandomNumber(0, array.length)];
+
+
+const generateDate = () => {
+  const isDate = Boolean(getRandomNumber(0, 1));
+  if (!isDate) {
+    return null;
+  }
+
+  const maxDate = 7;
+  const daysGap = getRandomNumber(-maxDate, maxDate);
+
+  const result = dayjs().add(daysGap, 'day').toDate();
+  console.log('result = ' + result);
+
+  return result;
+};
+
 
 const getRandomDate = () => {
   const day = 24 * 3600 * 1000;
@@ -49,5 +67,5 @@ const shuffle = (array) => {
   return array;
 };
 
-export {getRandomDate, getRandomNumber, render, createElement, getRandomArrayItem, shuffle};
+export {generateDate, getRandomDate, getRandomNumber, render, createElement, getRandomArrayItem, shuffle};
 

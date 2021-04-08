@@ -1,4 +1,6 @@
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+dayjs.extend(utc);
 
 const render = (container, element, position = 'beforeend') => {
   container.insertAdjacentHTML(position, element);
@@ -15,6 +17,7 @@ const getRandomNumber = (a = 0, b = 1) => {
 const getRandomArrayItem = (array) => array[getRandomNumber(0, array.length - 1)];
 
 const generateDate = () => {
+  // Генерация true или false
   const isDate = Boolean(getRandomNumber(0, 1));
 
   if (!isDate) {
@@ -23,6 +26,12 @@ const generateDate = () => {
 
   const maxDaysGap = 7;
   const daysGap = getRandomNumber(-maxDaysGap, maxDaysGap);
+
+  const dayz = dayjs.utc().format() ;
+
+  console.log(dayz + ' isDaate');
+  console.log(isDate + 'ww');
+
 
   return dayjs().add(daysGap, 'day').toDate();
 };

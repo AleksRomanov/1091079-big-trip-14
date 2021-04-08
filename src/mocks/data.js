@@ -15,6 +15,18 @@ const EVENT_TYPES = {
   ],
 };
 
+const CHOOSEN_EVENTS = [
+  {
+    eventType: "drive",
+    city: 'Valencia',
+    startMonth: 'Apr',
+    startDate: '06',
+    startTime: '03:57',
+    endTime: '19:50',
+    price: '500',
+  },
+];
+
 const CITIES = [
   'Amsterdam',
   'Rotterdam',
@@ -57,6 +69,27 @@ const DATA_VIEW_TYPES = [
   'Stats',
 ];
 
+const DATA_VIEW_PERIOD = [
+  {
+    id: 'filter-everything',
+    title: 'EVERYTHING',
+  },
+  {
+    id: 'filter-future',
+    title: 'FUTURE',
+  },
+  {
+    id: 'filter-past',
+    title: 'PAST',
+  },
+];
+
+const OFFERS_SORT_OPTIONS = [
+  'EVENT',
+  'TIME',
+  'PRICE',
+];
+
 const DESCRIPTIONS = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   'Cras aliquet varius magna, non porta ligula feugiat eget.',
@@ -75,4 +108,4 @@ const RenderPosition = {
   BEFOREEND: 'beforeend',
 };
 
-export {EVENT_TYPES, CITIES, OFFERS, DATA_VIEW_TYPES, DESCRIPTIONS, RenderPosition};
+export {EVENT_TYPES, CITIES, OFFERS, DATA_VIEW_TYPES, DATA_VIEW_PERIOD, OFFERS_SORT_OPTIONS, DESCRIPTIONS, RenderPosition};

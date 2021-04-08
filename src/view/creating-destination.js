@@ -1,5 +1,6 @@
 import {getRandomArrayItem, generateDate, getRandomNumber, shuffle} from '../utils';
 import {CITIES, DESCRIPTIONS, EVENT_TYPES, OFFERS} from '../mocks/data';
+import {PAST_EVENTS_COUNT} from '../main';
 
 const SHOWING_CITIES_COUNT = 3;
 
@@ -73,26 +74,51 @@ const generateDescription = (descriptions) => {
     .join(' ');
 };
 
-const generateEvent = () => {
-  const firstDate = generateDate();
-  const secondDate = generateDate();
-  const result = {
-    type: getRandomArrayItem([...EVENT_TYPES.transfers, ...EVENT_TYPES.activities]),
-    city: getRandomArrayItem(CITIES),
-    photos: generatePhotos(),
-    offers: generateOffers(),
-    description: generateDescription(DESCRIPTIONS),
-    startDate: Math.min(firstDate, secondDate),
-    endDate: Math.max(firstDate, secondDate),
-    price: getRandomNumber(10, 200),
+class CreateEventsState {
+  constructor(props) {
+    // this._pastEventsCount = pastEventsCount;
+    // [_state, _sss] = props;
+    this._eventsCount = props[0];
+    this._pastEventsCount = props[1];
+  }
+
+  generateEvent(item, index) {
+    // console.log(index + ' state before if');
+    // console.log(this._pastEventsCount + ' index before if');
+    // console.log(this._props + ' props before if');
+
+    // if (++index <= this._pastEventsCount) {
+    //   const firstDate = generateDate();
+    //
+    //   this._pastEventsCount--;
+    // }
+
+    // console.log(this._pastEventsCount + ' pastEventsCount ' + index + ' iteration number');
+
+    const firstDate = generateDate();
+    const secondDate = generateDate();
+    const result = {
+      type: getRandomArrayItem([...EVENT_TYPES.transfers, ...EVENT_TYPES.activities]),
+      city: getRandomArrayItem(CITIES),
+      photos: generatePhotos(),
+      offers: generateOffers(),
+      description: generateDescription(DESCRIPTIONS),
+      startDate: Math.min(firstDate, secondDate),
+      endDate: Math.max(firstDate, secondDate),
+      price: getRandomNumber(10, 200),
+    };
+    // console.log(result);
+
+
+    return result;
   };
-  // console.log(result);
+
+  generateEvents() {
+    // console.log(this._props + ' :props');
+    return [...Array(this._eventsCount)].map((item, index) => this.generateEvent(item, index));
+  };
+
+}
 
 
-  return result;
-};
-
-const generateEvents = (count) => {
-  return [...Array(count)].map(() => generateEvent());
-};
-export {generateEvents, CreateDestination};
+export {CreateEventsState};

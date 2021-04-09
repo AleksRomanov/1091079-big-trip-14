@@ -1,3 +1,5 @@
+import {CreateEventsState} from './view/creating-destination';
+
 import {CreatePrice as CreatePriceComponent} from './view/creating-price';
 import {CreateMenu as CreateMenuComponent} from './view/creating-menu';
 import {CreateFilterTime as createFilterComponent} from './view/creating-filter';
@@ -6,10 +8,10 @@ import {createCreatingForm} from './view/creating-form.js';
 // import {createEditForm} from './view/creating-edit-form.js';
 // import {createWaypoints} from './view/creating-waypoint.js';
 import {getRandomNumber, render} from './utils';
-import {CreateEventsState} from './view/creating-destination';
 
 const WAYPOINT_COUNT = 20;
-const PAST_EVENTS_COUNT = getRandomNumber(1, 3);
+// const PAST_EVENTS_COUNT = getRandomNumber(9, 10);
+// const PAST_EVENTS_COUNT = 0;
 
 const siteHeader = document.querySelector('.page-header');
 const tripMain = siteHeader.querySelector('.trip-main');
@@ -20,7 +22,7 @@ const tripEvents = siteBodyPageMain.querySelector('.trip-events');
 
 
 // const events = generateEvents(WAYPOINT_COUNT, PAST_EVENTS_COUNT);
-const props = [WAYPOINT_COUNT, PAST_EVENTS_COUNT];
+const props = [WAYPOINT_COUNT];
 
 const state = new CreateEventsState(props).generateEvents();
 // console.log(state + ' state');

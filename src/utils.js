@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+
 dayjs.extend(utc);
 
 const render = (container, element, position = 'beforeend') => {
@@ -16,24 +17,37 @@ const getRandomNumber = (a = 0, b = 1) => {
 
 const getRandomArrayItem = (array) => array[getRandomNumber(0, array.length - 1)];
 
-const generateDate = () => {
-  // Генерация true или false
-  const isDate = Boolean(getRandomNumber(0, 1));
+const generateDate = (firstDate = '', isFirstDate =  false) => {
+  // const currentDate = dayjs().format();
+  // let result;
 
-  if (!isDate) {
-    return null;
+  if (isFirstDate) {
+    return dayjs().subtract(getRandomNumber(1, 3), 'day').format();
+  } else {
+    return dayjs(firstDate).add(getRandomNumber(1, 24), 'hour').format();
   }
 
-  const maxDaysGap = 7;
-  const daysGap = getRandomNumber(-maxDaysGap, maxDaysGap);
+  // console.log(result);
 
-  const dayz = dayjs.utc().format() ;
+  // Генерация true или false
+  // const isDate = Boolean(getRandomNumber(0, 1));
+  //
+  // if (!isDate) {
+  //   return null;
+  // }
 
-  console.log(dayz + ' isDaate');
-  console.log(isDate + 'ww');
+  // const maxDaysGap = 7;
+  // const daysGap = getRandomNumber(-maxDaysGap, maxDaysGap);
+
+  // const dayz = dayjs.utc().format();
+  // const dayz = dayjs().format();
+
+  // console.log(result + ' isDaate');
+  // console.log(isDate + 'ww');
 
 
-  return dayjs().add(daysGap, 'day').toDate();
+  // return dayjs().add(daysGap, 'day').toDate();
+  // return result;
 };
 //
 // const createElement = (template) => {

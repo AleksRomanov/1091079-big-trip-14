@@ -76,46 +76,52 @@ const generateDescription = (descriptions) => {
 
 class CreateEventsState {
   constructor(props) {
-    // this._pastEventsCount = pastEventsCount;
-    // [_state, _sss] = props;
+
     this._eventsCount = props[0];
-    this._pastEventsCount = props[1];
-  }
-
-  generateEvent(item, index) {
-    // console.log(index + ' state before if');
-    // console.log(this._pastEventsCount + ' index before if');
-    // console.log(this._props + ' props before if');
-
-    // if (++index <= this._pastEventsCount) {
-    //   const firstDate = generateDate();
-    //
-    //   this._pastEventsCount--;
-    // }
-
-    // console.log(this._pastEventsCount + ' pastEventsCount ' + index + ' iteration number');
-
-    const firstDate = generateDate();
-    const secondDate = generateDate();
-    const result = {
+    this._result = {
       type: getRandomArrayItem([...EVENT_TYPES.transfers, ...EVENT_TYPES.activities]),
       city: getRandomArrayItem(CITIES),
       photos: generatePhotos(),
       offers: generateOffers(),
       description: generateDescription(DESCRIPTIONS),
-      startDate: Math.min(firstDate, secondDate),
-      endDate: Math.max(firstDate, secondDate),
-      price: getRandomNumber(10, 200),
+      price: getRandomNumber(10, 1000),
     };
-    // console.log(result);
+    this._firstDate = generateDate(0, true);
+  }
 
+  generateEvent(index, resultArray) {
 
-    return result;
+    // const firstDate = generateDate(0, true);
+    // const getSecondDate = (date) => generateDate(date);
+
+    if (!index) {
+      this._result = {
+        startDate: this._firstDate,
+        endDate: generateDate(this._firstDate),
+      };
+    } else {
+      const startDate = resultArray[--index].endDate;
+      this._result = {
+        startDate,
+        endDate: generateDate(startDate),
+      };
+    }
+
+    return this._result;
   };
 
   generateEvents() {
-    // console.log(this._props + ' :props');
-    return [...Array(this._eventsCount)].map((item, index) => this.generateEvent(item, index));
+    const result = [];
+    for (let i = 0; i <= this._eventsCount; i++) {
+      result.push(this.generateEvent(i, result));
+    }
+    // const result = [...Array(this._eventsCount)].map((item, index, resultArray) => this.generateEvent(item, index, resultArray));
+    console.log(result[0]);
+    console.log(result[1]);
+    console.log(result[2]);
+    console.log(result[20]);
+    console.log(result.length);
+    return result;
   };
 
 }

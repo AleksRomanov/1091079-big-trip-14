@@ -58,7 +58,7 @@ class CreateEventsState {
       result.push(this.generateEvent(i, result));
     }
     // const result = [...Array(this._eventsCount)].map((item, index, resultArray) => this.generateEvent(item, index, resultArray));
-    // console.log(result[0]);
+    console.log(result[0]);
     // console.log(result[1]);
     // console.log(result[2]);
     // console.log(result[20]);

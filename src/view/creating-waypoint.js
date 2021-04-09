@@ -1,12 +1,22 @@
 import dayjs from 'dayjs';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
+dayjs.extend(advancedFormat);
+
 
 class CreateEventsList {
+
   constructor(state) {
+
     this._state = state;
   }
 
   getShortDate(date, format){
     return dayjs(date).format(format);
+  }
+
+  getDuration(startTime, endTime){
+    const diff = dayjs(endTime).diff(startTime);
+    return dayjs(diff).format('H[H] MM[M]');
   }
 
   generateEvents() {
@@ -17,18 +27,18 @@ class CreateEventsList {
         <li class="trip-events__item">
           <div class="event">
             <time class="event__date" datetime="${this.getShortDate(item.startDate, 'YYYY-MM-DD')}">${this.getShortDate(item.startDate, 'MMM DD')}</time>
-<!--            <div class="event__type">-->
-<!--              <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">-->
-<!--            </div>-->
-<!--            <h3 class="event__title">Taxi Amsterdam</h3>-->
-<!--            <div class="event__schedule">-->
-<!--              <p class="event__time">-->
-<!--                <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>-->
-<!--                &mdash;-->
-<!--                <time class="event__end-time" datetime="2019-03-18T11:00">11:00</time>-->
-<!--              </p>-->
-<!--              <p class="event__duration">30M</p>-->
-<!--            </div>-->
+            <div class="event__type">
+              <img class="event__type-icon" width="42" height="42" src="img/icons/${item.type}.png" alt="Event type icon">
+            </div>
+            <h3 class="event__title">${item.type} ${item.city}</h3>
+            <div class="event__schedule">
+              <p class="event__time">
+                <time class="event__start-time" datetime="${this.getShortDate(item.startDate, 'HH:MM')}">${this.getShortDate(item.startDate, 'HH:MM')}</time>
+                &mdash;
+                <time class="event__end-time" datetime="${this.getShortDate(item.endDate, 'HH:MM')}">${this.getShortDate(item.endDate, 'HH:MM')}</time>
+              </p>
+              <p class="event__duration">${this.getDuration(item.startDate, item.endDate)}</p>
+            </div>
 <!--            <p class="event__price">-->
 <!--              &euro;&nbsp;<span class="event__price-value">20</span>-->
 <!--            </p>-->

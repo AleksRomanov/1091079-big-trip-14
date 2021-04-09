@@ -26,28 +26,6 @@ const generateDate = (firstDate = '', isFirstDate =  false) => {
   } else {
     return dayjs(firstDate).add(getRandomNumber(1, 24), 'hour').format();
   }
-
-  // console.log(result);
-
-  // Генерация true или false
-  // const isDate = Boolean(getRandomNumber(0, 1));
-  //
-  // if (!isDate) {
-  //   return null;
-  // }
-
-  // const maxDaysGap = 7;
-  // const daysGap = getRandomNumber(-maxDaysGap, maxDaysGap);
-
-  // const dayz = dayjs.utc().format();
-  // const dayz = dayjs().format();
-
-  // console.log(result + ' isDaate');
-  // console.log(isDate + 'ww');
-
-
-  // return dayjs().add(daysGap, 'day').toDate();
-  // return result;
 };
 //
 // const createElement = (template) => {

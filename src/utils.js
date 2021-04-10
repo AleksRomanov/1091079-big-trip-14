@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import {addForm, editForm} from './mocks/data';
+import {addForm} from './mocks/data';
 
 dayjs.extend(utc);
 
@@ -28,15 +28,6 @@ const generateDate = (firstDate = '', isFirstDate = false) => {
     return dayjs(firstDate).add(getRandomNumber(1, 24), 'hour').format();
   }
 };
-//
-// const createElement = (template) => {
-//   // console.log(template);
-//   const element = document.createElement('div');
-//
-//   element.innerHTML = template;
-//
-//   return element.firstElementChild;
-// };
 
 const shuffle = (array) => {
   for (let i = array.length - 1; i > 0; i--) {

@@ -85,9 +85,11 @@ const DATA_VIEW_PERIOD = [
 ];
 
 const OFFERS_SORT_OPTIONS = [
-  'EVENT',
-  'TIME',
-  'PRICE',
+  'day',
+  'event',
+  'time',
+  'price',
+  'offers',
 ];
 
 const DESCRIPTIONS = [

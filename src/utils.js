@@ -49,5 +49,9 @@ const shuffle = (array) => {
   return array;
 };
 
-export {generateDate, getRandomNumber, render, getRandomArrayItem, shuffle};
+const getFormattedDate = (date, format) => {
+  return dayjs(date).format(format);
+};
+
+export {generateDate, getRandomNumber, render, getRandomArrayItem, shuffle, getFormattedDate};
 

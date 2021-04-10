@@ -1,9 +1,21 @@
 import dayjs from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
-import {getFormattedDate} from '../utils';
+import {getFormattedDate, render} from '../utils';
+import {editForm} from '../mocks/data';
 
 dayjs.extend(advancedFormat);
 
+const setEditButtonBehavior = () => {
+
+  const btnElements = document.querySelectorAll('.event__rollup-btn');
+
+  btnElements.forEach((item) => {
+    item.addEventListener('click', () => {
+      // console.log(item.parentNode);
+      render(item.parentNode, editForm, 'afterend');
+    });
+  });
+};
 
 class CreateEventsList {
 
@@ -38,20 +50,6 @@ class CreateEventsList {
     }
     return `
         <button class="event__favorite-btn event__favorite-btn" type="button">`;
-  }
-
-  getEditButton() {
-
-    const btnElement = document.createElement('button');
-    // btnElement.addEventListener('click', () => {
-    //   console.log('hhh');
-    // });
-    console.log(`${btnElement}   element button`);
-    let result = ' ';
-
-
-    return result += btnElement.outerHTML.toString();
-
   }
 
   generateEvents() {
@@ -89,7 +87,9 @@ class CreateEventsList {
               </svg>
             </button>
 
-            ${this.getEditButton()}
+            <button class="event__rollup-btn" type="button">
+                  <span class="visually-hidden">Open event</span>
+             </button>
 
           </div>
         </li>`;
@@ -102,9 +102,10 @@ class CreateEventsList {
   generateEventsList() {
     return `
       <ul class="trip-events__list">
+
         ${this.generateEvents()};
       </ul>`;
   }
-};
+}
 
-export {CreateEventsList};
+export {CreateEventsList, setEditButtonBehavior};

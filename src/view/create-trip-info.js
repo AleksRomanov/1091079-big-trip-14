@@ -6,7 +6,7 @@ class CreateTripInfo {
   }
 
   getEventsSum() {
-    return this._state.reduce((accumulator, current)=>{
+    return this._state.reduce((accumulator, current) => {
       return accumulator + current.price;
     }, 0);
   }
@@ -22,14 +22,12 @@ class CreateTripInfo {
               ${getFormattedDate(this._state[this._state.length - 1]['endDate'], 'DD')}
              </p>
         </div>
-
         <p class="trip-info__cost">
-<!--          Total: &euro;&nbsp;<span class="trip-info__cost-value">1230</span>-->
           Total: &euro;&nbsp;<span class="trip-info__cost-value">${this.getEventsSum()}</span>
         </p>
     </section>
     `;
-  };
+  }
 }
 
 export {CreateTripInfo};

@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import {addForm, editForm} from './mocks/data';
 
 dayjs.extend(utc);
 
@@ -17,7 +18,7 @@ const getRandomNumber = (a = 0, b = 1) => {
 
 const getRandomArrayItem = (array) => array[getRandomNumber(0, array.length - 1)];
 
-const generateDate = (firstDate = '', isFirstDate =  false) => {
+const generateDate = (firstDate = '', isFirstDate = false) => {
   // const currentDate = dayjs().format();
   // let result;
 
@@ -53,5 +54,15 @@ const getFormattedDate = (date, format) => {
   return dayjs(date).format(format);
 };
 
-export {generateDate, getRandomNumber, render, getRandomArrayItem, shuffle, getFormattedDate};
+const setAddEventButtonBehavior = (button) => {
+  const destinationBlock = document.querySelector('.trip-events__list');
+
+  button.addEventListener('click', () => {
+
+
+    render(destinationBlock, addForm, 'afterbegin');
+  });
+};
+
+export {generateDate, getRandomNumber, render, getRandomArrayItem, shuffle, getFormattedDate, setAddEventButtonBehavior};
 

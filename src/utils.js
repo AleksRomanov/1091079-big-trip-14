@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import {addForm} from './mocks/data';
 
 dayjs.extend(utc);
 

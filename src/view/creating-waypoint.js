@@ -1,21 +1,9 @@
 import dayjs from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
-import {getFormattedDate, render} from '../utils';
-import {editForm} from '../mocks/data';
+import {getFormattedDate} from '../utils';
+// import {editForm} from '../mocks/data';
 
 dayjs.extend(advancedFormat);
-
-const setEditButtonBehavior = () => {
-
-  const btnElements = document.querySelectorAll('.event__rollup-btn');
-
-  btnElements.forEach((item) => {
-    item.addEventListener('click', () => {
-      // console.log(item.parentNode);
-      render(item.parentNode, editForm, 'afterend');
-    });
-  });
-};
 
 class CreateEventsList {
 
@@ -23,7 +11,6 @@ class CreateEventsList {
 
     this._state = state;
   }
-
   getDuration(startTime, endTime) {
     const diff = dayjs(endTime).diff(startTime);
     return dayjs(diff).format('H[H] MM[M]');
@@ -108,4 +95,4 @@ class CreateEventsList {
   }
 }
 
-export {CreateEventsList, setEditButtonBehavior};
+export {CreateEventsList};

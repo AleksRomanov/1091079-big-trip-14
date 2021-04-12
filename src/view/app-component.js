@@ -16,14 +16,16 @@ const tripMain = siteHeader.querySelector('.trip-main');
 const tripControlsNavigation = siteHeader.querySelector('.trip-controls__navigation');
 const tripControlsFilters = siteHeader.querySelector('.trip-controls__filters');
 const addEventButton = document.querySelector('.trip-main__event-add-btn');
-const destinationBlock = document.querySelector('.trip-events__list');
+
 
 class AppComponent {
   constructor(state) {
     this._state = state;
   }
 
-  setAddEventButtonBehavior (button) {
+  setAddEventButtonBehavior(button) {
+    const destinationBlock = document.querySelector('.trip-events__list');
+
     button.addEventListener('click', () => {
       render(destinationBlock, addForm, 'afterbegin');
     });
@@ -35,6 +37,8 @@ class AppComponent {
     render(tripControlsFilters, new createFilterComponent().getElement());
     new EventsComponent(this._state).mountComponent();
     this.setAddEventButtonBehavior(addEventButton);
+
+
   }
 }
 

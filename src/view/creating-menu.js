@@ -7,13 +7,13 @@ class CreateMenu {
 
   createViewTypeElements(typeTitles) {
     let elements = ' ';
-    typeTitles.forEach((element, index) => {
+    elements = typeTitles.map((element, index) => {
       if (index === 0) {
-        elements += `<a class="trip-tabs__btn trip-tabs__btn--active" href="#">${element}</a>`;
+        return `<a class="trip-tabs__btn trip-tabs__btn--active" href="#">${element}</a>`;
       } else {
-        elements += `<a class="trip-tabs__btn" href="#">${element}</a>`;
+        return `<a class="trip-tabs__btn" href="#">${element}</a>`;
       }
-    });
+    }).join('');
     return elements;
   }
 

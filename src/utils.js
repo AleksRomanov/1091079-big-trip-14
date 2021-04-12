@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-// import {addForm} from './mocks/data';
+import {addForm} from './mocks/data';
 
 dayjs.extend(utc);
 
@@ -30,15 +30,7 @@ const generateDate = (firstDate = '', isFirstDate = false) => {
 };
 
 const shuffle = (array) => {
-  for (let i = array.length - 1; i > 0; i--) {
-    const random = Math.floor(Math.random() * (i + 1));
-    const temp = array[random];
-
-    array[random] = array[i];
-    array[i] = temp;
-  }
-
-  return array;
+  return array.sort(()=>Math.random()-0.5);
 };
 
 const getFormattedDate = (date, format) => {

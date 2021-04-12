@@ -1,12 +1,7 @@
-// import {OFFERS_SORT_OPTIONS} from '../mocks/data';
-
 import {render} from '../utils';
-// import {CreateEventsList as CreateEventsListComponent} from './creating-waypoint';
 import {CreateTripInfo as CreateTripInfoComponent} from './create-trip-info';
 import {CreateMenu as CreateMenuComponent} from './creating-menu';
 import {CreateFilterTime as createFilterComponent} from './creating-filter';
-// import {CreateSortingOffers as CreateSortingOffersComponent} from './creating-sort';
-// import {editForm} from '../mocks/data';
 import {Events as EventsComponent} from './events-component';
 import {addForm} from '../mocks/data';
 
@@ -37,8 +32,6 @@ class AppComponent {
     render(tripControlsFilters, new createFilterComponent().getElement());
     new EventsComponent(this._state).mountComponent();
     this.setAddEventButtonBehavior(addEventButton);
-
-
   }
 }
 

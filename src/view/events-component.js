@@ -3,10 +3,8 @@ import {CreateSortingOffers as CreateSortingOffersComponent} from './creating-so
 import {CreateEventsList as CreateEventsListComponent} from './creating-waypoint';
 import {editForm} from '../mocks/data';
 
-
 const siteBodyPageMain = document.querySelector('.page-body__page-main');
 const tripEvents = siteBodyPageMain.querySelector('.trip-events');
-
 
 class Events {
   constructor(props) {

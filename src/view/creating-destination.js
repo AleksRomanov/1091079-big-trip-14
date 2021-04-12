@@ -58,6 +58,8 @@ class CreateEventsState {
     for (let i = 0; i <= this._eventsCount; i++) {
       result.push(this.generateEvent(i, result));
     }
+    // console.log(result[0]);
+    // console.log(result[1]);
     return result;
   }
 }

@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 import {getFormattedDate} from '../utils';
-// import {editForm} from '../mocks/data';
 
 dayjs.extend(advancedFormat);
 
@@ -40,11 +39,8 @@ class CreateEventsList {
   }
 
   generateEvents() {
-    let result = ' ';
-
-    this._state.forEach((item) => {
-
-      result += `
+    return this._state.map((item) => {
+      return `
         <li class="trip-events__item">
           <div class="event">
             <time class="event__date" datetime="${getFormattedDate(item.startDate, 'YYYY-MM-DD')}">${getFormattedDate(item.startDate, 'MMM DD')}</time>
@@ -81,9 +77,7 @@ class CreateEventsList {
           </div>
         </li>`;
 
-    });
-
-    return result;
+    }).join('');
   }
 
   generateEventsList() {

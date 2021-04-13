@@ -10,23 +10,20 @@ class CreateEventsList {
 
     this._state = state;
   }
+
   getDuration(startTime, endTime) {
     const diff = dayjs(endTime).diff(startTime);
     return dayjs(diff).format('H[H] MM[M]');
   }
 
   generateOffers(offers) {
-
-    let result = '';
-
-    offers.forEach((item) => {
-      result += `<li class="event__offer">
+    return offers.map((item) => {
+      return `<li class="event__offer">
                 <span class="event__offer-title">${item['title']}</span>
                 &plus;&euro;&nbsp;
                 <span class="event__offer-price">${item['price']}</span>
               </li>`;
-    });
-    return result;
+    }).join('');
   }
 
   getButtonHeader(favoriteStatus) {

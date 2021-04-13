@@ -6,15 +6,13 @@ class CreateMenu {
   }
 
   createViewTypeElements(typeTitles) {
-    let elements = ' ';
-    elements = typeTitles.map((element, index) => {
+    return typeTitles.map((element, index) => {
       if (index === 0) {
         return `<a class="trip-tabs__btn trip-tabs__btn--active" href="#">${element}</a>`;
       } else {
         return `<a class="trip-tabs__btn" href="#">${element}</a>`;
       }
     }).join('');
-    return elements;
   }
 
   getElement() {

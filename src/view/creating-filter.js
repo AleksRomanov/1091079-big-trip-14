@@ -6,9 +6,8 @@ class CreateFilterTime {
   }
 
   createViewTimeElements(typeTitles) {
-    let elements = ' ';
 
-    elements = typeTitles.map((element, index) => {
+    return typeTitles.map((element, index) => {
       if (index === 0) {
         return `<input id="${element.id}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="everything" checked>
          <label class="trip-filters__filter-label" for="${element.id}">${element.title}</label>`;
@@ -17,7 +16,6 @@ class CreateFilterTime {
          <label class="trip-filters__filter-label" for="${element.id}">${element.title}</label>`;
       }
     }).join('');
-    return elements;
   }
 
   getElement() {

@@ -6,8 +6,7 @@ class CreateSortingOffers {
   }
 
   createViewOptionsElements(typeTitles) {
-    let elements = ' ';
-    elements = typeTitles.map((element, index) => {
+    return typeTitles.map((element, index) => {
       if (index === 0) {
         return `<div class="trip-sort__item  trip-sort__item--${element}">
                        <input id="sort-day" class="trip-sort__input visually-hidden" type="radio" name="trip-sort" value="sort-day" checked>
@@ -20,7 +19,6 @@ class CreateSortingOffers {
                     </div>`;
       }
     }).join('');
-    return elements;
   }
 
   getElement() {

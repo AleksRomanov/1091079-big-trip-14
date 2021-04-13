@@ -1,20 +1,31 @@
-const createFilter = () => {
-  return `<h2 class="visually-hidden">Filter events</h2>
-    <form class="trip-filters" action="#" method="get">
-      <div class="trip-filters__filter">
-        <input id="filter-everything" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="everything">
-        <label class="trip-filters__filter-label" for="filter-everything">Everything</label>
-      </div>
-      <div class="trip-filters__filter">
-        <input id="filter-future" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="future">
-        <label class="trip-filters__filter-label" for="filter-future">Future</label>
-      </div>
-      <div class="trip-filters__filter">
-        <input id="filter-past" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="past" checked>
-        <label class="trip-filters__filter-label" for="filter-past">Past</label>
-      </div>
-      <button class="visually-hidden" type="submit">Accept filter</button>
-    </form>`;
-};
+import {DATA_VIEW_PERIOD} from '../mocks/data';
 
-export {createFilter};
+class CreateFilterTime {
+  constructor() {
+    this._typeTitles = DATA_VIEW_PERIOD;
+  }
+
+  createViewTimeElements(typeTitles) {
+
+    return typeTitles.map((element, index) => {
+      if (index === 0) {
+        return `<input id="${element.id}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="everything" checked>
+         <label class="trip-filters__filter-label" for="${element.id}">${element.title}</label>`;
+      } else {
+        return `<input id="${element.id}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="future">
+         <label class="trip-filters__filter-label" for="${element.id}">${element.title}</label>`;
+      }
+    }).join('');
+  }
+
+  getElement() {
+    return `<form class="trip-filters" action="#" method="get">
+                <div class="trip-filters__filter">
+                   ${this.createViewTimeElements(this._typeTitles)}
+                </div>
+            </form>
+    `;
+  }
+}
+
+export {CreateFilterTime};

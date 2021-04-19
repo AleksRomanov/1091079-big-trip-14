@@ -24,7 +24,7 @@ class CreateEventsState {
 
   generateEvent(index, resultArray) {
     const result = {
-      type: getRandomArrayItem([...EVENT_TYPES.transfers, ...EVENT_TYPES.activities]),
+      type: getRandomArrayItem([...EVENT_TYPES]),
       city: getRandomArrayItem(CITIES),
       photos: this.generatePhotos(),
       offers: this.generateOffers(),

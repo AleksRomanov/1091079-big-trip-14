@@ -1,19 +1,4 @@
-const EVENT_TYPES = {
-  transfers: [
-    'bus',
-    'drive',
-    'flight',
-    'ship',
-    'taxi',
-    'train',
-    'transport',
-  ],
-  activities: [
-    'check-in',
-    'restaurant',
-    'sightseeing',
-  ],
-};
+const EVENT_TYPES = ['taxi', 'bus', 'train', 'ship', 'transport', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
 const CITIES = [
   'Amsterdam',
@@ -25,6 +10,18 @@ const CITIES = [
 ];
 
 const OFFERS = [
+  // {
+  //   'type': 'taxi',
+  //   'offers': [
+  //     {
+  //       'title': 'Upgrade to a business class',
+  //       'price': 120,
+  //     }, {
+  //       'title': 'Choose the radio station',
+  //       'price': 60,
+  //     },
+  //   ],
+  // },
   {
     type: 'luggage',
     title: 'Add luggage',

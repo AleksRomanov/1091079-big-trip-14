@@ -27,6 +27,7 @@ class AppComponent {
 
   renderComponents(state) {
     //Рэндер всех пунктов маршрута
+    console.log(state);
     new EventsComponent().mountComponent(state);
     //Рэндер сводной информации о всём путешествии
     render(tripMain, new CreateTripInfoComponent().getElement(state), 'afterbegin');

@@ -1,24 +1,23 @@
 import {render} from '../utils';
-import {CreateSortingOffers as CreateSortingOffersComponent} from './creating-sort';
 import {CreateEventsList as CreateEventsListComponent} from './creating-waypoint';
-import {addForm, editForm} from '../mocks/data';
+import {CreateEventForm} from './create-event-form';
 
 const siteBodyPageMain = document.querySelector('.page-body__page-main');
 const tripEvents = siteBodyPageMain.querySelector('.trip-events');
 
 
 class Events {
-  setEditButtonBehavior() {
+  setEditButtonBehavior(state) {
     const btnElements = document.querySelectorAll('.event__rollup-btn');
-    btnElements.forEach((item) => {
+    btnElements.forEach((item, index) => {
       item.addEventListener('click', () => {
-        render(item.parentNode, editForm, 'afterend');
+        render(item.parentNode, new CreateEventForm().getElement(state[index]), 'afterend');
       });
     });
   }
   mountComponent(state) {
     render(tripEvents, new CreateEventsListComponent().generateEventsList(state), 'beforeend');
-    this.setEditButtonBehavior();
+    this.setEditButtonBehavior(state);
   }
 }
 

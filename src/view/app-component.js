@@ -29,7 +29,7 @@ class AppComponent {
     //Рэндер всех пунктов маршрута
     new EventsComponent().mountComponent(state);
     //Рэндер сводной информации о всём путешествии
-    render(tripMain, new CreateTripInfoComponent(state).getElement(), 'afterbegin');
+    render(tripMain, new CreateTripInfoComponent().getElement(state), 'afterbegin');
     //Рэндер переключателя режима отображения информации
     render(tripControlsNavigation, new CreateMenuComponent().getElement());
     //Рэндер переключения фильтрации
@@ -37,7 +37,7 @@ class AppComponent {
     //Настройка поведения кнопки добавления точки маршрута
     this.setAddEventButtonBehavior(addEventButton);
     //Рэндер переключения сортировки
-    render(tripEvents, new CreateSortingOffersComponent().getElement());
+    render(tripEvents, new CreateSortingOffersComponent().getElement(), 'afterbegin');
   }
 }
 

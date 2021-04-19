@@ -1,21 +1,18 @@
-import {OFFERS_SORT_OPTIONS} from '../mocks/data';
+import {OFFERS_SORT_OPTIONS} from '../const';
 
 class CreateSortingOffers {
-  constructor() {
-    this._typeTitles = OFFERS_SORT_OPTIONS;
-  }
 
   createViewOptionsElements(typeTitles) {
-    return typeTitles.map((element, index) => {
+    return typeTitles.map((type, index) => {
       if (index === 0) {
-        return `<div class="trip-sort__item  trip-sort__item--${element}">
+        return `<div class="trip-sort__item  trip-sort__item--${type}">
                        <input id="sort-day" class="trip-sort__input visually-hidden" type="radio" name="trip-sort" value="sort-day" checked>
-                        <label class="trip-sort__btn" for="sort-day">${element}</label>
+                        <label class="trip-sort__btn" for="sort-day">${type}</label>
                     </div>`;
       } else {
-        return `<div class="trip-sort__item  trip-sort__item--${element}">
+        return `<div class="trip-sort__item  trip-sort__item--${type}">
                        <input id="sort-day" class="trip-sort__input visually-hidden" type="radio" name="trip-sort" value="sort-day">
-                        <label class="trip-sort__btn" for="sort-day">${element}</label>
+                        <label class="trip-sort__btn" for="sort-day">${type}</label>
                     </div>`;
       }
     }).join('');
@@ -23,7 +20,7 @@ class CreateSortingOffers {
 
   getElement() {
     return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-                   ${this.createViewOptionsElements(this._typeTitles)}
+                   ${this.createViewOptionsElements(OFFERS_SORT_OPTIONS)}
             </form>`;
   }
 }

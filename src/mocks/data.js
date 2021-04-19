@@ -52,34 +52,6 @@ const OFFERS = [
   },
 ];
 
-const DATA_VIEW_TYPES = [
-  'Table',
-  'Stats',
-];
-
-const DATA_VIEW_PERIOD = [
-  {
-    id: 'filter-everything',
-    title: 'EVERYTHING',
-  },
-  {
-    id: 'filter-future',
-    title: 'FUTURE',
-  },
-  {
-    id: 'filter-past',
-    title: 'PAST',
-  },
-];
-
-const OFFERS_SORT_OPTIONS = [
-  'day',
-  'event',
-  'time',
-  'price',
-  'offers',
-];
-
 const DESCRIPTIONS = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   'Cras aliquet varius magna, non porta ligula feugiat eget.',
@@ -299,4 +271,4 @@ const addForm = `<li class="trip-events__item">
             </li>`;
 
 
-export {EVENT_TYPES, CITIES, OFFERS, DATA_VIEW_TYPES, DATA_VIEW_PERIOD, OFFERS_SORT_OPTIONS, DESCRIPTIONS, RenderPosition, editForm, addForm};
+export {EVENT_TYPES, CITIES, OFFERS, DESCRIPTIONS, RenderPosition, editForm, addForm};

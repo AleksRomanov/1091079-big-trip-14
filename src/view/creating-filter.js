@@ -1,29 +1,29 @@
-import {DATA_VIEW_PERIOD} from '../mocks/data';
+import {DATA_VIEW_PERIOD} from '../const';
 
 class CreateFilterTime {
-  constructor() {
-    this._typeTitles = DATA_VIEW_PERIOD;
-  }
 
   createViewTimeElements(typeTitles) {
 
     return typeTitles.map((element, index) => {
       if (index === 0) {
-        return `<input id="${element.id}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="everything" checked>
-         <label class="trip-filters__filter-label" for="${element.id}">${element.title}</label>`;
+        return `
+          <input id="${element.id}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${element.type}" checked>
+          <label class="trip-filters__filter-label" for="${element.id}">${element.title}</label>`;
       } else {
-        return `<input id="${element.id}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="future">
-         <label class="trip-filters__filter-label" for="${element.id}">${element.title}</label>`;
+        return `
+          <input id="${element.id}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${element.type}">
+          <label class="trip-filters__filter-label" for="${element.id}">${element.title}</label>`;
       }
     }).join('');
   }
 
   getElement() {
-    return `<form class="trip-filters" action="#" method="get">
-                <div class="trip-filters__filter">
-                   ${this.createViewTimeElements(this._typeTitles)}
-                </div>
-            </form>
+    return `
+      <form class="trip-filters" action="#" method="get">
+        <div class="trip-filters__filter">
+           ${this.createViewTimeElements(DATA_VIEW_PERIOD)}
+        </div>
+      </form>
     `;
   }
 }

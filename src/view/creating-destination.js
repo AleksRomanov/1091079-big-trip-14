@@ -8,10 +8,24 @@ class CreateEventsState {
     return [...Array(count)].map(() => `http://picsum.photos/300/150?r=${Math.random()}`);
   }
 
-  generateOffers() {
+  generateOffers(type) {
+    // console.log(type);
+    let neededOffer;
+
+    OFFERS.forEach((offer, index) => {
+      // console.log(offer);
+      if (offer.type === type) {
+        neededOffer = offer;
+      }
+    });
     const count = getRandomNumber(0, 5);
 
-    return [...Array(count)].map((it, i) => OFFERS[i]);
+    console.log(neededOffer.offers);
+
+    return [...Object.create(count)].map((it, i) => {
+      // console.log(i + 'i');
+      return neededOffer.offers[i].title;
+    });
   }
 
   generateDescription(descriptions) {
@@ -27,11 +41,12 @@ class CreateEventsState {
       type: getRandomArrayItem([...EVENT_TYPES]),
       city: getRandomArrayItem(CITIES),
       photos: this.generatePhotos(),
-      offers: this.generateOffers(),
       description: this.generateDescription(DESCRIPTIONS),
       price: getRandomNumber(10, 1000),
       favorite: Boolean(getRandomNumber(-1, 1)),
+      get eventType() {return this.type;},
     };
+
     if (!index) {
       const firstDate = generateDate(0, true);
 
@@ -42,6 +57,10 @@ class CreateEventsState {
       result.startDate = startDate;
       result.endDate = generateDate(startDate);
     }
+
+    result.offers = this.generateOffers(result.eventType);
+
+    console.log(result);
 
     return result;
   }

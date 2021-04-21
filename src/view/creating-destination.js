@@ -20,11 +20,18 @@ class CreateEventsState {
     });
     const count = getRandomNumber(0, 5);
 
-    console.log(neededOffer.offers);
+    // console.log(neededOffer.offers);
+    //
+    // for (let i = 0; i <= count; i++) {
+    //
+    //   console.log(i);
+    // }
 
-    return [...Object.create(count)].map((it, i) => {
+    return [...Array(count)].map((it, i) => {
+      return it = neededOffer.offers[i];
       // console.log(i + 'i');
-      return neededOffer.offers[i].title;
+      // return neededOffer.offers[i].title;
+      // return {dfds: 12};
     });
   }
 

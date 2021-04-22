@@ -15,6 +15,7 @@ class Events {
       });
     });
   }
+
   mountComponent(state) {
     render(tripEvents, new CreateEventsListComponent().generateEventsList(state), 'beforeend');
     this.setEditButtonBehavior(state);

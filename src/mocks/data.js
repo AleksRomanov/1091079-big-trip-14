@@ -231,6 +231,31 @@ const OFFERS = [
       },
     ],
   },
+  {
+    'type': 'ship',
+    'offers': [
+      {
+        'title': 'ship+1',
+        'price': 20,
+      },
+      {
+        'title': 'ship+2',
+        'price': 20,
+      },
+      {
+        'title': 'ship+3',
+        'price': 20,
+      },
+      {
+        'title': 'ship+4',
+        'price': 20,
+      },
+      {
+        'title': 'ship+5',
+        'price': 20,
+      },
+    ],
+  },
 ];
 
 

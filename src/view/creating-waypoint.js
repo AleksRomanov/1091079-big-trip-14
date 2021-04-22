@@ -27,7 +27,7 @@ class CreateEventsList {
       const startDate = item.startDate;
       const endDate = item.endDate;
       const typeEvent = item.type;
-      const city = item.city;
+      const city = item.destination.city;
       const price = item.price;
       const offers = item.offers;
       const favorite = item.favorite;

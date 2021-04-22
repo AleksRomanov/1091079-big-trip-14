@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import {OFFERS} from './mocks/data';
 
 dayjs.extend(utc);
 
@@ -36,5 +37,16 @@ const getFormattedDate = (date, format) => {
   return dayjs(date).format(format);
 };
 
-export {generateDate, getRandomNumber, render, getRandomArrayItem, shuffle, getFormattedDate};
+
+const getObjectByKeyInArray = (array, searchableProp, searchableValue) => {
+  let neededOffer;
+  array.forEach((obj) => {
+    if (obj[searchableProp] === searchableValue) {
+      return neededOffer = obj;
+    }
+  });
+  return neededOffer;
+};
+
+export {generateDate, getRandomNumber, render, getRandomArrayItem, shuffle, getFormattedDate, getObjectByKeyInArray};
 

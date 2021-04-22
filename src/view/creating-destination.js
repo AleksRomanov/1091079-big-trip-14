@@ -1,4 +1,4 @@
-import {getRandomArrayItem, generateDate, getRandomNumber, shuffle} from '../utils';
+import {getRandomArrayItem, generateDate, getRandomNumber, shuffle, getObjectByKeyInArray} from '../utils';
 import {CITIES, DESCRIPTIONS, EVENT_TYPES, OFFERS} from '../mocks/data';
 
 class CreateEventsState {
@@ -9,30 +9,15 @@ class CreateEventsState {
   }
 
   generateOffers(type) {
-    // console.log(type);
-    let neededOffer;
-
-    OFFERS.forEach((offer, index) => {
-      // console.log(offer);
-      if (offer.type === type) {
-        neededOffer = offer;
-      }
-    });
+    const neededOffer = getObjectByKeyInArray(OFFERS, 'type' ,type);
+    // OFFERS.forEach((offer) => {
+    //   if (offer.type === type) {
+    //     return neededOffer = offer;
+    //   }
+    // });
     const count = getRandomNumber(0, 5);
-
-    // console.log(neededOffer.offers);
-    //
-    // for (let i = 0; i <= count; i++) {
-    //
-    //   console.log(i);
-    // }
-
-    return [...Array(count)].map((it, i) => {
-      return it = neededOffer.offers[i];
-      // console.log(i + 'i');
-      // return neededOffer.offers[i].title;
-      // return {dfds: 12};
-    });
+    return shuffle(neededOffer.offers.slice())
+      .slice(0, count);
   }
 
   generateDescription(descriptions) {
@@ -43,15 +28,28 @@ class CreateEventsState {
       .join(' ');
   }
 
-  generateEvent(index, resultArray) {
-    const result = {
-      type: getRandomArrayItem([...EVENT_TYPES]),
+  generateDestination() {
+
+    return {
       city: getRandomArrayItem(CITIES),
       photos: this.generatePhotos(),
       description: this.generateDescription(DESCRIPTIONS),
+
+    };
+  }
+
+  generateEvent(index, resultArray) {
+    const result = {
+      type: getRandomArrayItem([...EVENT_TYPES]),
+      destination: this.generateDestination(),
+      // city: getRandomArrayItem(CITIES),
+      // photos: this.generatePhotos(),
+      // description: this.generateDescription(DESCRIPTIONS),
       price: getRandomNumber(10, 1000),
       favorite: Boolean(getRandomNumber(-1, 1)),
-      get eventType() {return this.type;},
+      get eventType() {
+        return this.type;
+      },
     };
 
     if (!index) {

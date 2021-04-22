@@ -13,8 +13,8 @@ class CreateTripInfo {
   }
 
   getElement(state) {
-    const firstCity = state[0]['city'];
-    const finalCity = state[state.length - 1]['city'];
+    const firstCity = state[0].destination['city'];
+    const finalCity = state[state.length - 1].destination['city'];
     const firstDate = getFormattedDate(state[0]['startDate'], 'MMM-DD');
     const finalDate = getFormattedDate(state[state.length - 1]['endDate'], 'DD');
     const totalCost = this.getEventsSum(state);

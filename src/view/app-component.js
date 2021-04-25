@@ -5,6 +5,7 @@ import {CreateFilterTime as createFilterComponent} from './creating-filter';
 import {Events as EventsComponent} from './events-component';
 import {addForm, editForm} from '../mocks/data';
 import {CreateSortingOffers as CreateSortingOffersComponent} from './creating-sort';
+import {CreateEventForm} from './create-event-form';
 
 const siteHeader = document.querySelector('.page-header');
 
@@ -21,7 +22,7 @@ class AppComponent {
     const destinationBlock = document.querySelector('.trip-events__list');
 
     button.addEventListener('click', () => {
-      render(destinationBlock, addForm, 'afterbegin');
+      render(destinationBlock, new CreateEventForm().getElement(), 'afterbegin');
     });
   }
 

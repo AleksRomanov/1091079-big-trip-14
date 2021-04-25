@@ -42,9 +42,6 @@ class CreateEventsState {
     const result = {
       type: getRandomArrayItem([...EVENT_TYPES]),
       destination: this.generateDestination(),
-      // city: getRandomArrayItem(CITIES),
-      // photos: this.generatePhotos(),
-      // description: this.generateDescription(DESCRIPTIONS),
       price: getRandomNumber(10, 1000),
       favorite: Boolean(getRandomNumber(-1, 1)),
       get eventType() {

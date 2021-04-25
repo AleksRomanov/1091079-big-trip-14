@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {getFormattedDate} from '../utils';
+import {createElement, getFormattedDate} from '../utils';
 
 class CreateEventsList {
 
@@ -73,11 +73,12 @@ class CreateEventsList {
   }
 
   generateEventsList(state) {
-    return `
-      <ul class="trip-events__list">
-        ${this.generateEvents(state)};
-      </ul>`;
+    const result = createElement(`<ul class="trip-events__list">
+              ${this.generateEvents(state)};
+            </ul>`);
+    return result ;
   }
+
 }
 
 export {CreateEventsList};

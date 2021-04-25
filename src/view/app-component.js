@@ -30,16 +30,16 @@ class AppComponent {
     //Рэндер всех пунктов маршрута
     // console.log(state);
     new EventsComponent().mountComponent(state);
-    //Рэндер сводной информации о всём путешествии
-    render(tripMain, new CreateTripInfoComponent().getElement(state), 'afterbegin');
-    //Рэндер переключателя режима отображения информации
-    render(tripControlsNavigation, new CreateMenuComponent().getElement());
-    //Рэндер переключения фильтрации
-    render(tripControlsFilters, new createFilterComponent().getElement());
-    //Настройка поведения кнопки добавления точки маршрута
-    this.setAddEventButtonBehavior(addEventButton);
-    //Рэндер переключения сортировки
-    render(tripEvents, new CreateSortingOffersComponent().getElement(), 'afterbegin');
+    // //Рэндер сводной информации о всём путешествии
+    // render(tripMain, new CreateTripInfoComponent().getElement(state), 'afterbegin');
+    // //Рэндер переключателя режима отображения информации
+    // render(tripControlsNavigation, new CreateMenuComponent().getElement());
+    // //Рэндер переключения фильтрации
+    // render(tripControlsFilters, new createFilterComponent().getElement());
+    // //Настройка поведения кнопки добавления точки маршрута
+    // this.setAddEventButtonBehavior(addEventButton);
+    // //Рэндер переключения сортировки
+    // render(tripEvents, new CreateSortingOffersComponent().getElement(), 'afterbegin');
   }
 }
 

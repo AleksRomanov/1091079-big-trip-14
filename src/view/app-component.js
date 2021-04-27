@@ -1,10 +1,9 @@
-import {render} from '../utils';
-import {CreateTripInfo as CreateTripInfoComponent} from './create-trip-info';
-import {CreateMenu as CreateMenuComponent} from './creating-menu';
-import {CreateFilterTime as createFilterComponent} from './creating-filter';
-import {Events as EventsComponent} from './events-component';
-import {addForm, editForm} from '../mocks/data';
-import {CreateSortingOffers as CreateSortingOffersComponent} from './creating-sort';
+import {render, RenderPosition} from '../utils';
+import TripInfoView from './create-trip-info';
+import ModesToggleView from './creating-menu';
+import FiltersView from './creating-filter';
+import Events from './events-component';
+import SortingToggleView from './creating-sort';
 import {CreateEventForm} from './create-event-form';
 
 const siteHeader = document.querySelector('.page-header');
@@ -16,7 +15,7 @@ const tripEvents = document.querySelector('.trip-events');
 const addEventButton = document.querySelector('.trip-main__event-add-btn');
 
 
-class AppComponent {
+export default class AppComponent {
 
   setAddEventButtonBehavior(button) {
     const destinationBlock = document.querySelector('.trip-events__list');
@@ -28,19 +27,17 @@ class AppComponent {
 
   renderComponents(state) {
     //Рэндер всех пунктов маршрута
-    // console.log(state);
-    new EventsComponent().mountComponent(state);
-    // //Рэндер сводной информации о всём путешествии
-    // render(tripMain, new CreateTripInfoComponent().getElement(state), 'afterbegin');
-    // //Рэндер переключателя режима отображения информации
-    // render(tripControlsNavigation, new CreateMenuComponent().getElement());
-    // //Рэндер переключения фильтрации
-    // render(tripControlsFilters, new createFilterComponent().getElement());
-    // //Настройка поведения кнопки добавления точки маршрута
-    // this.setAddEventButtonBehavior(addEventButton);
-    // //Рэндер переключения сортировки
-    // render(tripEvents, new CreateSortingOffersComponent().getElement(), 'afterbegin');
+    new Events().mountComponent(state);
+    //Рэндер сводной информации о всём путешествии
+    render(tripMain, new TripInfoView(state).getElement(), RenderPosition.AFTERBEGIN);
+    //Рэндер переключателя режима отображения информации
+    render(tripControlsNavigation, new ModesToggleView().getElement(), RenderPosition.AFTERBEGIN);
+    //Рэндер переключения фильтрации
+    render(tripControlsFilters, new FiltersView().getElement(), RenderPosition.AFTERBEGIN);
+    //Настройка поведения кнопки добавления точки маршрута
+    this.setAddEventButtonBehavior(addEventButton);
+    //Рэндер переключения сортировки
+    render(tripEvents, new SortingToggleView().getElement(), RenderPosition.AFTERBEGIN);
   }
 }
 
-export {AppComponent};

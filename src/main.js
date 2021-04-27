@@ -1,6 +1,7 @@
 import {CreateEventsState} from './view/creating-destination';
-import {AppComponent} from './view/app-component';
+import App from './view/app-component';
 import {WAYPOINT_COUNT} from './const';
 
-const state = new CreateEventsState().generateEvents(WAYPOINT_COUNT);
-new AppComponent().renderComponents(state);
+const events = new CreateEventsState().generateEvents(WAYPOINT_COUNT);
+
+new App().renderComponents(events);

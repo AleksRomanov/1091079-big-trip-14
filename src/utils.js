@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
+// import utc from 'dayjs/plugin/utc';
 
 
 // const render = (container, element, position = 'beforeend') => {
@@ -11,7 +11,8 @@ export const RenderPosition = {
 };
 
 const render = (container, element, place) => {
-  console.log(container);
+
+  // console.log(container);
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
@@ -30,7 +31,7 @@ const createElement = (template) => {
   const newElement = document.createElement('div'); // 1
   newElement.innerHTML = template; // 2
 
-  console.log(newElement);
+  // console.log(newElement);
 
   return newElement.firstChild; // 3
 };

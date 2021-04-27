@@ -4,7 +4,7 @@ import ModesToggleView from './creating-menu';
 import FiltersView from './creating-filter';
 import Events from './events-component';
 import SortingToggleView from './creating-sort';
-import {CreateEventForm} from './create-event-form';
+import EventFormView from './create-event-form';
 
 const siteHeader = document.querySelector('.page-header');
 
@@ -21,7 +21,7 @@ export default class AppComponent {
     const destinationBlock = document.querySelector('.trip-events__list');
 
     button.addEventListener('click', () => {
-      render(destinationBlock, new CreateEventForm().getElement(), 'afterbegin');
+      render(destinationBlock, new EventFormView().getElement(), 'afterbegin');
     });
   }
 

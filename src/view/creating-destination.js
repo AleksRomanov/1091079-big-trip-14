@@ -1,5 +1,6 @@
 import {getRandomArrayItem, generateDate, getRandomNumber, shuffle, getObjectByKeyInArray} from '../utils';
 import {CITIES, DESCRIPTIONS, EVENT_TYPES, OFFERS} from '../mocks/data';
+import {nanoid} from 'nanoid';
 
 class CreateEventsState {
   generatePhotos() {
@@ -44,6 +45,7 @@ class CreateEventsState {
       destination: this.generateDestination(),
       price: getRandomNumber(10, 1000),
       favorite: Boolean(getRandomNumber(-1, 1)),
+      id: nanoid(),
       get eventType() {
         return this.type;
       },
@@ -73,6 +75,7 @@ class CreateEventsState {
     for (let i = 0; i <= count; i++) {
       result.push(this.generateEvent(i, result));
     }
+    console.log(result);
     return result;
   }
 }

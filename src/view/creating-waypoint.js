@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import {createElement, getFormattedDate} from '../utils';
+import EventFormView from './create-event-form';
 
 const getDuration = (startTime, endTime) => {
   const diff = dayjs(endTime).diff(startTime);
@@ -31,7 +32,7 @@ const generateEvents = (state) => {
     const favorite = item.favorite;
 
     return `<li class="trip-events__item">
-          <div class="event">
+               <div class="event">
             <time class="event__date" datetime="${getFormattedDate(startDate, 'YYYY-MM-DD')}">${getFormattedDate(startDate, 'MMM DD')}</time>
             <div class="event__type">
               <img class="event__type-icon" width="42" height="42" src="img/icons/${typeEvent}.png" alt="Event type icon">
@@ -70,7 +71,9 @@ const generateEvents = (state) => {
 
 const createEventsListTemplate = (state) => {
   return `<ul class="trip-events__list">
-              ${generateEvents(state)};
+
+                ${generateEvents(state)};
+
             </ul>`;
 };
 
@@ -87,6 +90,8 @@ export default class EventsList {
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate(this._state));
+      this.setEditButtonBehavior(this._element);
+
     }
     return this._element;
   }
@@ -94,5 +99,30 @@ export default class EventsList {
   removeElement() {
     this._element = null;
   }
+
+  setEditButtonBehavior(events) {
+    const btnElements = events.querySelectorAll('.event__rollup-btn');
+    btnElements.forEach((item, index) => {
+      const parentNode = item.parentNode.parentNode;
+      const eventNode = item.parentNode;
+
+      item.addEventListener('click', () => {
+        const editForm = document.querySelector('.event--edit');
+        if (editForm) {
+          const parentEditForm = editForm.parentNode;
+          const formId = editForm.id;
+          const closedEvent = [];
+          closedEvent.push(this._state.find((event) => event.id === formId ? event : null));
+          const event = createElement(generateEvents(closedEvent));
+          parentEditForm.replaceChild(event, editForm);
+          parentNode.replaceChild(new EventFormView(this._state[index], parentNode, eventNode).getElement(), eventNode);
+        } else {
+          parentNode.replaceChild(new EventFormView(this._state[index], parentNode, eventNode).getElement(), eventNode);
+        }
+      });
+    });
+  }
 }
+
+export {generateEvents};
 

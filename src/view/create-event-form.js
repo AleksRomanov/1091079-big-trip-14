@@ -4,12 +4,12 @@ import dayjs from 'dayjs';
 
 
 const EMPTY_EVENT = {
-  eventType : EVENT_TYPES[0],
-  destination : {city: '', photos: null, description: ''},
-  startDate : dayjs(),
-  endDate : dayjs(),
-  price : '',
-  offers : '',
+  eventType: EVENT_TYPES[0],
+  destination: {city: '', photos: null, description: ''},
+  startDate: dayjs(),
+  endDate: dayjs(),
+  price: '',
+  offers: '',
 };
 
 const makeStringUppercase = ([first, ...rest]) => {
@@ -105,8 +105,7 @@ const getEventPhotos = (photos, description) => {
 };
 
 const createEventForm = (item) => {
-  return `<li class="trip-events__item">
-              <form class="event event--edit" action="#" method="post">
+  return `<form id="${item.id}" class="event event--edit" action="#" method="post">
                 <header class="event__header">
                   <div class="event__type-wrapper">
                     <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -160,14 +159,15 @@ const createEventForm = (item) => {
                   ${getEventPhotos(item.destination.photos, item.destination.description)}
                 </section>
               </form>
-            </li>
     `;
 };
 
 export default class EventForm {
-  constructor(event = EMPTY_EVENT) {
+  constructor(event = EMPTY_EVENT, parentNode, eventNode) {
     this._element = null;
     this._event = event;
+    this._eventNode = eventNode;
+    this._parentNode = parentNode;
   }
 
   getTemplate(state) {
@@ -177,12 +177,20 @@ export default class EventForm {
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate(this._event));
+      this.setBehaviorClosing();
     }
     return this._element;
   }
 
   removeElement() {
     this._element = null;
+  }
+
+  setBehaviorClosing(){
+    const formCloseButton = this._element.querySelector('.event__rollup-btn');
+    formCloseButton.addEventListener('click', () => {
+      this._parentNode.replaceChild(this._eventNode, this._element);
+    });
   }
 }
 

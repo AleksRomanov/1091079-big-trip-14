@@ -1,6 +1,5 @@
-import {createElement, render, RenderPosition} from '../utils';
-import EventsListView, {generateEvents} from './creating-waypoint';
-import EventFormView from './create-event-form';
+import {render, RenderPosition} from '../utils';
+import EventsListView from './creating-waypoint';
 
 const siteBodyPageMain = document.querySelector('.page-body__page-main');
 const tripEvents = siteBodyPageMain.querySelector('.trip-events');

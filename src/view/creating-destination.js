@@ -11,22 +11,13 @@ class CreateEventsState {
 
   generateOffers(type) {
     const neededOffer = getObjectByKeyInArray(OFFERS, 'type' ,type);
-    // OFFERS.forEach((offer) => {
-    //   if (offer.type === type) {
-    //     return neededOffer = offer;
-    //   }
-    // });
     const count = getRandomNumber(0, 5);
-    return shuffle(neededOffer.offers.slice())
-      .slice(0, count);
+    return neededOffer.offers.slice().sort(shuffle).slice(0, count);
   }
 
   generateDescription(descriptions) {
     const count = getRandomNumber(1, 4);
-
-    return shuffle(descriptions.slice())
-      .slice(0, count)
-      .join(' ');
+    return descriptions.slice().sort(shuffle).slice(0, count).join(' ');
   }
 
   generateDestination() {
@@ -35,7 +26,6 @@ class CreateEventsState {
       city: getRandomArrayItem(CITIES),
       photos: this.generatePhotos(),
       description: this.generateDescription(DESCRIPTIONS),
-
     };
   }
 
@@ -63,9 +53,6 @@ class CreateEventsState {
     }
 
     result.offers = this.generateOffers(result.eventType);
-
-    // console.log(result);
-
     return result;
   }
 
@@ -75,7 +62,6 @@ class CreateEventsState {
     for (let i = 0; i <= count; i++) {
       result.push(this.generateEvent(i, result));
     }
-    console.log(result);
     return result;
   }
 }

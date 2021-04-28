@@ -1,18 +1,12 @@
 import dayjs from 'dayjs';
 // import utc from 'dayjs/plugin/utc';
 
-
-// const render = (container, element, position = 'beforeend') => {
-//   container.insertAdjacentHTML(position, element);
-// };
 export const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
 };
 
 const render = (container, element, place) => {
-
-  // console.log(container);
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
@@ -23,17 +17,10 @@ const render = (container, element, place) => {
   }
 };
 
-// Принцип работы прост:
-// 1. создаём пустой div-блок
-// 2. берём HTML в виде строки и вкладываем в этот div-блок, превращая в DOM-элемент
-// 3. возвращаем этот DOM-элемент
 const createElement = (template) => {
-  const newElement = document.createElement('div'); // 1
-  newElement.innerHTML = template; // 2
-
-  // console.log(newElement);
-
-  return newElement.firstChild; // 3
+  const newElement = document.createElement('template'); // 1
+  newElement.innerHTML = template;
+  return newElement.content;
 };
 
 const getRandomNumber = (a = 0, b = 1) => {
@@ -53,10 +40,7 @@ const generateDate = (firstDate = '', isFirstDate = false) => {
     return dayjs(firstDate).add(getRandomNumber(1, 24), 'hour').format();
   }
 };
-
-const shuffle = (array) => {
-  return array.sort(()=>Math.random()-0.5);
-};
+const shuffle = () => Math.random()-0.5;
 
 const getFormattedDate = (date, format) => {
   return dayjs(date).format(format);

@@ -7,13 +7,11 @@ import SortingToggleView from './creating-sort';
 import EventFormView from './create-event-form';
 
 const siteHeader = document.querySelector('.page-header');
-
 const tripMain = siteHeader.querySelector('.trip-main');
 const tripControlsNavigation = siteHeader.querySelector('.trip-controls__navigation');
 const tripControlsFilters = siteHeader.querySelector('.trip-controls__filters');
 const tripEvents = document.querySelector('.trip-events');
 const addEventButton = document.querySelector('.trip-main__event-add-btn');
-
 
 export default class AppComponent {
 

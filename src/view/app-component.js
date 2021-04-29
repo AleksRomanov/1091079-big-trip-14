@@ -2,16 +2,17 @@ import {render, RenderPosition} from '../utils';
 import TripInfoView from './create-trip-info';
 import ModesToggleView from './creating-menu';
 import FiltersView from './creating-filter';
-import Events from './events-component';
 import SortingToggleView from './creating-sort';
 import EventFormView from './create-event-form';
+import EventsListView from './creating-waypoint';
 
 const siteHeader = document.querySelector('.page-header');
 const tripMain = siteHeader.querySelector('.trip-main');
 const tripControlsNavigation = siteHeader.querySelector('.trip-controls__navigation');
 const tripControlsFilters = siteHeader.querySelector('.trip-controls__filters');
-const tripEvents = document.querySelector('.trip-events');
 const addEventButton = document.querySelector('.trip-main__event-add-btn');
+const siteBodyPageMain = document.querySelector('.page-body__page-main');
+const tripEvents = siteBodyPageMain.querySelector('.trip-events');
 
 export default class AppComponent {
 
@@ -25,7 +26,7 @@ export default class AppComponent {
 
   renderComponents(state) {
     //Рэндер всех пунктов маршрута
-    new Events().mountComponent(state);
+    render(tripEvents, new EventsListView(state).getElement(), RenderPosition.BEFOREEND);
     //Рэндер сводной информации о всём путешествии
     render(tripMain, new TripInfoView(state).getElement(), RenderPosition.AFTERBEGIN);
     //Рэндер переключателя режима отображения информации

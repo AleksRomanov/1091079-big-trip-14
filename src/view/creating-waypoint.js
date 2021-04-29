@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {createElement, getFormattedDate} from '../utils';
+import {activeEvent, createElement, getFormattedDate} from '../utils';
 import EventFormView from './create-event-form';
 
 const getDuration = (startTime, endTime) => {
@@ -82,6 +82,7 @@ export default class EventsList {
   constructor(state) {
     this._element = null;
     this._state = state;
+    this._activeIvent = null;
   }
 
   getTemplate(state) {
@@ -106,20 +107,56 @@ export default class EventsList {
     btnElements.forEach((item, index) => {
       const parentNode = item.parentNode.parentNode;
       const eventNode = item.parentNode;
+      // activeEvent.innerHTML += eventNode;
+      // localStorage.setItem('activeEvent', eventNode.outerHTML);
+
+      //закрыть все перед открытием своего + storage
+      let activeEvent;
 
       item.addEventListener('click', () => {
-        const editForm = document.querySelector('.event--edit');
-        if (editForm) {
-          const parentEditForm = editForm.parentNode;
-          const formId = editForm.id;
-          const closedEvent = [];
-          closedEvent.push(this._state.find((event) => event.id === formId ? event : null));
-          const event = createElement(generateEvents(closedEvent));
-          parentEditForm.replaceChild(event, editForm);
-          parentNode.replaceChild(new EventFormView(this._state[index], parentNode, eventNode).getElement(), eventNode);
-        } else {
-          parentNode.replaceChild(new EventFormView(this._state[index], parentNode, eventNode).getElement(), eventNode);
+
+        // console.log(this._activeIvent);
+
+        if (!this._activeIvent) {
+          this._activeIvent = eventNode;
+          console.log(this._activeIvent);
         }
+
+        // const result = createElement(localStorage.activeEvent);
+        //
+        // const event = item.parentNode;
+        // event.remove();
+        // parentNode.appendChild(new EventFormView(this._state[index], parentNode, result).getElement());
+        // console.log(event);
+        // console.log(result);
+        // parentNode.replaceChild(event, editForm);
+
+        // console.log(localStorage.activeEvent);
+        // console.log(eventNode);
+
+        //
+        // const editForm = document.querySelector('.event--edit');
+        // editForm ? editForm.remove() : undefined;
+        // parentNode.replaceChild(new EventFormView(this._state[index], parentNode, result).getElement(), result);
+
+
+        //
+        // const editForm = document.querySelector('.event--edit');
+        // const parentEditForm = editForm.parentNode;
+
+
+
+        // if (editForm) {
+        //   const parentEditForm = editForm.parentNode;
+        //   const formId = editForm.id;
+        //   const closedEvent = [];
+        //   closedEvent.push(this._state.find((event) => event.id === formId ? event : null));
+        //   const event = createElement(generateEvents(closedEvent));
+        //   parentEditForm.replaceChild(event, editForm);
+        //   parentNode.replaceChild(new EventFormView(this._state[index], parentNode, eventNode).getElement(), eventNode);
+        // } else {
+        //   parentNode.replaceChild(new EventFormView(this._state[index], parentNode, eventNode).getElement(), eventNode);
+        // }
       });
     });
   }

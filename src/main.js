@@ -1,9 +1,7 @@
 import {CreateEventsState} from './view/creating-destination';
-import {AppComponent} from './view/app-component';
+import App from './view/app-component';
+import {WAYPOINT_COUNT} from './const';
 
-const WAYPOINT_COUNT = 29;
-const props = [WAYPOINT_COUNT];
+const events = new CreateEventsState().generateEvents(WAYPOINT_COUNT);
 
-const state = new CreateEventsState(props).generateEvents();
-
-new AppComponent(state).renderComponents();
+new App().renderComponents(events);

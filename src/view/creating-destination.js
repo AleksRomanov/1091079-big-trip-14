@@ -1,65 +1,67 @@
-import {getRandomArrayItem, generateDate, getRandomNumber, shuffle} from '../utils';
+import {getRandomArrayItem, generateDate, getRandomNumber, shuffle, getObjectByKeyInArray} from '../utils';
 import {CITIES, DESCRIPTIONS, EVENT_TYPES, OFFERS} from '../mocks/data';
+import {nanoid} from 'nanoid';
 
 class CreateEventsState {
-  constructor(props) {
-
-    this._eventsCount = props[0];
-
-    this._firstDate = generateDate(0, true);
-  }
-
-  generatePhotos (){
+  generatePhotos() {
     const count = getRandomNumber(1, 6);
 
     return [...Array(count)].map(() => `http://picsum.photos/300/150?r=${Math.random()}`);
   }
 
-  generateOffers (){
+  generateOffers(type) {
+    const neededOffer = getObjectByKeyInArray(OFFERS, 'type' ,type);
     const count = getRandomNumber(0, 5);
-
-    return [...Array(count)].map((it, i) => OFFERS[i]);
+    return neededOffer.offers.slice().sort(shuffle).slice(0, count);
   }
 
-  generateDescription (descriptions){
+  generateDescription(descriptions) {
     const count = getRandomNumber(1, 4);
+    return descriptions.slice().sort(shuffle).slice(0, count).join(' ');
+  }
 
-    return shuffle(descriptions.slice())
-      .slice(0, count)
-      .join(' ');
+  generateDestination() {
+
+    return {
+      city: getRandomArrayItem(CITIES),
+      photos: this.generatePhotos(),
+      description: this.generateDescription(DESCRIPTIONS),
+    };
   }
 
   generateEvent(index, resultArray) {
     const result = {
-      type: getRandomArrayItem([...EVENT_TYPES.transfers, ...EVENT_TYPES.activities]),
-      city: getRandomArrayItem(CITIES),
-      photos: this.generatePhotos(),
-      offers: this.generateOffers(),
-      description: this.generateDescription(DESCRIPTIONS),
+      type: getRandomArrayItem([...EVENT_TYPES]),
+      destination: this.generateDestination(),
       price: getRandomNumber(10, 1000),
       favorite: Boolean(getRandomNumber(-1, 1)),
+      id: nanoid(),
+      get eventType() {
+        return this.type;
+      },
     };
 
-
     if (!index) {
-      result.startDate = this._firstDate;
-      result.endDate = generateDate(this._firstDate);
+      const firstDate = generateDate(0, true);
+
+      result.startDate = firstDate;
+      result.endDate = generateDate(firstDate);
     } else {
       const startDate = resultArray[--index].endDate;
       result.startDate = startDate;
       result.endDate = generateDate(startDate);
     }
 
+    result.offers = this.generateOffers(result.eventType);
     return result;
   }
 
-  generateEvents() {
+  generateEvents(count) {
+
     const result = [];
-    for (let i = 0; i <= this._eventsCount; i++) {
+    for (let i = 0; i <= count; i++) {
       result.push(this.generateEvent(i, result));
     }
-    // console.log(result[0]);
-    // console.log(result[1]);
     return result;
   }
 }

@@ -115,11 +115,19 @@ export default class EventsList {
 
       item.addEventListener('click', () => {
 
-        // console.log(this._activeIvent);
 
         if (!this._activeIvent) {
           this._activeIvent = eventNode;
-          console.log(this._activeIvent);
+          parentNode.replaceChild(new EventFormView(this._state[index], parentNode, this._activeIvent).getElement(), this._activeIvent);
+
+        } else {
+          const editForm = document.querySelector('.event--edit');
+          const parentOpenedEditForm = editForm.parentNode;
+          parentOpenedEditForm.replaceChild(this._activeIvent, editForm);
+
+
+          // parentNode.replaceChild(new EventFormView(this._state[index], parentNode, eventNode).getElement(), eventNode);
+
         }
 
         // const result = createElement(localStorage.activeEvent);
@@ -135,7 +143,6 @@ export default class EventsList {
         // console.log(eventNode);
 
         //
-        // const editForm = document.querySelector('.event--edit');
         // editForm ? editForm.remove() : undefined;
         // parentNode.replaceChild(new EventFormView(this._state[index], parentNode, result).getElement(), result);
 

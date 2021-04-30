@@ -74,7 +74,7 @@ const generateEvents = (state) => {
 const createEventsListTemplate = (state) => {
   return `
 <ul class="trip-events__list">
-    ${generateEvents(state)}
+    ${generateEvents(state)};
 </ul>`;
 };
 
@@ -82,6 +82,8 @@ export default class EventsList {
   constructor(state) {
     this._element = null;
     this._state = state;
+    this._activeEvent = null;
+    this._activeParent = null;
   }
 
   getTemplate(state) {
@@ -91,7 +93,7 @@ export default class EventsList {
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate(this._state));
-      this.setEditButtonBehavior(this._element);
+      this._setEditButtonBehavior(this._element);
 
     }
     return this._element;
@@ -101,31 +103,31 @@ export default class EventsList {
     this._element = null;
   }
 
-  setEditButtonBehavior(events) {
+  _renderForm(item, index) {
+    this._activeEvent = item.parentNode;
+    this._activeParent = this._activeEvent.parentNode;
+    this._activeParent.replaceChild(new EventFormView(this._state[index], this._activeEvent).getElement(), this._activeEvent);
+  }
+
+  _closeOpenedForm(form) {
+    this._activeParent.replaceChild(this._activeEvent, form);
+  }
+
+  _setEditButtonBehavior(events) {
     const btnElements = events.querySelectorAll('.event__rollup-btn');
-    let activeEvent = null;
-    let activeParent = null;
     btnElements.forEach((item, index) => {
-
-
       item.addEventListener('click', () => {
         const editForm = document.querySelector('.event--edit');
-
         if (!editForm) {
-          activeEvent = item.parentNode;
-          activeParent = item.parentNode.parentNode;
-          activeParent.replaceChild(new EventFormView(this._state[index], activeParent, activeEvent).getElement(), activeEvent);
-
+          this._renderForm(item, index);
         } else {
-          const currentEvent = item.parentNode;
-          const eventParent = item.parentNode.parentNode;
-          activeParent.replaceChild(activeEvent, editForm);
-          eventParent.replaceChild(new EventFormView(this._state[index], eventParent, currentEvent).getElement(), currentEvent);
+          this._closeOpenedForm(editForm);
+          this._renderForm(item, index);
         }
-
       });
     });
   }
 }
 
 export {generateEvents};
+

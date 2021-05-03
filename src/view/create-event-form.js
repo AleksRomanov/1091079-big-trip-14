@@ -1,6 +1,7 @@
 import {CITIES, EVENT_TYPES, OFFERS} from '../mocks/data';
 import {createElement, getFormattedDate, getObjectByKeyInArray} from '../utils';
 import dayjs from 'dayjs';
+import {KeyType} from '../const';
 
 
 const EMPTY_EVENT = {
@@ -179,6 +180,8 @@ export default class EventForm {
       this._element = createElement(this.getTemplate(this._event));
       this._setCloseBehavior('.event__save-btn');
       this._setCloseBehavior('.event__rollup-btn');
+      // console.log(this._eventNode);
+      this._setCloseByEsc();
       // this._setSubmitBehavior(this._element);
     }
     return this._element;
@@ -188,10 +191,24 @@ export default class EventForm {
     this._element = null;
   }
 
+  _onEscKeyDown(evt) {
+    if (evt.key === KeyType.ESCAPE || evt.key === KeyType.ESC) {
+      evt.preventDefault();
+      const editForm = document.querySelector('.event--edit');
+      this._close(editForm);
+      document.removeEventListener('keydown', this._onEscKeyDown);
+    }
+  }
+
+  _setCloseByEsc() {
+    document.addEventListener('keydown', this._onEscKeyDown.bind(this));
+  }
+
   _close(form) {
     const parentNode = form.parentNode;
     parentNode.replaceChild(this._eventNode, form);
   }
+
 
   _setCloseBehavior(closeElement) {
     const formCloseElement = this._element.querySelector(closeElement);

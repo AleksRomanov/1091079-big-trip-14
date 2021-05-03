@@ -59,8 +59,10 @@ class CreateEventsState {
   generateEvents(count) {
 
     const result = [];
-    for (let i = 0; i <= count; i++) {
-      result.push(this.generateEvent(i, result));
+    if (count > 0) {
+      for (let i = 0; i <= count; i++) {
+        result.push(this.generateEvent(i, result));
+      }
     }
     return result;
   }

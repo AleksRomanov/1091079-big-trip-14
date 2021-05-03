@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import {createElement, getFormattedDate} from '../utils';
 import EventFormView from './create-event-form';
+import NoEventsView from './creating-no-events';
 
 const getDuration = (startTime, endTime) => {
   const diff = dayjs(endTime).diff(startTime);
@@ -87,7 +88,7 @@ export default class EventsList {
   }
 
   getTemplate(state) {
-    return createEventsListTemplate(state);
+    return state.length > 0 ? createEventsListTemplate(state) : new NoEventsView().getTemplate();
   }
 
   getElement() {

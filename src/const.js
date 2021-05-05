@@ -1,4 +1,4 @@
-const WAYPOINT_COUNT = 2;
+const WAYPOINT_COUNT = 10;
 
 const DATA_VIEW_TYPES = [
   'Table',
@@ -28,5 +28,9 @@ const OFFERS_SORT_OPTIONS = [
   'offers',
 ];
 
+const KeyType = {
+  ESCAPE: 'Escape',
+  ESC: 'Esc',
+};
 
-export {WAYPOINT_COUNT, DATA_VIEW_TYPES, DATA_VIEW_PERIOD, OFFERS_SORT_OPTIONS};
+export {WAYPOINT_COUNT, DATA_VIEW_TYPES, DATA_VIEW_PERIOD, OFFERS_SORT_OPTIONS, KeyType};

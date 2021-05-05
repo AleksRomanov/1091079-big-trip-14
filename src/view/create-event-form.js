@@ -1,6 +1,7 @@
 import {CITIES, EVENT_TYPES, OFFERS} from '../mocks/data';
 import {createElement, getFormattedDate, getObjectByKeyInArray} from '../utils';
 import dayjs from 'dayjs';
+import {KeyType} from '../const';
 
 
 const EMPTY_EVENT = {
@@ -38,7 +39,7 @@ const getExtraOffers = (eventType, eventOffers) => {
   const eventTypeOffersAll = getObjectByKeyInArray(OFFERS, 'type', eventType);
 
   const isChecked = (offer) => {
-    return eventOffers.find((event) => event.title===offer.title) ? 'checked' : '';
+    return eventOffers.find((event) => event.title === offer.title) ? 'checked' : '';
   };
 
 
@@ -164,10 +165,9 @@ const createEventForm = (item) => {
 };
 
 export default class EventForm {
-  constructor(event = EMPTY_EVENT, parentNode, eventNode) {
+  constructor(event = EMPTY_EVENT, eventNode) {
     this._element = null;
     this._event = event;
-    this._parentNode = parentNode;
     this._eventNode = eventNode;
   }
 
@@ -178,7 +178,9 @@ export default class EventForm {
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate(this._event));
-      this.setBehaviorClosing(this._element);
+      this._setCloseBehavior('.event__save-btn');
+      this._setCloseBehavior('.event__rollup-btn');
+      this._setCloseByEsc();
     }
     return this._element;
   }
@@ -187,13 +189,30 @@ export default class EventForm {
     this._element = null;
   }
 
-  setBehaviorClosing(){
-    const formCloseButton = this._element.querySelector('.event__rollup-btn');
+  _onEscKeyDown(evt) {
+    if (evt.key === KeyType.ESCAPE || evt.key === KeyType.ESC) {
+      evt.preventDefault();
+      const editForm = document.querySelector('.event--edit');
+      this._close(editForm);
+      document.removeEventListener('keydown', this._onEscKeyDownBinded);
+    }
+  }
 
-    formCloseButton.addEventListener('click', () => {
-      const editForm = formCloseButton.parentNode.parentNode;
+  _setCloseByEsc() {
+    this._onEscKeyDownBinded = this._onEscKeyDown.bind(this);
+    document.addEventListener('keydown', this._onEscKeyDownBinded);
+  }
 
-      this._parentNode.replaceChild(this._eventNode, editForm);
+  _close(form) {
+    const parentNode = form.parentNode;
+    parentNode.replaceChild(this._eventNode, form);
+  }
+
+  _setCloseBehavior(closeElement) {
+    const formCloseElement = this._element.querySelector(closeElement);
+    formCloseElement.addEventListener('click', () => {
+      const editForm = formCloseElement.parentNode.parentNode;
+      this._close(editForm);
     });
   }
 }

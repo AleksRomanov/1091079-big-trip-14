@@ -42,7 +42,7 @@ export default class TripInfo {
   }
 
   getTemplate(state) {
-    return createTripInfoTemplate(state);
+    return state.length > 0 ? createTripInfoTemplate(state) : null;
   }
 
   getElement() {

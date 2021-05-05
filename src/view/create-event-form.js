@@ -180,9 +180,7 @@ export default class EventForm {
       this._element = createElement(this.getTemplate(this._event));
       this._setCloseBehavior('.event__save-btn');
       this._setCloseBehavior('.event__rollup-btn');
-      // console.log(this._eventNode);
       this._setCloseByEsc();
-      // this._setSubmitBehavior(this._element);
     }
     return this._element;
   }
@@ -196,19 +194,19 @@ export default class EventForm {
       evt.preventDefault();
       const editForm = document.querySelector('.event--edit');
       this._close(editForm);
-      document.removeEventListener('keydown', this._onEscKeyDown);
+      document.removeEventListener('keydown', this._onEscKeyDownBinded);
     }
   }
 
   _setCloseByEsc() {
-    document.addEventListener('keydown', this._onEscKeyDown.bind(this));
+    this._onEscKeyDownBinded = this._onEscKeyDown.bind(this);
+    document.addEventListener('keydown', this._onEscKeyDownBinded);
   }
 
   _close(form) {
     const parentNode = form.parentNode;
     parentNode.replaceChild(this._eventNode, form);
   }
-
 
   _setCloseBehavior(closeElement) {
     const formCloseElement = this._element.querySelector(closeElement);
@@ -217,23 +215,5 @@ export default class EventForm {
       this._close(editForm);
     });
   }
-
-  // _setSubmitBehavior() {
-  //   const submitButton = this._element.querySelector('.event__save-btn');
-  //   submitButton.addEventListener('click', () => {
-  //     const editForm = submitButton.parentNode.parentNode;
-  //     this._close(editForm);
-  //   });
-  // }
-  //
-  // _setClosingBehavior() {
-  //   const formCloseButton = this._element.querySelector('.event__rollup-btn');
-  //   formCloseButton.addEventListener('click', () => {
-  //     const editForm = formCloseButton.parentNode.parentNode;
-  //     this._close(editForm);
-  //   });
-  // }
-
-
 }
 

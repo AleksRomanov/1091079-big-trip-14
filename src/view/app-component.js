@@ -1,4 +1,4 @@
-import {render, RenderPosition} from '../utils';
+import {render, RenderPosition} from '../utils/render';
 import TripInfoView from './create-trip-info';
 import ModesToggleView from './creating-menu';
 import FiltersView from './creating-filter';
@@ -26,17 +26,17 @@ export default class AppComponent {
 
   renderComponents(state) {
     //Рэндер всех пунктов маршрута
-    render(tripEvents, new EventsListView(state).getElement(), RenderPosition.BEFOREEND);
+    render(tripEvents, new EventsListView(state), RenderPosition.BEFOREEND);
     //Рэндер сводной информации о всём путешествии
-    render(tripMain, new TripInfoView(state).getElement(), RenderPosition.AFTERBEGIN);
+    render(tripMain, new TripInfoView(state), RenderPosition.AFTERBEGIN);
     //Рэндер переключателя режима отображения информации
-    render(tripControlsNavigation, new ModesToggleView().getElement(), RenderPosition.AFTERBEGIN);
+    render(tripControlsNavigation, new ModesToggleView(), RenderPosition.AFTERBEGIN);
     //Рэндер переключения фильтрации
-    render(tripControlsFilters, new FiltersView().getElement(), RenderPosition.AFTERBEGIN);
+    render(tripControlsFilters, new FiltersView(), RenderPosition.AFTERBEGIN);
     //Настройка поведения кнопки добавления точки маршрута
     this.setAddEventButtonBehavior(addEventButton);
     //Рэндер переключения сортировки
-    render(tripEvents, new SortingToggleView().getElement(), RenderPosition.AFTERBEGIN);
+    render(tripEvents, new SortingToggleView(), RenderPosition.AFTERBEGIN);
   }
 }
 

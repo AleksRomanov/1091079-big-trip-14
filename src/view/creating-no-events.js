@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import Abstract from './abstract';
 
 const createNoEvents = () => {
   return `<h2 class="visually-hidden">Trip events</h2>
@@ -6,24 +6,9 @@ const createNoEvents = () => {
     `;
 };
 
-export default class NoEvents {
-  constructor() {
-    this._element = null;
-  }
-
+export default class NoEvents extends Abstract{
   getTemplate() {
     return createNoEvents();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

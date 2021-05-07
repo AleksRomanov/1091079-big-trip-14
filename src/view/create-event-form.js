@@ -1,7 +1,9 @@
 import {CITIES, EVENT_TYPES, OFFERS} from '../mocks/data';
-import {createElement, getFormattedDate, getObjectByKeyInArray} from '../utils';
+import {getFormattedDate} from '../utils/dates';
 import dayjs from 'dayjs';
 import {KeyType} from '../const';
+import Abstract from './abstract';
+import {createElement} from '../utils/render';
 
 
 const EMPTY_EVENT = {
@@ -36,7 +38,10 @@ const getDestinationOptions = (cities) => {
 };
 
 const getExtraOffers = (eventType, eventOffers) => {
-  const eventTypeOffersAll = getObjectByKeyInArray(OFFERS, 'type', eventType);
+
+  const eventTypeOffersAll = OFFERS.find((offer) => {
+    return offer['type'] === eventType ? offer : null;
+  });
 
   const isChecked = (offer) => {
     return eventOffers.find((event) => event.title === offer.title) ? 'checked' : '';
@@ -164,29 +169,25 @@ const createEventForm = (item) => {
 </form>`;
 };
 
-export default class EventForm {
+export default class EventForm extends Abstract {
   constructor(event = EMPTY_EVENT, eventNode) {
-    this._element = null;
+    super();
     this._event = event;
     this._eventNode = eventNode;
   }
 
-  getTemplate(state) {
-    return createEventForm(state);
+  getTemplate() {
+    return createEventForm(this._event);
   }
 
   getElement() {
     if (!this._element) {
-      this._element = createElement(this.getTemplate(this._event));
+      this._element = createElement(this.getTemplate());
       this._setCloseBehavior('.event__save-btn');
       this._setCloseBehavior('.event__rollup-btn');
       this._setCloseByEsc();
     }
     return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 
   _onEscKeyDown(evt) {

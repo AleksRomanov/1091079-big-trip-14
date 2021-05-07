@@ -1,5 +1,5 @@
 import {OFFERS_SORT_OPTIONS} from '../const';
-import {createElement} from '../utils';
+import Abstract from './abstract';
 
 const createViewOptionsElements = (typeTitles) => {
   return typeTitles.map((type, index) => {
@@ -26,23 +26,8 @@ const createSortingToggle = () => {
 </form>`;
 };
 
-export default class SortingToggle {
-  constructor() {
-    this._element = null;
-  }
-
+export default class SortingToggle extends Abstract{
   getTemplate() {
     return createSortingToggle();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

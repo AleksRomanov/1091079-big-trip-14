@@ -1,7 +1,9 @@
 import dayjs from 'dayjs';
-import {createElement, getFormattedDate} from '../utils';
+import {getFormattedDate} from '../utils/dates';
 import EventFormView from './create-event-form';
 import NoEventsView from './creating-no-events';
+import AbstractView from './abstract';
+import {createElement, replace} from '../utils/render';
 
 const getDuration = (startTime, endTime) => {
   const diff = dayjs(endTime).diff(startTime);
@@ -79,39 +81,34 @@ const createEventsListTemplate = (state) => {
 </ul>`;
 };
 
-export default class EventsList {
+export default class EventsList extends AbstractView {
   constructor(state) {
-    this._element = null;
+    super();
     this._state = state;
     this._activeEvent = null;
     this._activeParent = null;
   }
 
-  getTemplate(state) {
-    return state.length > 0 ? createEventsListTemplate(state) : new NoEventsView().getTemplate();
+  getTemplate() {
+    return this._state.length > 0 ? createEventsListTemplate(this._state) : new NoEventsView().getTemplate();
   }
 
   getElement() {
     if (!this._element) {
-      this._element = createElement(this.getTemplate(this._state));
+      this._element = createElement(this.getTemplate());
       this._setEditButtonBehavior(this._element);
-
     }
     return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 
   _renderForm(item, index) {
     this._activeEvent = item.parentNode;
     this._activeParent = this._activeEvent.parentNode;
-    this._activeParent.replaceChild(new EventFormView(this._state[index], this._activeEvent).getElement(), this._activeEvent);
+    replace(new EventFormView(this._state[index], this._activeEvent).getElement(), this._activeEvent);
   }
 
   _closeOpenedForm(form) {
-    this._activeParent.replaceChild(this._activeEvent, form);
+    replace(this._activeEvent, form);
   }
 
   _setEditButtonBehavior(events) {

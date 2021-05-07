@@ -1,5 +1,5 @@
 import {DATA_VIEW_TYPES} from '../const';
-import {createElement} from '../utils';
+import Abstract from './abstract';
 
 const createViewTypeElements = (typeTitles) => {
   return typeTitles.map((element, index) => {
@@ -14,24 +14,10 @@ const createModesToggle = () => {
     `;
 };
 
-export default class ModesToggle {
-  constructor() {
-    this._element = null;
-  }
-
+export default class ModesToggle extends Abstract{
   getTemplate() {
     return createModesToggle();
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }
 

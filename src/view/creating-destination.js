@@ -7,7 +7,7 @@ class CreateEventsState {
   generatePhotos() {
     const count = getRandomNumber(1, 6);
 
-    return [...Array(count)].map(() => `http://picsum.photos/300/150?r=${Math.random()}`);
+    return [...Array(count)].map(() => `https://picsum.photos/300/150?r=${Math.random()}`);
   }
 
   generateOffers(type) {

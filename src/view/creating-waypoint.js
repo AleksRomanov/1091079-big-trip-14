@@ -104,10 +104,12 @@ export default class EventsList extends AbstractView {
   _renderForm(item, index) {
     this._activeEvent = item.parentNode;
     this._activeParent = this._activeEvent.parentNode;
-    replace(new EventFormView(this._state[index], this._activeEvent).getElement(), this._activeEvent);
+    this._openedForm = new EventFormView(this._state[index], this._activeEvent);
+    replace(this._openedForm.getElement(), this._activeEvent);
   }
 
   _closeOpenedForm(form) {
+    this._openedForm.removeOpenedFormListener();
     replace(this._activeEvent, form);
   }
 

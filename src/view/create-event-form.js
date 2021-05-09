@@ -1,7 +1,6 @@
 import {CITIES, EVENT_TYPES, OFFERS} from '../mocks/data';
 import {getFormattedDate} from '../utils/dates';
 import dayjs from 'dayjs';
-import {KeyType} from '../const';
 import Abstract from './abstract';
 import {createElement} from '../utils/render';
 
@@ -183,6 +182,7 @@ export default class EventForm extends Abstract {
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
+
       this._setCloseBehavior('.event__save-btn');
       this._setCloseBehavior('.event__rollup-btn');
       this._setCloseByEsc();
@@ -191,11 +191,10 @@ export default class EventForm extends Abstract {
   }
 
   _onEscKeyDown(evt) {
-    if (evt.key === KeyType.ESCAPE || evt.key === KeyType.ESC) {
+    if (evt.keyCode === 27) {
       evt.preventDefault();
       const editForm = document.querySelector('.event--edit');
       this._close(editForm);
-      document.removeEventListener('keydown', this._onEscKeyDownBinded);
     }
   }
 
@@ -204,14 +203,24 @@ export default class EventForm extends Abstract {
     document.addEventListener('keydown', this._onEscKeyDownBinded);
   }
 
+  removeOpenedFormListener() {
+    document.removeEventListener('keydown', this._onEscKeyDownBinded);
+  }
+
   _close(form) {
     const parentNode = form.parentNode;
-    parentNode.replaceChild(this._eventNode, form);
+    if (this._event !== EMPTY_EVENT) {
+      parentNode.replaceChild(this._eventNode, form);
+    } else {
+      parentNode.replaceChild(createElement(null), form);
+    }
+    this.removeOpenedFormListener();
   }
 
   _setCloseBehavior(closeElement) {
     const formCloseElement = this._element.querySelector(closeElement);
-    formCloseElement.addEventListener('click', () => {
+    formCloseElement.addEventListener('click', (evt) => {
+      evt.preventDefault();
       const editForm = formCloseElement.parentNode.parentNode;
       this._close(editForm);
     });

@@ -5,6 +5,9 @@ import FiltersView from '../view/creating-filter';
 import SortingToggleView from '../view/creating-sort';
 import EventFormView from '../view/create-event-form';
 import EventsListView from '../view/creating-waypoint';
+import EventsContainerView from '../view/events-container';
+import PointPresenter from './event';
+import {updateItem} from '../utils/common';
 
 const siteHeader = document.querySelector('.page-header');
 const tripMain = siteHeader.querySelector('.trip-main');
@@ -16,12 +19,25 @@ const tripEvents = siteBodyPageMain.querySelector('.trip-events');
 
 export default class Events {
   constructor(state) {
-    this._state = state;
-    this.eventsListComponent = new EventsListView(this._state);
-    this.totalTripInfoComponent = new TripInfoView(this._state);
+    this._events = state;
+    this._eventsContainer = new EventsContainerView();
+    this.eventsListComponent = new EventsListView(this._events);
+    this.totalTripInfoComponent = new TripInfoView(this._events);
     this.viewModeToggleComponent = new ModesToggleView();
     this.filtreToggleComponent = new FiltersView();
     this.sortToggleComponent = new SortingToggleView();
+    this._eventPresenter = {};
+    // this._eventsContainer = document.querySelector('.');
+    // console.log(this._eventsContainer);
+
+  }
+
+  init() {
+    this._renderEventsContainer();
+    this._renderEventsListNew();
+    // this._renderEventControl();
+    // console.log(tripEvents);
+
   }
 
   setAddEventButtonBehavior(button) {
@@ -31,13 +47,35 @@ export default class Events {
       render(destinationBlock, new EventFormView().getElement(), 'afterbegin');
     });
   }
+  _renderEventsContainer() {
+    render(tripEvents, this._eventsContainer, RenderPosition.BEFOREEND);
+  }
 
   _renderEventsList() {
     render(tripEvents, this.eventsListComponent, RenderPosition.BEFOREEND);
-    render(tripMain, this.totalTripInfoComponent);
+  }
+
+  _renderEventsListNew() {
+    this._events.slice().forEach((event) => this._renderEvent(event));
+  }
+
+  _handleTaskChange(updatedEvent) {
+    this._boardTasks = updateItem(this._boardTasks, updatedEvent);
+    this._eventPresenter[updatedEvent.id].init(updatedEvent);
+  }
+
+  _renderEvent(event) {
+    // console.log(this._eventsContainer);
+    // const cont = document.querySelector('.trip-events__list');
+    // const eventPresenter = new PointPresenter(cont, this._handleTaskChange);
+    const eventPresenter = new PointPresenter(this._eventsContainer);
+
+    eventPresenter.init(event);
+    this._eventPresenter[event.id] = eventPresenter;
   }
 
   _renderEventControl() {
+    render(tripMain, this.totalTripInfoComponent);
     //Рэндер сводной информации о всём путешествии
     //Рэндер переключателя режима отображения информации
     render(tripControlsNavigation, this.viewModeToggleComponent);
@@ -49,9 +87,5 @@ export default class Events {
     render(tripEvents, this.sortToggleComponent);
   }
 
-  init() {
-    this._renderEventsList();
-    this._renderEventControl();
-  }
 }
 

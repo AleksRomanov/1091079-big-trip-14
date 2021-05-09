@@ -1,16 +1,23 @@
-import {getRandomArrayItem, generateDate, getRandomNumber, shuffle, getObjectByKeyInArray} from '../utils';
+import {generateDate} from '../utils/dates';
 import {CITIES, DESCRIPTIONS, EVENT_TYPES, OFFERS} from '../mocks/data';
 import {nanoid} from 'nanoid';
+import {getRandomArrayItem, getRandomNumber, shuffle} from '../utils/common';
 
 class CreateEventsState {
   generatePhotos() {
     const count = getRandomNumber(1, 6);
 
-    return [...Array(count)].map(() => `http://picsum.photos/300/150?r=${Math.random()}`);
+    return [...Array(count)].map(() => `https://picsum.photos/300/150?r=${Math.random()}`);
   }
 
   generateOffers(type) {
-    const neededOffer = getObjectByKeyInArray(OFFERS, 'type' ,type);
+    // const neededOffer = getObjectByKeyInArray(OFFERS, 'type' ,type);
+
+    const neededOffer = OFFERS.find((offer) => {
+      return offer['type'] === type ? offer : null;
+    });
+
+
     const count = getRandomNumber(0, 5);
     return neededOffer.offers.slice().sort(shuffle).slice(0, count);
   }

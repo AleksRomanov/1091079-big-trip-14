@@ -1,7 +1,8 @@
 import {CITIES, EVENT_TYPES, OFFERS} from '../mocks/data';
-import {createElement, getFormattedDate, getObjectByKeyInArray} from '../utils';
+import {getFormattedDate} from '../utils/dates';
 import dayjs from 'dayjs';
-import {KeyType} from '../const';
+import Abstract from './abstract';
+import {createElement} from '../utils/render';
 
 
 const EMPTY_EVENT = {
@@ -36,7 +37,10 @@ const getDestinationOptions = (cities) => {
 };
 
 const getExtraOffers = (eventType, eventOffers) => {
-  const eventTypeOffersAll = getObjectByKeyInArray(OFFERS, 'type', eventType);
+
+  const eventTypeOffersAll = OFFERS.find((offer) => {
+    return offer['type'] === eventType ? offer : null;
+  });
 
   const isChecked = (offer) => {
     return eventOffers.find((event) => event.title === offer.title) ? 'checked' : '';
@@ -164,20 +168,21 @@ const createEventForm = (item) => {
 </form>`;
 };
 
-export default class EventForm {
+export default class EventForm extends Abstract {
   constructor(event = EMPTY_EVENT, eventNode) {
-    this._element = null;
+    super();
     this._event = event;
     this._eventNode = eventNode;
   }
 
-  getTemplate(state) {
-    return createEventForm(state);
+  getTemplate() {
+    return createEventForm(this._event);
   }
 
   getElement() {
     if (!this._element) {
-      this._element = createElement(this.getTemplate(this._event));
+      this._element = createElement(this.getTemplate());
+
       this._setCloseBehavior('.event__save-btn');
       this._setCloseBehavior('.event__rollup-btn');
       this._setCloseByEsc();
@@ -185,16 +190,11 @@ export default class EventForm {
     return this._element;
   }
 
-  removeElement() {
-    this._element = null;
-  }
-
   _onEscKeyDown(evt) {
-    if (evt.key === KeyType.ESCAPE || evt.key === KeyType.ESC) {
+    if (evt.keyCode === 27) {
       evt.preventDefault();
       const editForm = document.querySelector('.event--edit');
       this._close(editForm);
-      document.removeEventListener('keydown', this._onEscKeyDownBinded);
     }
   }
 
@@ -203,14 +203,24 @@ export default class EventForm {
     document.addEventListener('keydown', this._onEscKeyDownBinded);
   }
 
+  removeOpenedFormListener() {
+    document.removeEventListener('keydown', this._onEscKeyDownBinded);
+  }
+
   _close(form) {
     const parentNode = form.parentNode;
-    parentNode.replaceChild(this._eventNode, form);
+    if (this._event !== EMPTY_EVENT) {
+      parentNode.replaceChild(this._eventNode, form);
+    } else {
+      parentNode.replaceChild(createElement(null), form);
+    }
+    this.removeOpenedFormListener();
   }
 
   _setCloseBehavior(closeElement) {
     const formCloseElement = this._element.querySelector(closeElement);
-    formCloseElement.addEventListener('click', () => {
+    formCloseElement.addEventListener('click', (evt) => {
+      evt.preventDefault();
       const editForm = formCloseElement.parentNode.parentNode;
       this._close(editForm);
     });

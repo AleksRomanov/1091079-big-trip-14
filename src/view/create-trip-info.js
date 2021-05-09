@@ -1,4 +1,5 @@
-import {createElement, getFormattedDate} from '../utils';
+import {getFormattedDate} from '../utils/dates';
+import Abstract from './abstract';
 
 const getEventsSum = (state) => {
   return state.reduce((accumulator, current) => {
@@ -35,25 +36,14 @@ const createTripInfoTemplate = (state) => {
     `;
 };
 
-export default class TripInfo {
+export default class TripInfo extends Abstract{
   constructor(state) {
-    this._element = null;
+    super();
     this._state = state;
   }
 
-  getTemplate(state) {
-    return state.length > 0 ? createTripInfoTemplate(state) : null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate(this._state));
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  getTemplate() {
+    return this._state.length > 0 ? createTripInfoTemplate(this._state) : null;
   }
 }
 

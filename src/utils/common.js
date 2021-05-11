@@ -9,4 +9,18 @@ const getRandomArrayItem = (array) => array[getRandomNumber(0, array.length - 1)
 
 const shuffle = () => Math.random()-0.5;
 
-export {getRandomNumber, getRandomArrayItem, shuffle};
+const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1),
+  ];
+};
+
+export {getRandomNumber, getRandomArrayItem, shuffle, updateItem};

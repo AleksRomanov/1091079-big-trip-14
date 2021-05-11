@@ -5,7 +5,7 @@ export const RenderPosition = {
   BEFOREEND: 'beforeend',
 };
 
-export const render = (container, element, place) => {
+export const render = (container, element, place = RenderPosition.AFTERBEGIN) => {
   if (container instanceof Abstract) {
     container = container.getElement();
   }

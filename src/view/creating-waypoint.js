@@ -4,6 +4,7 @@ import EventFormView from './create-event-form';
 import NoEventsView from './creating-no-events';
 import AbstractView from './abstract';
 import {createElement, replace} from '../utils/render';
+import {OFFERS} from '../mocks/data';
 
 const getDuration = (startTime, endTime) => {
   const diff = dayjs(endTime).diff(startTime);
@@ -26,23 +27,15 @@ const isFavorite = (favoriteStatus) => {
 };
 
 const generateEvents = (state) => {
-  return state.map((item) => {
-    const startDate = item.startDate;
-    const endDate = item.endDate;
-    const typeEvent = item.type;
-    const city = item.destination.city;
-    const price = item.price;
-    const offers = item.offers;
-    const favorite = item.favorite;
-
+  return state.map(({startDate, endDate, type, destination, price, offers, favorite, id}) => {
     return `
 <li class="trip-events__item">
-       <div class="event">
+       <div class="event" id="${id}">
     <time class="event__date" datetime="${getFormattedDate(startDate, 'YYYY-MM-DD')}">${getFormattedDate(startDate, 'MMM DD')}</time>
     <div class="event__type">
-      <img class="event__type-icon" width="42" height="42" src="img/icons/${typeEvent}.png" alt="Event type icon">
+      <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${typeEvent} ${city}</h3>
+    <h3 class="event__title">${type} ${destination.city}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="${getFormattedDate(startDate, 'HH:MM')}">${getFormattedDate(startDate, 'HH:MM')}</time>
@@ -84,9 +77,8 @@ const createEventsListTemplate = (state) => {
 export default class EventsList extends AbstractView {
   constructor(state) {
     super();
-    this._state = state;
+    this._state = state.slice();
     this._activeEvent = null;
-    this._activeParent = null;
   }
 
   getTemplate() {
@@ -97,8 +89,41 @@ export default class EventsList extends AbstractView {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
       this._setEditButtonBehavior(this._element);
+      this._setFavoriteToggling();
     }
     return this._element;
+  }
+
+  _setFavoriteToggling() {
+    const favoriteElements = this._element.querySelectorAll('.event__favorite-btn');
+
+    favoriteElements.forEach((item) => {
+      item.addEventListener('click', () => {
+        const eventId = item.parentNode.id;
+        this._activeEvent = this._state.find((event) => {
+          return event['id'] === eventId ? event : null;
+        });
+
+        // console.log(this._activeEvent);
+
+        // const updateItem = (items, update) => {
+        //   const index = items.findIndex((item) => item.id === update.id);
+        //
+        //   if (index === -1) {
+        //     return items;
+        //   }
+        //
+        //   return [
+        //     ...items.slice(0, index),
+        //     update,
+        //     ...items.slice(index + 1),
+        //   ];
+        // };
+      });
+    });
+
+    // const favoriteToggleElement = this._element.querySelector(closeElement);
+
   }
 
   _renderForm(item, index) {

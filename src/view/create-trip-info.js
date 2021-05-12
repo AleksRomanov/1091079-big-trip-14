@@ -19,8 +19,7 @@ const createTripInfoTemplate = (state) => {
   const finalDate = getFormattedDate(state[state.length - 1]['endDate'], 'DD');
   const totalCost = getEventsSum(state);
 
-  return `
-<section class="trip-main__trip-info  trip-info">
+  return `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
       <h1 class="trip-info__title">${firstCity} &mdash; ${getSecondDestination(state)} &mdash; ${finalCity}</h1>
 

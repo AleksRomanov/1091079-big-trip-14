@@ -1,4 +1,4 @@
-import CheckpointView from '../view/checkpoint';
+import Event from '../view/event';
 import {render, RenderPosition} from '../utils/render';
 
 export default class Point {
@@ -11,7 +11,7 @@ export default class Point {
     this._taskEditComponent = null;
     // this._mode = Mode.DEFAULT;
 
-    // this._handleEditClick = this._handleEditClick.bind(this);
+    this._handleEditClick = this._handleEditClick.bind(this);
     // this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     // this._handleArchiveClick = this._handleArchiveClick.bind(this);
     // this._handleFormSubmit = this._handleFormSubmit.bind(this);
@@ -24,7 +24,7 @@ export default class Point {
     // const prevTaskComponent = this._taskComponent;
     // const prevTaskEditComponent = this._taskEditComponent;
 
-    this._eventComponent = new CheckpointView(this._event);
+    this._eventComponent = new Event(this._event);
 
     // console.log(this._taskListContainer);
 
@@ -32,6 +32,7 @@ export default class Point {
     // render(eventsContainer, this._eventComponent, RenderPosition.BEFOREEND);
     // console.log(this._eventComponent);
 
+    this._eventComponent.setEditButtonBehavior(this._handleEditClick);
 
     render(this._taskListContainer, this._eventComponent, RenderPosition.BEFOREEND);
 
@@ -59,5 +60,17 @@ export default class Point {
     // remove(prevTaskComponent);
     // remove(prevTaskEditComponent);
   }
-}
 
+  _setEditButtonBehavior(event) {
+    const btnElement = event.querySelector('.event__rollup-btn');
+    btnElement.addEventListener('click', () => {
+      const editForm = document.querySelector('.event--edit');
+      if (!editForm) {
+        this._renderForm(event);
+      } else {
+        this._closeOpenedForm(editForm);
+        // this._renderForm(event);
+      }
+    });
+  }
+}

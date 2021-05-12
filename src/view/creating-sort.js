@@ -20,8 +20,7 @@ const createViewOptionsElements = (typeTitles) => {
 };
 
 const createSortingToggle = () => {
-  return `
-<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
+  return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
        ${createViewOptionsElements(OFFERS_SORT_OPTIONS)}
 </form>`;
 };

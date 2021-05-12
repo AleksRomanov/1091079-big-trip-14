@@ -62,13 +62,14 @@ const createEvent = ({startDate, endDate, type, destination, price, offers, favo
 
   </div>
 </li>
-`;};
+`;
+};
 
-export default class Checkpoint extends AbstractView {
+export default class Event extends AbstractView {
   constructor(event) {
     super();
     this._event = event;
-    // this._activeEvent = null;
+    this._activeEvent = null;
   }
 
   getTemplate() {
@@ -76,7 +77,7 @@ export default class Checkpoint extends AbstractView {
     return createEvent(this._event);
     // return this._state.length > 0 ? createEventsListTemplate(this._state) : new NoEventsView().getTemplate();
   }
-
+  //
   // getElement() {
   //   if (!this._element) {
   //     this._element = createElement(this.getTemplate());
@@ -119,30 +120,32 @@ export default class Checkpoint extends AbstractView {
 
   }
 
-  _renderForm(item, index) {
-    this._activeEvent = item.parentNode;
-    this._activeParent = this._activeEvent.parentNode;
-    this._openedForm = new EventFormView(this._state[index], this._activeEvent);
+  _renderForm(event) {
+    this._activeEvent = event;
+    // console.log(this._activeEvent);
+    // this._activeParent = this._activeEvent.parentNode;
+    this._openedForm = new EventFormView(this._event, this._activeEvent);
+    // this._openedForm = new EventFormView(this._state[index], this._activeEvent);
     replace(this._openedForm.getElement(), this._activeEvent);
   }
 
   _closeOpenedForm(form) {
-    this._openedForm.removeOpenedFormListener();
+    console.log(form);
+    console.log(this._activeEvent);
+    // // this._openedForm.removeOpenedFormListener();
     replace(this._activeEvent, form);
   }
 
-  _setEditButtonBehavior(events) {
-    const btnElements = events.querySelectorAll('.event__rollup-btn');
-    btnElements.forEach((item, index) => {
-      item.addEventListener('click', () => {
-        const editForm = document.querySelector('.event--edit');
-        if (!editForm) {
-          this._renderForm(item, index);
-        } else {
-          this._closeOpenedForm(editForm);
-          this._renderForm(item, index);
-        }
-      });
+  setEditButtonBehavior(event) {
+    const btnElement = event.querySelector('.event__rollup-btn');
+    btnElement.addEventListener('click', () => {
+      const editForm = document.querySelector('.event--edit');
+      if (!editForm) {
+        this._renderForm(event);
+      } else {
+        this._closeOpenedForm(editForm);
+        // this._renderForm(event);
+      }
     });
   }
 }

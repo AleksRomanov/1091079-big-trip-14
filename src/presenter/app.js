@@ -17,7 +17,7 @@ const addEventButton = document.querySelector('.trip-main__event-add-btn');
 const siteBodyPageMain = document.querySelector('.page-body__page-main');
 const tripEvents = siteBodyPageMain.querySelector('.trip-events');
 
-export default class Events {
+export default class App {
   constructor(state) {
     this._events = state;
     this._eventsContainer = new EventsContainerView();
@@ -34,17 +34,17 @@ export default class Events {
 
   init() {
     this._renderEventsContainer();
-    this._renderEventsListNew();
-    // this._renderEventControl();
+    this._renderEventsList();
+    this._renderEventControl();
     // console.log(tripEvents);
 
   }
 
-  setAddEventButtonBehavior(button) {
+  _setAddEventButtonBehavior(button) {
     const destinationBlock = document.querySelector('.trip-events__list');
 
     button.addEventListener('click', () => {
-      render(destinationBlock, new EventFormView().getElement(), 'afterbegin');
+      render(destinationBlock, new EventFormView().getElement());
     });
   }
   _renderEventsContainer() {
@@ -52,10 +52,6 @@ export default class Events {
   }
 
   _renderEventsList() {
-    render(tripEvents, this.eventsListComponent, RenderPosition.BEFOREEND);
-  }
-
-  _renderEventsListNew() {
     this._events.slice().forEach((event) => this._renderEvent(event));
   }
 
@@ -82,7 +78,7 @@ export default class Events {
     //Рэндер переключения фильтрации
     render(tripControlsFilters, this.filtreToggleComponent);
     //Настройка поведения кнопки добавления точки маршрута
-    this.setAddEventButtonBehavior(addEventButton);
+    this._setAddEventButtonBehavior(addEventButton);
     //Рэндер переключения сортировки
     render(tripEvents, this.sortToggleComponent);
   }

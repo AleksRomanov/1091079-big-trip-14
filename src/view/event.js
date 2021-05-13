@@ -70,6 +70,8 @@ export default class Event extends AbstractView {
     super();
     this._event = event;
     this._activeEvent = null;
+    this._editClickHandler = this._editClickHandler.bind(this);
+
   }
 
   getTemplate() {
@@ -136,17 +138,14 @@ export default class Event extends AbstractView {
     replace(this._activeEvent, form);
   }
 
-  setEditButtonBehavior(event) {
-    const btnElement = event.querySelector('.event__rollup-btn');
-    btnElement.addEventListener('click', () => {
-      const editForm = document.querySelector('.event--edit');
-      if (!editForm) {
-        this._renderForm(event);
-      } else {
-        this._closeOpenedForm(editForm);
-        // this._renderForm(event);
-      }
-    });
+  _editClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
+  }
+
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
   }
 }
 

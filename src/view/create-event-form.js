@@ -169,11 +169,15 @@ const createEventForm = (item) => {
 };
 
 export default class EventForm extends Abstract {
-  constructor(event = EMPTY_EVENT, eventNode) {
+  constructor(event = EMPTY_EVENT) {
     super();
     this._event = event;
-    this._eventNode = eventNode;
   }
+  // constructor(event = EMPTY_EVENT, eventNode) {
+  //   super();
+  //   this._event = event;
+  //   this._eventNode = eventNode;
+  // }
 
   getTemplate() {
     return createEventForm(this._event);

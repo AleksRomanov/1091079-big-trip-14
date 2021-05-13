@@ -55,7 +55,13 @@ export default class App {
     this._events.slice().forEach((event) => this._renderEvent(event));
   }
 
-  _handleTaskChange(updatedEvent) {
+  _handleModeChange() {
+    Object
+      .values(this._eventPresenter)
+      .forEach((presenter) => presenter.resetView());
+  }
+
+  _handleEventChange(updatedEvent) {
     this._boardTasks = updateItem(this._boardTasks, updatedEvent);
     this._eventPresenter[updatedEvent.id].init(updatedEvent);
   }
@@ -63,11 +69,11 @@ export default class App {
   _renderEvent(event) {
     // console.log(this._eventsContainer);
     // const cont = document.querySelector('.trip-events__list');
-    // const eventPresenter = new PointPresenter(cont, this._handleTaskChange);
-    const eventPresenter = new PointPresenter(this._eventsContainer);
-
+    // const eventPresenter = new PointPresenter(cont, this._handleEventChange);
+    const eventPresenter = new PointPresenter(this._eventsContainer, this._handleEventChange, this._handleModeChange);
     eventPresenter.init(event);
     this._eventPresenter[event.id] = eventPresenter;
+    // console.log(this._eventPresenter);
   }
 
   _renderEventControl() {

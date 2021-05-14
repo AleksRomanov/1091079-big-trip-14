@@ -69,78 +69,29 @@ export default class Event extends AbstractView {
   constructor(event) {
     super();
     this._event = event;
-    this._activeEvent = null;
     this._editClickHandler = this._editClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
 
   }
 
   getTemplate() {
-    // return this._state.length > 0 ? createEventsListTemplate(this._state) : new NoEventsView().getTemplate();
     return createEvent(this._event);
     // return this._state.length > 0 ? createEventsListTemplate(this._state) : new NoEventsView().getTemplate();
-  }
-  //
-  // getElement() {
-  //   if (!this._element) {
-  //     this._element = createElement(this.getTemplate());
-  //     // console.log(this._element);
-  //     // this._setEditButtonBehavior(this._element);
-  //     // this._setFavoriteToggling();
-  //   }
-  //   return this._element;
-  // }
-
-  _setFavoriteToggling() {
-    const favoriteElements = this._element.querySelectorAll('.event__favorite-btn');
-
-    favoriteElements.forEach((item) => {
-      item.addEventListener('click', () => {
-        const eventId = item.parentNode.id;
-        this._activeEvent = this._state.find((event) => {
-          return event['id'] === eventId ? event : null;
-        });
-
-        // console.log(this._activeEvent);
-
-        // const updateItem = (items, update) => {
-        //   const index = items.findIndex((item) => item.id === update.id);
-        //
-        //   if (index === -1) {
-        //     return items;
-        //   }
-        //
-        //   return [
-        //     ...items.slice(0, index),
-        //     update,
-        //     ...items.slice(index + 1),
-        //   ];
-        // };
-      });
-    });
-
-    // const favoriteToggleElement = this._element.querySelector(closeElement);
-
-  }
-
-  _renderForm(event) {
-    this._activeEvent = event;
-    // console.log(this._activeEvent);
-    // this._activeParent = this._activeEvent.parentNode;
-    this._openedForm = new EventFormView(this._event, this._activeEvent);
-    // this._openedForm = new EventFormView(this._state[index], this._activeEvent);
-    replace(this._openedForm.getElement(), this._activeEvent);
-  }
-
-  _closeOpenedForm(form) {
-    console.log(form);
-    console.log(this._activeEvent);
-    // // this._openedForm.removeOpenedFormListener();
-    replace(this._activeEvent, form);
   }
 
   _editClickHandler(evt) {
     evt.preventDefault();
     this._callback.editClick();
+  }
+
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+  }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector('.event__favorite-btn').addEventListener('click', this._favoriteClickHandler);
   }
 
   setEditClickHandler(callback) {
@@ -149,5 +100,4 @@ export default class Event extends AbstractView {
   }
 }
 
-// export {generateEvents};
 

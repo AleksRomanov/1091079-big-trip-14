@@ -4,7 +4,6 @@ import ModesToggleView from '../view/creating-menu';
 import FiltersView from '../view/creating-filter';
 import SortingToggleView from '../view/creating-sort';
 import EventFormView from '../view/create-event-form';
-import EventsListView from '../view/creating-waypoint';
 import EventsContainerView from '../view/events-container';
 import PointPresenter from './event';
 import {updateItem} from '../utils/common';
@@ -21,23 +20,19 @@ export default class App {
   constructor(state) {
     this._events = state;
     this._eventsContainer = new EventsContainerView();
-    this.eventsListComponent = new EventsListView(this._events);
     this.totalTripInfoComponent = new TripInfoView(this._events);
     this.viewModeToggleComponent = new ModesToggleView();
     this.filtreToggleComponent = new FiltersView();
     this.sortToggleComponent = new SortingToggleView();
     this._eventPresenter = {};
-    // this._eventsContainer = document.querySelector('.');
-    // console.log(this._eventsContainer);
-
+    this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleEventChange = this._handleEventChange.bind(this);
   }
 
   init() {
     this._renderEventsContainer();
     this._renderEventsList();
     this._renderEventControl();
-    // console.log(tripEvents);
-
   }
 
   _setAddEventButtonBehavior(button) {
@@ -62,23 +57,19 @@ export default class App {
   }
 
   _handleEventChange(updatedEvent) {
-    this._boardTasks = updateItem(this._boardTasks, updatedEvent);
+    this._events = updateItem(this._events, updatedEvent);
     this._eventPresenter[updatedEvent.id].init(updatedEvent);
   }
 
   _renderEvent(event) {
-    // console.log(this._eventsContainer);
-    // const cont = document.querySelector('.trip-events__list');
-    // const eventPresenter = new PointPresenter(cont, this._handleEventChange);
     const eventPresenter = new PointPresenter(this._eventsContainer, this._handleEventChange, this._handleModeChange);
     eventPresenter.init(event);
     this._eventPresenter[event.id] = eventPresenter;
-    // console.log(this._eventPresenter);
   }
 
   _renderEventControl() {
-    render(tripMain, this.totalTripInfoComponent);
     //Рэндер сводной информации о всём путешествии
+    render(tripMain, this.totalTripInfoComponent);
     //Рэндер переключателя режима отображения информации
     render(tripControlsNavigation, this.viewModeToggleComponent);
     //Рэндер переключения фильтрации

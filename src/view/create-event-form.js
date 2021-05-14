@@ -2,8 +2,6 @@ import {CITIES, EVENT_TYPES, OFFERS} from '../mocks/data';
 import {getFormattedDate} from '../utils/dates';
 import dayjs from 'dayjs';
 import Abstract from './abstract';
-import {createElement} from '../utils/render';
-
 
 const EMPTY_EVENT = {
   eventType: EVENT_TYPES[0],

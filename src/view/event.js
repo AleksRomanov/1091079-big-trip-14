@@ -1,10 +1,6 @@
 import dayjs from 'dayjs';
 import {getFormattedDate} from '../utils/dates';
-import EventFormView from './create-event-form';
-import NoEventsView from './creating-no-events';
 import AbstractView from './abstract';
-import {createElement, replace} from '../utils/render';
-import {OFFERS} from '../mocks/data';
 
 const getDuration = (startTime, endTime) => {
   const diff = dayjs(endTime).diff(startTime);

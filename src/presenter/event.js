@@ -85,14 +85,6 @@ export default class Point {
   }
 
   _handleFavoriteClick() {
-    this._changeData(
-      Object.assign(
-        {},
-        this._event,
-        {
-          favorite: !this._event.favorite,
-        },
-      ),
-    );
+    this._changeData({...this._event, favorite: !this._event.favorite});
   }
 }

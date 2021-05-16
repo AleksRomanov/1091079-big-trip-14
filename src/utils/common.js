@@ -7,7 +7,7 @@ const getRandomNumber = (a = 0, b = 1) => {
 
 const getRandomArrayItem = (array) => array[getRandomNumber(0, array.length - 1)];
 
-const shuffle = () => Math.random()-0.5;
+const shuffle = () => Math.random() - 0.5;
 
 const updateItem = (items, update) => {
   const index = items.findIndex((item) => item.id === update.id);
@@ -17,9 +17,7 @@ const updateItem = (items, update) => {
   }
 
   return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1),
+    ...items.splice(index, 1, update),
   ];
 };
 

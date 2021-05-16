@@ -7,6 +7,7 @@ import EventFormView from '../view/create-event-form';
 import EventsContainerView from '../view/events-container';
 import PointPresenter from './event';
 import {updateItem} from '../utils/common';
+import NoEventsView from '../view/creating-no-events';
 
 const siteHeader = document.querySelector('.page-header');
 const tripMain = siteHeader.querySelector('.trip-main');
@@ -24,24 +25,43 @@ export default class App {
     this.viewModeToggleComponent = new ModesToggleView();
     this.filtreToggleComponent = new FiltersView();
     this.sortToggleComponent = new SortingToggleView();
+    this.eventForm = new EventFormView();
     this._eventPresenter = {};
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleEventChange = this._handleEventChange.bind(this);
+    this._handleAddFormClose = this._handleAddFormClose.bind(this);
   }
 
   init() {
-    this._renderEventsContainer();
-    this._renderEventsList();
-    this._renderEventControl();
+    if(this._events.length) {
+      this._renderEventsContainer();
+      this._renderEventsList();
+      this._renderEventControl();
+    } else {
+      this._renderNoEvents();
+    }
+    // this._renderEventsContainer();
+    // this._renderEventsList();
+    // this._renderEventControl();
   }
 
   _setAddEventButtonBehavior(button) {
     const destinationBlock = document.querySelector('.trip-events__list');
 
     button.addEventListener('click', () => {
-      render(destinationBlock, new EventFormView().getElement());
+      render(destinationBlock, this.eventForm.getElement());
+      this._setAddFormClose();
     });
   }
+
+  _setAddFormClose() {
+    this.eventForm.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._handleAddFormClose);
+  }
+
+  _handleAddFormClose() {
+    this.eventForm.getElement().remove();
+  }
+
   _renderEventsContainer() {
     render(tripEvents, this._eventsContainer, RenderPosition.BEFOREEND);
   }
@@ -65,6 +85,11 @@ export default class App {
     const eventPresenter = new PointPresenter(this._eventsContainer, this._handleEventChange, this._handleModeChange);
     eventPresenter.init(event);
     this._eventPresenter[event.id] = eventPresenter;
+  }
+
+  _renderNoEvents() {
+    const noEvents = new NoEventsView();
+    render(tripEvents, noEvents);
   }
 
   _renderEventControl() {

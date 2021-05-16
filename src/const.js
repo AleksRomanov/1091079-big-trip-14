@@ -1,4 +1,4 @@
-const WAYPOINT_COUNT = 0;
+const WAYPOINT_COUNT = 8;
 
 const DATA_VIEW_TYPES = [
   'Table',

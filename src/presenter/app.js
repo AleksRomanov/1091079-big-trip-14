@@ -40,9 +40,6 @@ export default class App {
     } else {
       this._renderNoEvents();
     }
-    // this._renderEventsContainer();
-    // this._renderEventsList();
-    // this._renderEventControl();
   }
 
   _setAddEventButtonBehavior(button) {

@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 const getRandomNumber = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -21,4 +23,6 @@ const updateItem = (items, update) => {
   ];
 };
 
-export {getRandomNumber, getRandomArrayItem, shuffle, updateItem};
+const sortByPrice = (eventA, eventB) => eventB.price - eventA.price;
+
+export {getRandomNumber, getRandomArrayItem, shuffle, updateItem, sortByPrice};

@@ -1,12 +1,7 @@
-import dayjs from 'dayjs';
-import {getFormattedDate} from '../utils/dates';
+import {getDuration, getFormattedDate} from '../utils/dates';
 import AbstractView from './abstract';
 
-const getDuration = (startTime, endTime) => {
-  const diff = dayjs(endTime).diff(startTime);
-  return dayjs(diff).format('H[H] MM[M]');
-};
-
+const format = 'H[H] MM[M]';
 const generateOffers = (offers) => {
   return offers.map((item) => {
     return `
@@ -36,7 +31,7 @@ const createEvent = ({startDate, endDate, type, destination, price, offers, favo
         &mdash;
         <time class="event__end-time" datetime="${getFormattedDate(endDate, 'HH:MM')}">${getFormattedDate(endDate, 'HH:MM')}</time>
       </p>
-      <p class="event__duration">${getDuration(startDate, endDate)}</p>
+      <p class="event__duration">${getDuration(startDate, endDate, format)}</p>
     </div>
     <p class="event__price">
       &euro;&nbsp;<span class="event__price-value">${price}</span>

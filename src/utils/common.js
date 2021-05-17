@@ -7,6 +7,18 @@ const getRandomNumber = (a = 0, b = 1) => {
 
 const getRandomArrayItem = (array) => array[getRandomNumber(0, array.length - 1)];
 
-const shuffle = () => Math.random()-0.5;
+const shuffle = () => Math.random() - 0.5;
 
-export {getRandomNumber, getRandomArrayItem, shuffle};
+const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.splice(index, 1, update),
+  ];
+};
+
+export {getRandomNumber, getRandomArrayItem, shuffle, updateItem};

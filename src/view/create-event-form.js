@@ -2,8 +2,6 @@ import {CITIES, EVENT_TYPES, OFFERS} from '../mocks/data';
 import {getFormattedDate} from '../utils/dates';
 import dayjs from 'dayjs';
 import Abstract from './abstract';
-import {createElement} from '../utils/render';
-
 
 const EMPTY_EVENT = {
   eventType: EVENT_TYPES[0],
@@ -112,7 +110,7 @@ const getEventPhotos = (photos, description) => {
 };
 
 const createEventForm = (item) => {
-  return `<form id="${item.id}" class="event event--edit" action="#" method="post">
+  return `<form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
         <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -169,61 +167,25 @@ const createEventForm = (item) => {
 };
 
 export default class EventForm extends Abstract {
-  constructor(event = EMPTY_EVENT, eventNode) {
+  constructor(event = EMPTY_EVENT) {
     super();
     this._event = event;
-    this._eventNode = eventNode;
+    this._closeClickHandler = this._closeClickHandler.bind(this);
+
   }
 
   getTemplate() {
     return createEventForm(this._event);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-
-      this._setCloseBehavior('.event__save-btn');
-      this._setCloseBehavior('.event__rollup-btn');
-      this._setCloseByEsc();
-    }
-    return this._element;
+  _closeClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.closeClick();
   }
 
-  _onEscKeyDown(evt) {
-    if (evt.keyCode === 27) {
-      evt.preventDefault();
-      const editForm = document.querySelector('.event--edit');
-      this._close(editForm);
-    }
-  }
-
-  _setCloseByEsc() {
-    this._onEscKeyDownBinded = this._onEscKeyDown.bind(this);
-    document.addEventListener('keydown', this._onEscKeyDownBinded);
-  }
-
-  removeOpenedFormListener() {
-    document.removeEventListener('keydown', this._onEscKeyDownBinded);
-  }
-
-  _close(form) {
-    const parentNode = form.parentNode;
-    if (this._event !== EMPTY_EVENT) {
-      parentNode.replaceChild(this._eventNode, form);
-    } else {
-      parentNode.replaceChild(createElement(null), form);
-    }
-    this.removeOpenedFormListener();
-  }
-
-  _setCloseBehavior(closeElement) {
-    const formCloseElement = this._element.querySelector(closeElement);
-    formCloseElement.addEventListener('click', (evt) => {
-      evt.preventDefault();
-      const editForm = formCloseElement.parentNode.parentNode;
-      this._close(editForm);
-    });
+  setCloseClickHandler(callback) {
+    this._callback.closeClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeClickHandler);
   }
 }
 

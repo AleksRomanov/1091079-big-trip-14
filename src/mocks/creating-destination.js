@@ -1,5 +1,5 @@
 import {generateDate} from '../utils/dates';
-import {CITIES, DESCRIPTIONS, EVENT_TYPES, OFFERS} from '../mocks/data';
+import {CITIES, DESCRIPTIONS, EVENT_TYPES, OFFERS} from './data';
 import {nanoid} from 'nanoid';
 import {getRandomArrayItem, getRandomNumber, shuffle} from '../utils/common';
 

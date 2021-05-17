@@ -17,8 +17,7 @@ const createViewTimeElements = (typeTitles) => {
 };
 
 const createFilters = () => {
-  return `
-<form class="trip-filters" action="#" method="get">
+  return `<form class="trip-filters" action="#" method="get">
     <div class="trip-filters__filter">
        ${createViewTimeElements(DATA_VIEW_PERIOD)}
     </div>

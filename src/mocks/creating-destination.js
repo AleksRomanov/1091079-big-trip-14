@@ -58,7 +58,6 @@ class CreateEventsState {
     }
 
     result.offers = this.generateOffers(result.eventType);
-    console.log(result);
     return result;
   }
 

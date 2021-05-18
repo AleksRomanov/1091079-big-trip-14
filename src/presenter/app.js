@@ -134,30 +134,20 @@ export default class App {
   }
 
   _sortTasks(sortType) {
-    // console.log(sortType);
     switch (sortType) {
       case SortTypes.DAY:
-        this._events = this._sourcedEvents.slice();
+        this._events = this._sourcedEvents;
         break;
       case SortTypes.PRICE:
-        this._events = this._sourcedEvents.sort(sortByPrice);
+        this._events = this._sourcedEvents.slice().sort(sortByPrice);
         break;
       case SortTypes.TIME:
-        this._events = this._sourcedEvents.sort(sortByTime);
+        this._events = this._sourcedEvents.slice().sort(sortByTime);
         break;
-      // default:
-      //   this._events = this._sourcedEvents.slice();
     }
   }
 
   _handleSortTypeChange(sortType) {
-
-    // console.log(sortType);
-
-    // if (this._currentSortType === sortType) {
-    //   return;
-    // }
-
     this._sortTasks(sortType);
     this._clearEventsList();
     this._renderEventsList();

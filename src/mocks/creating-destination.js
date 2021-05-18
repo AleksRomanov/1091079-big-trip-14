@@ -11,8 +11,6 @@ class CreateEventsState {
   }
 
   generateOffers(type) {
-    // const neededOffer = getObjectByKeyInArray(OFFERS, 'type' ,type);
-
     const neededOffer = OFFERS.find((offer) => {
       return offer['type'] === type ? offer : null;
     });

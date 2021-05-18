@@ -21,4 +21,6 @@ const updateItem = (items, update) => {
   ];
 };
 
-export {getRandomNumber, getRandomArrayItem, shuffle, updateItem};
+const sortByPrice = (eventA, eventB) => eventB.price - eventA.price;
+
+export {getRandomNumber, getRandomArrayItem, shuffle, updateItem, sortByPrice};

@@ -1,5 +1,19 @@
 const WAYPOINT_COUNT = 8;
 
+export const FilterTypes = {
+  EVERYTHING: 'everything',
+  IN_PAST: 'in-past',
+  IN_FUTURE: 'in-future',
+};
+
+export const SortTypes = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers',
+};
+
 const DATA_VIEW_TYPES = [
   'Table',
   'Stats',
@@ -7,14 +21,17 @@ const DATA_VIEW_TYPES = [
 
 const DATA_VIEW_PERIOD = [
   {
+    type: 'everything',
     id: 'filter-everything',
     title: 'EVERYTHING',
   },
   {
+    type: 'in-future',
     id: 'filter-future',
     title: 'FUTURE',
   },
   {
+    type: 'in-past',
     id: 'filter-past',
     title: 'PAST',
   },

@@ -50,6 +50,11 @@ export default class Point {
     remove(prevTaskEditComponent);
   }
 
+  destroy() {
+    remove(this._eventComponent);
+    remove(this._editFormComponent);
+  }
+
   _handleEditClick() {
     this._replaceEventToForm();
   }

@@ -1,12 +1,7 @@
-import dayjs from 'dayjs';
-import {getFormattedDate} from '../utils/dates';
+import {getDuration, getFormattedDate} from '../utils/dates';
 import AbstractView from './abstract';
 
-const getDuration = (startTime, endTime) => {
-  const diff = dayjs(endTime).diff(startTime);
-  return dayjs(diff).format('H[H] MM[M]');
-};
-
+const format = 'm';
 const generateOffers = (offers) => {
   return offers.map((item) => {
     return `
@@ -25,18 +20,18 @@ const isFavorite = (favoriteStatus) => {
 const createEvent = ({startDate, endDate, type, destination, price, offers, favorite, id}) => {
   return `<li class="trip-events__item">
        <div class="event" id="${id}">
-    <time class="event__date" datetime="${getFormattedDate(startDate, 'YYYY-MM-DD')}">${getFormattedDate(startDate, 'MMM DD')}</time>
+    <time class="event__date" datetime="${getFormattedDate(startDate, 'YYYY-MM-DD-hh:mm')}">${getFormattedDate(startDate, 'MMM DD')}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
     <h3 class="event__title">${type} ${destination.city}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="${getFormattedDate(startDate, 'HH:MM')}">${getFormattedDate(startDate, 'HH:MM')}</time>
+        <time class="event__start-time" datetime="${getFormattedDate(startDate, 'hh:mm')}">${getFormattedDate(startDate, 'HH:mm')}</time>
         &mdash;
-        <time class="event__end-time" datetime="${getFormattedDate(endDate, 'HH:MM')}">${getFormattedDate(endDate, 'HH:MM')}</time>
+        <time class="event__end-time" datetime="${getFormattedDate(endDate, 'hh:mm')}">${getFormattedDate(endDate, 'HH:mm')}</time>
       </p>
-      <p class="event__duration">${getDuration(startDate, endDate)}</p>
+      <p class="event__duration">${getDuration(startDate, endDate, format)}</p>
     </div>
     <p class="event__price">
       &euro;&nbsp;<span class="event__price-value">${price}</span>
@@ -72,7 +67,6 @@ export default class Event extends AbstractView {
 
   getTemplate() {
     return createEvent(this._event);
-    // return this._state.length > 0 ? createEventsListTemplate(this._state) : new NoEventsView().getTemplate();
   }
 
   _editClickHandler(evt) {

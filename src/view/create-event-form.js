@@ -1,13 +1,12 @@
 import {CITIES, EVENT_TYPES, OFFERS} from '../mocks/data';
 import {getFormattedDate} from '../utils/dates';
-import dayjs from 'dayjs';
-import Abstract from './abstract';
+import Smart from './smart';
 
 const EMPTY_EVENT = {
   eventType: EVENT_TYPES[0],
-  destination: {city: '', photos: null, description: ''},
-  startDate: dayjs(),
-  endDate: dayjs(),
+  destination: {city: null, photos: null, description: ''},
+  startDate: null,
+  endDate: null,
   price: '',
   offers: '',
 };
@@ -18,8 +17,7 @@ const makeStringUppercase = ([first, ...rest]) => {
 
 const getEventsTypeList = (eventsType) => {
   return eventsType.map((event) => {
-    return `
-<div class="event__type-item">
+    return `<div class="event__type-event">
     <input id="event-type-${event}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${event}">
     <label class="event__type-label  event__type-label--${event}" for="event-type-${event}-1">${makeStringUppercase(event)}</label>
 </div>`;
@@ -28,9 +26,7 @@ const getEventsTypeList = (eventsType) => {
 
 const getDestinationOptions = (cities) => {
   return cities.map((city) => {
-    return `
-<option value="${city}"></option>
-            `;
+    return `<option value="${city}"></option>`;
   }).join('');
 };
 
@@ -47,28 +43,26 @@ const getExtraOffers = (eventType, eventOffers) => {
 
   const getOffers = (eventType) => {
     return eventTypeOffersAll.offers.map((offer, index) => {
-      return `
-<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${eventType}-${index}" type="checkbox" name="event-offer-luggage" ${isChecked(offer)}>
-    <label class="event__offer-label" for="event-offer-${eventType}-${index}">
-      <span class="event__offer-title">${offer.title}</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">${offer.price}</span>
-    </label>
+      return `<div class="event__offer-selector">
+<input class="event__offer-checkbox  visually-hidden" id="event-offer-${eventType}-${index}" type="checkbox" name="event-offer-luggage" ${isChecked(offer)}>
+<label class="event__offer-label" for="event-offer-${eventType}-${index}">
+  <span class="event__offer-title">${offer.title}</span>
+  &plus;&euro;&nbsp;
+  <span class="event__offer-price">${offer.price}</span>
+</label>
 </div>`;
     }).join('');
   };
+
   const isOffers = (eventType, offers) => {
     if (offers) {
-      return `
-<section class="event__section  event__section--offers">
-    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+      return `<section class="event__section  event__section--offers">
+<h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
-    <div class="event__available-offers">
-      ${getOffers(eventType, offers)}
-    </div>
-</section>
-        `;
+<div class="event__available-offers">
+  ${getOffers(eventType, offers)}
+</div>
+</section>`;
     } else {
       return '';
     }
@@ -109,13 +103,18 @@ const getEventPhotos = (photos, description) => {
   return isPhotos(photos);
 };
 
-const createEventForm = (item) => {
+const createEventForm = (event) => {
+  const destinationValue = event.destination.city ? `value="${event.destination.city}"` : '';
+  const eventPrice = event.price ? `value="${event.price}"` : '';
+
+  const getDataValue = (data) => data ? `value="${getFormattedDate(event.startDate, 'YY[/]MM[/]DD HH:MM')}"` : '';
+
   return `<form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
         <label class="event__type  event__type-btn" for="event-type-toggle-1">
           <span class="visually-hidden">Choose event type</span>
-          <img class="event__type-icon" width="17" height="17" src="img/icons/${item.eventType}.png" alt="Event type icon">
+          <img class="event__type-icon" width="17" height="17" src="img/icons/${event.eventType}.png" alt="Event type icon">
         </label>
         <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -129,9 +128,9 @@ const createEventForm = (item) => {
 
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
-          ${item.eventType}
+          ${event.eventType}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${item.destination.city}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" ${destinationValue} list="destination-list-1">
         <datalist id="destination-list-1">
           ${getDestinationOptions(CITIES)}
         </datalist>
@@ -139,10 +138,10 @@ const createEventForm = (item) => {
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getFormattedDate(item.startDate, 'YY[/]MM[/]DD HH:MM')}">
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" ${getDataValue(event.startDate)}>
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getFormattedDate(item.endDate, 'YY[/]MM[/]DD HH:MM')}">
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" ${getDataValue(event.endDate)}>
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -150,7 +149,7 @@ const createEventForm = (item) => {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${item.price}">
+        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" ${eventPrice}>
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -160,22 +159,30 @@ const createEventForm = (item) => {
       </button>
     </header>
     <section class="event__details">
-      ${getExtraOffers(item.eventType, item.offers)}
-      ${getEventPhotos(item.destination.photos, item.destination.description)}
+      ${getExtraOffers(event.eventType, event.offers)}
+      ${getEventPhotos(event.destination.photos, event.destination.description)}
     </section>
 </form>`;
 };
 
-export default class EventForm extends Abstract {
+export default class EventForm extends Smart {
   constructor(event = EMPTY_EVENT) {
     super();
-    this._event = event;
+    // this._state = event;
+    this._state = EventForm.parseEventToState(event);
     this._closeClickHandler = this._closeClickHandler.bind(this);
+  }
 
+  static parseEventToState(task) {
+    return {
+      ...task,
+      isDestination: task.destination.city !== null,
+      isDates: task.startDate !== null,
+    };
   }
 
   getTemplate() {
-    return createEventForm(this._event);
+    return createEventForm(this._state);
   }
 
   _closeClickHandler(evt) {

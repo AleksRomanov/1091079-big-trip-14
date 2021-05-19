@@ -1,7 +1,6 @@
 import {getDuration, getFormattedDate} from '../utils/dates';
 import AbstractView from './abstract';
 
-const format = 'm';
 const generateOffers = (offers) => {
   return offers.map((item) => {
     return `
@@ -31,7 +30,7 @@ const createEvent = ({startDate, endDate, type, destination, price, offers, favo
         &mdash;
         <time class="event__end-time" datetime="${getFormattedDate(endDate, 'hh:mm')}">${getFormattedDate(endDate, 'HH:mm')}</time>
       </p>
-      <p class="event__duration">${getDuration(startDate, endDate, format)}</p>
+      <p class="event__duration">${getDuration(startDate, endDate)}</p>
     </div>
     <p class="event__price">
       &euro;&nbsp;<span class="event__price-value">${price}</span>

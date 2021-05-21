@@ -1,14 +1,15 @@
-import {CITIES, EVENT_TYPES, OFFERS} from '../mocks/data';
+import {CITIES, DESCRIPTIONS, EVENT_TYPES, OFFERS} from '../mocks/data';
 import {getFormattedDate} from '../utils/dates';
 import Smart from './smart';
+import {generateDescription, generatePhotos} from '../mocks/creating-destination';
 
 const EMPTY_EVENT = {
-  eventType: EVENT_TYPES[0],
+  type: EVENT_TYPES[0],
   destination: {city: null, photos: null, description: ''},
   startDate: null,
   endDate: null,
-  price: '',
-  offers: '',
+  price: null,
+  offers: [],
 };
 
 const makeStringUppercase = ([first, ...rest]) => {
@@ -30,91 +31,74 @@ const getDestinationOptions = (cities) => {
   }).join('');
 };
 
-const getExtraOffers = (eventType, eventOffers) => {
-
+const eventExtraOffers = ({type, offers}) => {
   const eventTypeOffersAll = OFFERS.find((offer) => {
-    return offer['type'] === eventType ? offer : null;
+    return offer['type'] === type ? offer : null;
   });
 
   const isChecked = (offer) => {
-    return eventOffers.find((event) => event.title === offer.title) ? 'checked' : '';
+    return offers.find((eventOffer) => eventOffer.title === offer.title) ? 'checked' : '';
   };
 
-
-  const getOffers = (eventType) => {
-    return eventTypeOffersAll.offers.map((offer, index) => {
-      return `<div class="event__offer-selector">
-<input class="event__offer-checkbox  visually-hidden" id="event-offer-${eventType}-${index}" type="checkbox" name="event-offer-luggage" ${isChecked(offer)}>
-<label class="event__offer-label" for="event-offer-${eventType}-${index}">
+  const getOffers = eventTypeOffersAll.offers.map((offer, index) => {
+    return `<div class="event__offer-selector">
+<input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${index}" type="checkbox" name="event-offer-luggage" ${isChecked(offer)}>
+<label class="event__offer-label" for="event-offer-${type}-${index}">
   <span class="event__offer-title">${offer.title}</span>
   &plus;&euro;&nbsp;
   <span class="event__offer-price">${offer.price}</span>
 </label>
 </div>`;
-    }).join('');
-  };
+  }).join('');
 
-  const isOffers = (eventType, offers) => {
-    if (offers) {
-      return `<section class="event__section  event__section--offers">
+  return `<section class="event__section  event__section--offers">
 <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
 <div class="event__available-offers">
-  ${getOffers(eventType, offers)}
+  ${getOffers}
 </div>
 </section>`;
-    } else {
-      return '';
-    }
-  };
-
-  return isOffers(eventType, eventOffers);
 
 };
 
-const getEventPhotos = (photos, description) => {
+const getEventPhotos = ({destination, isDestination}) => {
 
   const getPhotos = (photos) => {
     return photos.map((photo) => {
-      return `
-<img class="event__photo" src="${photo}" alt="Event photo">
-      `;
+      return `<img class="event__photo" src="${photo}" alt="Event photo">`;
     }).join('');
   };
 
-  const isPhotos = (photos) => {
-    if (photos) {
-      return `
+  if (isDestination) {
+    return `
 <section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      <p class="event__destination-description">${description}</p>
+      <p class="event__destination-description">${destination.description}</p>
       <div class="event__photos-container">
         <div class="event__photos-tape">
-          ${getPhotos(photos)}
+          ${getPhotos(destination.photos)}
         </div>
       </div>
 </section>`;
-    } else {
-      return '';
-    }
-  };
-
-
-  return isPhotos(photos);
+  } else {
+    return '';
+  }
 };
 
 const createEventForm = (event) => {
-  const destinationValue = event.destination.city ? `value="${event.destination.city}"` : '';
-  const eventPrice = event.price ? `value="${event.price}"` : '';
+  const {type, isDestination, isPrice, isStartDate, isEndDate, startDate, endDate, price, destination} = event;
+  const destinationValue = isDestination ? `value="${destination.city}"` : '';
+  const eventPrice = isPrice ? `value="${price}"` : '';
+  const eventStartDate = isStartDate ? `value="${getFormattedDate(startDate, 'YY[/]MM[/]DD HH:MM')}"` : '';
+  const eventEndDate = isEndDate ? `value="${getFormattedDate(endDate, 'YY[/]MM[/]DD HH:MM')}"` : '';
 
-  const getDataValue = (data) => data ? `value="${getFormattedDate(event.startDate, 'YY[/]MM[/]DD HH:MM')}"` : '';
 
   return `<form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
         <label class="event__type  event__type-btn" for="event-type-toggle-1">
           <span class="visually-hidden">Choose event type</span>
-          <img class="event__type-icon" width="17" height="17" src="img/icons/${event.eventType}.png" alt="Event type icon">
+          <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
         </label>
         <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -128,7 +112,7 @@ const createEventForm = (event) => {
 
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
-          ${event.eventType}
+          ${type}
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" ${destinationValue} list="destination-list-1">
         <datalist id="destination-list-1">
@@ -138,10 +122,10 @@ const createEventForm = (event) => {
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" ${getDataValue(event.startDate)}>
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" ${eventStartDate}>
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" ${getDataValue(event.endDate)}>
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" ${eventEndDate}>
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -159,8 +143,8 @@ const createEventForm = (event) => {
       </button>
     </header>
     <section class="event__details">
-      ${getExtraOffers(event.eventType, event.offers)}
-      ${getEventPhotos(event.destination.photos, event.destination.description)}
+      ${eventExtraOffers(event)}
+      ${getEventPhotos(event)}
     </section>
 </form>`;
 };
@@ -168,18 +152,116 @@ const createEventForm = (event) => {
 export default class EventForm extends Smart {
   constructor(event = EMPTY_EVENT) {
     super();
-    // this._state = event;
     this._state = EventForm.parseEventToState(event);
+    // console.log(this._state);
     this._closeClickHandler = this._closeClickHandler.bind(this);
+    this._destinationFocusHandler = this._destinationFocusHandler.bind(this);
+    this._destinationBlurHandler = this._destinationBlurHandler.bind(this);
+    this._typeSelectHandler = this._typeSelectHandler.bind(this);
+    this._setInnerHandlers();
+
   }
 
-  static parseEventToState(task) {
+  _setInnerHandlers() {
+    this.getElement().querySelector('.event__input--destination').addEventListener('focus', this._destinationFocusHandler);
+    this.getElement().querySelector('.event__input--destination').addEventListener('blur', this._destinationBlurHandler);
+    this._setTypeSelectHandler();
+  }
+
+  _setTypeSelectHandler() {
+    const typeSelects = this.getElement().querySelector('.event__type-group').querySelectorAll('.event__type-input');
+    typeSelects.forEach((typeSelect) => typeSelect.addEventListener('change', this._typeSelectHandler));
+  }
+
+  _typeSelectHandler(evt) {
+    this.updateState({
+      type: evt.target.value,
+    });
+  }
+
+  _checkDestinationValidity(evtValue) {
+    let destination = null;
+    CITIES.forEach((city) => {
+      if (city === evtValue) {
+        destination = city;
+      }
+    });
+    return destination;
+  }
+
+  _destinationBlurHandler(evt) {
+    evt.preventDefault();
+    const destination = this._checkDestinationValidity(evt.target.value);
+    if (destination === null) {
+      evt.target.value = '';
+    } else {
+      this.updateState({
+        destination: {
+          city: destination,
+          photos: generatePhotos(),
+          description: generateDescription(DESCRIPTIONS),
+        },
+        isDestination: true,
+      });
+    }
+  }
+
+  _destinationFocusHandler(evt) {
+    evt.preventDefault();
+    evt.target.value = '';
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setCloseClickHandler(this._callback.closeClick);
+  }
+
+  // _formSubmitHandler(evt) {
+  //   evt.preventDefault();
+  //   this._callback.formSubmit(EventForm.parseStateToEvent(this._state));
+  // }
+
+  // setFormSubmitHandler(callback) {
+  //   this._callback.formSubmit = callback;
+  //   this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  // }
+
+  static parseEventToState(event) {
     return {
-      ...task,
-      isDestination: task.destination.city !== null,
-      isDates: task.startDate !== null,
+      ...event,
+      isDestination: event.destination.city !== null,
+      isDates: event.startDate !== null || event.endDate !== null,
+      isPrice: event.price !== null,
+      isStartDate: event.startDate !== null,
+      isEndDate: event.endDate !== null,
     };
   }
+
+  static parseStateToEvent(state) {
+    // data = Object.assign({}, data);
+    state = {...state};
+
+    // if (!data.isDueDate) {
+    //   data.dueDate = null;
+    // }
+    //
+    // if (!data.isRepeating) {
+    //   data.repeating = {
+    //     mo: false,
+    //     tu: false,
+    //     we: false,
+    //     th: false,
+    //     fr: false,
+    //     sa: false,
+    //     su: false,
+    //   };
+
+    // delete state.isDueDate;
+    // delete state.isRepeating;
+
+    return state;
+  }
+
 
   getTemplate() {
     return createEventForm(this._state);

@@ -2,6 +2,8 @@ import {CITIES, DESCRIPTIONS, EVENT_TYPES, OFFERS} from '../mocks/data';
 import {getFormattedDate} from '../utils/dates';
 import Smart from './smart';
 import {generateDescription, generatePhotos} from '../mocks/creating-destination';
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+import flatpickr from 'flatpickr';
 
 const EMPTY_EVENT = {
   type: EVENT_TYPES[0],
@@ -153,11 +155,14 @@ export default class EventForm extends Smart {
   constructor(event = EMPTY_EVENT) {
     super();
     this._state = EventForm.parseEventToState(event);
-    // console.log(this._state);
+    this._startDatePicker = null;
+    this._endDatePicker = null;
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._destinationFocusHandler = this._destinationFocusHandler.bind(this);
     this._destinationBlurHandler = this._destinationBlurHandler.bind(this);
     this._typeSelectHandler = this._typeSelectHandler.bind(this);
+    this._endDateSelectHandler = this._endDateSelectHandler.bind(this);
+    this._startDateSelectHandler = this._startDateSelectHandler.bind(this);
     this._setInnerHandlers();
 
   }
@@ -165,10 +170,52 @@ export default class EventForm extends Smart {
   _setInnerHandlers() {
     this.getElement().querySelector('.event__input--destination').addEventListener('focus', this._destinationFocusHandler);
     this.getElement().querySelector('.event__input--destination').addEventListener('blur', this._destinationBlurHandler);
-    this._setTypeSelectHandler();
+    this._setTypeSelectHandlers();
+    this._setDatePickers();
   }
 
-  _setTypeSelectHandler() {
+  _setDatePicker(date, isStart) {
+    const datePrefix = isStart ? 'startDate' : 'endDate';
+    const cbStateName = `_${datePrefix}Picker`;
+    const dateHandler = isStart ? this._startDateSelectHandler : this._endDateSelectHandler;
+    this[cbStateName] = flatpickr(
+      date,
+      {
+        dateFormat: 'd/m/y h:i',
+        defaultDate: this._state[datePrefix],
+        onChange: dateHandler,
+      },
+    );
+  }
+
+  _setDatePickers() {
+    if (this._startDatePicker || this._endDatePicker) {
+      const datePickers = [this._startDatePicker, this._endDatePicker];
+      datePickers.forEach((picker) => {
+        picker.destroy();
+        picker = null;
+      });
+    }
+
+    const startDate = this.getElement().querySelector('#event-start-time-1');
+    const endDate = this.getElement().querySelector('#event-end-time-1');
+    this._setDatePicker(startDate, true);
+    this._setDatePicker(endDate);
+  }
+
+  _startDateSelectHandler(evt) {
+    this.updateState({
+      startDate: evt,
+    });
+  }
+
+  _endDateSelectHandler(evt) {
+    this.updateState({
+      endDate: evt,
+    });
+  }
+
+  _setTypeSelectHandlers() {
     const typeSelects = this.getElement().querySelector('.event__type-group').querySelectorAll('.event__type-input');
     typeSelects.forEach((typeSelect) => typeSelect.addEventListener('change', this._typeSelectHandler));
   }

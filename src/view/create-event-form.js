@@ -1,15 +1,15 @@
-import {CITIES, EVENT_TYPES, OFFERS} from '../mocks/data';
+import {CITIES, DESCRIPTIONS, EVENT_TYPES, OFFERS} from '../mocks/data';
 import {getFormattedDate} from '../utils/dates';
-import dayjs from 'dayjs';
-import Abstract from './abstract';
+import Smart from './smart';
+import {generateDescription, generatePhotos} from '../mocks/creating-destination';
 
 const EMPTY_EVENT = {
-  eventType: EVENT_TYPES[0],
-  destination: {city: '', photos: null, description: ''},
-  startDate: dayjs(),
-  endDate: dayjs(),
-  price: '',
-  offers: '',
+  type: EVENT_TYPES[0],
+  destination: {city: null, photos: null, description: ''},
+  startDate: null,
+  endDate: null,
+  price: null,
+  offers: [],
 };
 
 const makeStringUppercase = ([first, ...rest]) => {
@@ -18,8 +18,7 @@ const makeStringUppercase = ([first, ...rest]) => {
 
 const getEventsTypeList = (eventsType) => {
   return eventsType.map((event) => {
-    return `
-<div class="event__type-item">
+    return `<div class="event__type-event">
     <input id="event-type-${event}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${event}">
     <label class="event__type-label  event__type-label--${event}" for="event-type-${event}-1">${makeStringUppercase(event)}</label>
 </div>`;
@@ -28,94 +27,78 @@ const getEventsTypeList = (eventsType) => {
 
 const getDestinationOptions = (cities) => {
   return cities.map((city) => {
-    return `
-<option value="${city}"></option>
-            `;
+    return `<option value="${city}"></option>`;
   }).join('');
 };
 
-const getExtraOffers = (eventType, eventOffers) => {
-
+const eventExtraOffers = ({type, offers}) => {
   const eventTypeOffersAll = OFFERS.find((offer) => {
-    return offer['type'] === eventType ? offer : null;
+    return offer['type'] === type ? offer : null;
   });
 
   const isChecked = (offer) => {
-    return eventOffers.find((event) => event.title === offer.title) ? 'checked' : '';
+    return offers.find((eventOffer) => eventOffer.title === offer.title) ? 'checked' : '';
   };
 
-
-  const getOffers = (eventType) => {
-    return eventTypeOffersAll.offers.map((offer, index) => {
-      return `
-<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${eventType}-${index}" type="checkbox" name="event-offer-luggage" ${isChecked(offer)}>
-    <label class="event__offer-label" for="event-offer-${eventType}-${index}">
-      <span class="event__offer-title">${offer.title}</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">${offer.price}</span>
-    </label>
+  const getOffers = eventTypeOffersAll.offers.map((offer, index) => {
+    return `<div class="event__offer-selector">
+<input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${index}" type="checkbox" name="event-offer-luggage" ${isChecked(offer)}>
+<label class="event__offer-label" for="event-offer-${type}-${index}">
+  <span class="event__offer-title">${offer.title}</span>
+  &plus;&euro;&nbsp;
+  <span class="event__offer-price">${offer.price}</span>
+</label>
 </div>`;
-    }).join('');
-  };
-  const isOffers = (eventType, offers) => {
-    if (offers) {
-      return `
-<section class="event__section  event__section--offers">
-    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+  }).join('');
 
-    <div class="event__available-offers">
-      ${getOffers(eventType, offers)}
-    </div>
-</section>
-        `;
-    } else {
-      return '';
-    }
-  };
+  return `<section class="event__section  event__section--offers">
+<h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
-  return isOffers(eventType, eventOffers);
+<div class="event__available-offers">
+  ${getOffers}
+</div>
+</section>`;
 
 };
 
-const getEventPhotos = (photos, description) => {
+const getEventPhotos = ({destination, isDestination}) => {
 
   const getPhotos = (photos) => {
     return photos.map((photo) => {
-      return `
-<img class="event__photo" src="${photo}" alt="Event photo">
-      `;
+      return `<img class="event__photo" src="${photo}" alt="Event photo">`;
     }).join('');
   };
 
-  const isPhotos = (photos) => {
-    if (photos) {
-      return `
+  if (isDestination) {
+    return `
 <section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      <p class="event__destination-description">${description}</p>
+      <p class="event__destination-description">${destination.description}</p>
       <div class="event__photos-container">
         <div class="event__photos-tape">
-          ${getPhotos(photos)}
+          ${getPhotos(destination.photos)}
         </div>
       </div>
 </section>`;
-    } else {
-      return '';
-    }
-  };
-
-
-  return isPhotos(photos);
+  } else {
+    return '';
+  }
 };
 
-const createEventForm = (item) => {
+const createEventForm = (event) => {
+  const {type, isDestination, isPrice, isStartDate, isEndDate, startDate, endDate, price, destination} = event;
+  const destinationValue = isDestination ? `value="${destination.city}"` : '';
+  const eventPrice = isPrice ? `value="${price}"` : '';
+  const eventStartDate = isStartDate ? `value="${getFormattedDate(startDate, 'YY[/]MM[/]DD HH:MM')}"` : '';
+  const eventEndDate = isEndDate ? `value="${getFormattedDate(endDate, 'YY[/]MM[/]DD HH:MM')}"` : '';
+
+
   return `<form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
         <label class="event__type  event__type-btn" for="event-type-toggle-1">
           <span class="visually-hidden">Choose event type</span>
-          <img class="event__type-icon" width="17" height="17" src="img/icons/${item.eventType}.png" alt="Event type icon">
+          <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
         </label>
         <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -129,9 +112,9 @@ const createEventForm = (item) => {
 
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
-          ${item.eventType}
+          ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${item.destination.city}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" ${destinationValue} list="destination-list-1">
         <datalist id="destination-list-1">
           ${getDestinationOptions(CITIES)}
         </datalist>
@@ -139,10 +122,10 @@ const createEventForm = (item) => {
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getFormattedDate(item.startDate, 'YY[/]MM[/]DD HH:MM')}">
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" ${eventStartDate}>
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getFormattedDate(item.endDate, 'YY[/]MM[/]DD HH:MM')}">
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" ${eventEndDate}>
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -150,7 +133,7 @@ const createEventForm = (item) => {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${item.price}">
+        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" ${eventPrice}>
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -160,22 +143,128 @@ const createEventForm = (item) => {
       </button>
     </header>
     <section class="event__details">
-      ${getExtraOffers(item.eventType, item.offers)}
-      ${getEventPhotos(item.destination.photos, item.destination.description)}
+      ${eventExtraOffers(event)}
+      ${getEventPhotos(event)}
     </section>
 </form>`;
 };
 
-export default class EventForm extends Abstract {
+export default class EventForm extends Smart {
   constructor(event = EMPTY_EVENT) {
     super();
-    this._event = event;
+    this._state = EventForm.parseEventToState(event);
+    // console.log(this._state);
     this._closeClickHandler = this._closeClickHandler.bind(this);
+    this._destinationFocusHandler = this._destinationFocusHandler.bind(this);
+    this._destinationBlurHandler = this._destinationBlurHandler.bind(this);
+    this._typeSelectHandler = this._typeSelectHandler.bind(this);
+    this._setInnerHandlers();
 
   }
 
+  _setInnerHandlers() {
+    this.getElement().querySelector('.event__input--destination').addEventListener('focus', this._destinationFocusHandler);
+    this.getElement().querySelector('.event__input--destination').addEventListener('blur', this._destinationBlurHandler);
+    this._setTypeSelectHandler();
+  }
+
+  _setTypeSelectHandler() {
+    const typeSelects = this.getElement().querySelector('.event__type-group').querySelectorAll('.event__type-input');
+    typeSelects.forEach((typeSelect) => typeSelect.addEventListener('change', this._typeSelectHandler));
+  }
+
+  _typeSelectHandler(evt) {
+    this.updateState({
+      type: evt.target.value,
+    });
+  }
+
+  _checkDestinationValidity(evtValue) {
+    let destination = null;
+    CITIES.forEach((city) => {
+      if (city === evtValue) {
+        destination = city;
+      }
+    });
+    return destination;
+  }
+
+  _destinationBlurHandler(evt) {
+    evt.preventDefault();
+    const destination = this._checkDestinationValidity(evt.target.value);
+    if (destination === null) {
+      evt.target.value = '';
+    } else {
+      this.updateState({
+        destination: {
+          city: destination,
+          photos: generatePhotos(),
+          description: generateDescription(DESCRIPTIONS),
+        },
+        isDestination: true,
+      });
+    }
+  }
+
+  _destinationFocusHandler(evt) {
+    evt.preventDefault();
+    evt.target.value = '';
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setCloseClickHandler(this._callback.closeClick);
+  }
+
+  // _formSubmitHandler(evt) {
+  //   evt.preventDefault();
+  //   this._callback.formSubmit(EventForm.parseStateToEvent(this._state));
+  // }
+
+  // setFormSubmitHandler(callback) {
+  //   this._callback.formSubmit = callback;
+  //   this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  // }
+
+  static parseEventToState(event) {
+    return {
+      ...event,
+      isDestination: event.destination.city !== null,
+      isDates: event.startDate !== null || event.endDate !== null,
+      isPrice: event.price !== null,
+      isStartDate: event.startDate !== null,
+      isEndDate: event.endDate !== null,
+    };
+  }
+
+  static parseStateToEvent(state) {
+    // data = Object.assign({}, data);
+    state = {...state};
+
+    // if (!data.isDueDate) {
+    //   data.dueDate = null;
+    // }
+    //
+    // if (!data.isRepeating) {
+    //   data.repeating = {
+    //     mo: false,
+    //     tu: false,
+    //     we: false,
+    //     th: false,
+    //     fr: false,
+    //     sa: false,
+    //     su: false,
+    //   };
+
+    // delete state.isDueDate;
+    // delete state.isRepeating;
+
+    return state;
+  }
+
+
   getTemplate() {
-    return createEventForm(this._event);
+    return createEventForm(this._state);
   }
 
   _closeClickHandler(evt) {

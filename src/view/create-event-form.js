@@ -164,7 +164,6 @@ export default class EventForm extends Smart {
     this._endDateSelectHandler = this._endDateSelectHandler.bind(this);
     this._startDateSelectHandler = this._startDateSelectHandler.bind(this);
     this._setInnerHandlers();
-
   }
 
   _setInnerHandlers() {
@@ -263,6 +262,12 @@ export default class EventForm extends Smart {
     this.setCloseClickHandler(this._callback.closeClick);
   }
 
+  reset(event) {
+    this.updateState(
+      EventForm.parseEventToState(event),
+    );
+  }
+
   // _formSubmitHandler(evt) {
   //   evt.preventDefault();
   //   this._callback.formSubmit(EventForm.parseStateToEvent(this._state));
@@ -274,6 +279,7 @@ export default class EventForm extends Smart {
   // }
 
   static parseEventToState(event) {
+    // console.log(event);
     return {
       ...event,
       isDestination: event.destination.city !== null,

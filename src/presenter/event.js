@@ -1,6 +1,7 @@
 import Event from '../view/event';
 import {remove, render, RenderPosition, replace} from '../utils/render';
 import EventForm from '../view/create-event-form';
+import {UpdateType, UserAction} from '../const';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -8,9 +9,9 @@ const Mode = {
 };
 
 export default class Point {
-  constructor(taskListContainer, changeData, changeMode) {
+  constructor(taskListContainer, changeEvent, changeMode) {
     this._eventListContainer = taskListContainer;
-    this._changeData = changeData;
+    this._changeEvent = changeEvent;
     this._changeMode = changeMode;
     this._eventComponent = null;
     this._taskEditComponent = null;
@@ -60,6 +61,7 @@ export default class Point {
   }
 
   _handleFormClose() {
+    this._editFormComponent.reset(this._event);
     this._replaceFormToEvent();
   }
 
@@ -85,11 +87,16 @@ export default class Point {
   _escKeyDownHandler(evt) {
     if (evt.keyCode === 27) {
       evt.preventDefault();
+      this._editFormComponent.reset(this._event);
       this._replaceFormToEvent();
     }
   }
 
   _handleFavoriteClick() {
-    this._changeData({...this._event, favorite: !this._event.favorite});
+    this._changeEvent(
+      UserAction.UPDATE_EVENT,
+      UpdateType.MINOR,
+      {...this._event, favorite: !this._event.favorite},
+    );
   }
 }

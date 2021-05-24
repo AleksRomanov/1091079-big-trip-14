@@ -1,4 +1,16 @@
-const WAYPOINT_COUNT = 8;
+const WAYPOINT_COUNT = 10;
+
+export const UserAction = {
+  UPDATE_EVENT: 'UPDATE_EVENT',
+  ADD_EVENT: 'ADD_EVENT',
+  DELETE_EVENT: 'DELETE_EVENT',
+};
+
+export const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
 
 export const FilterTypes = {
   EVERYTHING: 'everything',

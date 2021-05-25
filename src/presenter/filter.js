@@ -11,9 +11,8 @@ export default class Filter {
 
     this._filterComponent = null;
 
-    this._handleModelEvent = this._handleModelEvent.bind(this);
+    // this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
-
     this._eventsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
   }
@@ -39,10 +38,6 @@ export default class Filter {
       return;
     }
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
-  }
-
-  _handleModelEvent() {
-    this.init();
   }
 
   _getFilters() {

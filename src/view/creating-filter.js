@@ -48,7 +48,7 @@ export default class Filters extends Abstract {
   setFilterTypeChangeHandler(callback) {
     this._callback.filterTypeChange = callback;
     const filterButtons = this.getElement().querySelectorAll('input');
-    console.log(filterButtons);
+    // console.log(filterButtons);
     filterButtons.forEach((button) => {
       button.addEventListener('click', this._filterTypeChangeHandler);
     });

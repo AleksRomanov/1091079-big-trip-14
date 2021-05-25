@@ -1,26 +1,23 @@
 import {remove, render, RenderPosition} from '../utils/render';
+import {sortByPrice} from '../utils/common';
+import {sortByTime} from '../utils/dates';
+import {SortTypes, UpdateType, UserAction} from '../const.js';
+import {filter} from '../utils/filter';
 import TripInfoView from '../view/create-trip-info';
 import ModesToggleView from '../view/creating-menu';
-import FiltersView from '../view/creating-filter';
 import SortingToggleView from '../view/creating-sort';
 import EventsContainerView from '../view/events-container';
 import EventPresenter from './event';
-import {sortByPrice, updateItem} from '../utils/common';
 import NoEventsView from '../view/creating-no-events';
-
+import NewEvent from './new-event';
+import Filter from './filter';
 const siteHeader = document.querySelector('.page-header');
 const tripMain = siteHeader.querySelector('.trip-main');
 const tripControlsNavigation = siteHeader.querySelector('.trip-controls__navigation');
-const tripControlsFilters = siteHeader.querySelector('.trip-controls__filters');
 const addEventButton = document.querySelector('.trip-main__event-add-btn');
 const siteBodyPageMain = document.querySelector('.page-body__page-main');
 const tripEvents = siteBodyPageMain.querySelector('.trip-events');
-import {FilterTypes, SortTypes, UpdateType, UserAction} from '../const.js';
-import {filterFutureEvents, filterPastEvents, sortByTime} from '../utils/dates';
-import NewEventForm from './new-event';
-import NewEvent from './new-event';
-import {filter} from '../utils/filter';
-import Filter from './filter';
+
 
 export default class App {
   constructor(eventsModel, filterModel) {
@@ -28,7 +25,7 @@ export default class App {
     this._filterModel = filterModel;
     this._eventsContainer = new EventsContainerView();
     this.viewModeToggleComponent = new ModesToggleView();
-    // this._filtreToggleComponent = new FiltersView();
+    this.totalTripInfoComponent = null;
     this._sortToggleComponent = new SortingToggleView();
     this._noEventsView = new NoEventsView();
     this._eventsPresenter = {};
@@ -41,27 +38,54 @@ export default class App {
     this._handleModelEvent = this._handleModelEvent.bind(this);
     // this._newEventForm = new NewEventForm();
     this._newEventPresenter = new NewEvent(this._eventsContainer, this._handleViewAction);
-    this._filterPresenter = new Filter(tripControlsNavigation, this._filterModel, this._eventsModel);
+    this._filterPresenter = new Filter(tripControlsNavigation, this._filterModel);
     // filterPresenter = new FilterPresenter(siteMainElement, filterModel, tasksModel)
 
   }
 
   init() {
-    // this._events = events.slice();
-    // this._sourcedEvents = this._events.slice();
     this._eventsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
     this._renderEvents();
+  }
 
-    // if(this._sourcedEvents.length) {
-    //   this._renderEventsContainer();
-    //   this._renderFilter();
-    //   this._renderEventsList();
-    //   this._renderEventControl();
-    //   this._renderSort();
-    // } else {
-    //   this._renderNoEvents();
-    // }
+  _handleModelEvent(updateType, data) {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this._eventsPresenter[data.id].init(data);
+        break;
+      case UpdateType.MINOR:
+        this._clearEventsList();
+        this._renderEvents();
+        break;
+      case UpdateType.MAJOR:
+        this._clearEventsList({resetSortType: true});
+        this._renderEvents();
+        break;
+    }
+  }
+
+  _renderEvents() {
+    const events = this._getFilteredAndSortedEvents();
+    const eventsCount = events.length;
+
+    if (this.totalTripInfoComponent !== null) {
+      this.totalTripInfoComponent.getElement().remove();
+    }
+
+    if (eventsCount) {
+      this._renderEventsContainer();
+      this._renderEventsList(events);
+
+      this._renderEventsTotal(this._eventsModel.getEvents());
+      this._renderViewModeToggle();
+      this._renderFilter();
+
+      this._renderSort();
+    } else {
+      this._renderNoEvents();
+    }
+    this._setAddEventButtonBehavior(addEventButton);
   }
 
   _getFilteredAndSortedEvents() {
@@ -77,25 +101,6 @@ export default class App {
     }
 
     return filteredEvents;
-  }
-
-  _renderEvents() {
-    const events = this._getFilteredAndSortedEvents();
-    const eventsCount = events.length;
-
-    if (eventsCount) {
-      this._renderEventsContainer();
-      this._renderEventsList(events);
-
-      this._renderEventsTotal(events);
-      this._renderViewModeToggle();
-      this._renderFilter();
-
-      this._renderSort();
-    } else {
-      this._renderNoEvents();
-    }
-    this._setAddEventButtonBehavior(addEventButton);
   }
 
   _renderEventsTotal(events) {
@@ -208,21 +213,6 @@ export default class App {
     }
   }
 
-  _handleModelEvent(updateType, data) {
-    switch (updateType) {
-      case UpdateType.PATCH:
-        this._eventsPresenter[data.id].init(data);
-        break;
-      case UpdateType.MINOR:
-        this._clearEventsList();
-        this._renderEvents();
-        break;
-      case UpdateType.MAJOR:
-        this._clearEventsList({resetSortType: true});
-        this._renderEvents();
-        break;
-    }
-  }
 
 }
 

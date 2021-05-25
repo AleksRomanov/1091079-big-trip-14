@@ -3,6 +3,7 @@ import utc from 'dayjs/plugin/utc';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(utc);
 dayjs.extend(duration);
+// dayjs.extend(advancedFormat);
 import {getRandomNumber} from './common';
 
 const generateDate = (firstDate = '', isFirstDate = false) => {
@@ -43,6 +44,19 @@ const sortByTime = (eventA, eventB) => {
   return eventBDuration - eventADuration;
 };
 
+const sortByDay = (eventA, eventB) => {
+  return dayjs(eventB.startDate).isBefore(dayjs(eventA.startDate)) ? 1 : -1;
+};
 
-export {generateDate, getFormattedDate, filterPastEvents, filterFutureEvents, sortByTime, getDuration};
+const isDatesEqual = (dateA, dateB) => {
+  return (dateA === null && dateB === null) ? true : dayjs(dateA).isSame(dateB, 'D');
+};
+
+
+const isDateAfter = (dateA, dateB) => {
+  return dayjs(dateB).isAfter(dayjs(dateA));
+};
+
+
+export {generateDate, getFormattedDate, filterPastEvents, filterFutureEvents, sortByTime, getDuration, isDatesEqual, sortByDay, isDateAfter};
 

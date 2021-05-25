@@ -3,20 +3,11 @@ import Abstract from './abstract';
 
 const createViewOptionsElements = (typeTitles) => {
   return typeTitles.map((type, index) => {
-    if (index === 0) {
-      return `
-<div class="trip-sort__item  trip-sort__item--${type}">
-     <input id=${type} class="trip-sort__input visually-hidden" type="radio" name="trip-sort" value=${type} data-sort-type=${type} checked>
-      <label class="trip-sort__btn" for=${type}>${type}</label>
-</div>`;
-    } else {
-      return `
-<div class="trip-sort__item  trip-sort__item--${type}">
-     <input id=${type} class="trip-sort__input visually-hidden" type="radio" name="trip-sort" value=${type} data-sort-type=${type}>
-      <label class="trip-sort__btn" for=${type}>${type}</label>
-</div>`;
-    }
-  }).join('');
+    const isChecked = index === 0 ? 'checked' : '';
+    return `<div class="trip-sort__item  trip-sort__item--${type}">
+<input id=${type} class="trip-sort__input visually-hidden" type="radio" name="trip-sort" value=${type} data-sort-type=${type} ${isChecked}>
+<label class="trip-sort__btn" for=${type}>${type}</label>
+</div>`;}).join('');
 };
 
 const createSortingToggle = () => {
@@ -28,7 +19,6 @@ const createSortingToggle = () => {
 export default class SortingToggle extends Abstract {
   constructor() {
     super();
-
     this._sortChangeHandler = this._sortChangeHandler.bind(this);
   }
 

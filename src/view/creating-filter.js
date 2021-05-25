@@ -28,7 +28,6 @@ const createFilters = () => {
 export default class Filters extends Abstract {
   constructor() {
     super();
-
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
   }
 
@@ -36,32 +35,16 @@ export default class Filters extends Abstract {
     return createFilters();
   }
 
-  // _sortTimeChangeHandler(evt) {
-  //   this._callback.sortTypeChange(evt.target.dataset.sortType);
-  // }
-
   _filterTypeChangeHandler(evt) {
-    // evt.preventDefault();
     this._callback.filterTypeChange(evt.target.value);
   }
 
   setFilterTypeChangeHandler(callback) {
     this._callback.filterTypeChange = callback;
     const filterButtons = this.getElement().querySelectorAll('input');
-    // console.log(filterButtons);
     filterButtons.forEach((button) => {
       button.addEventListener('click', this._filterTypeChangeHandler);
     });
   }
-
-  // setSortTimeChangeHandler(callback) {
-  //   this._callback.sortTypeChange = callback;
-  //   const filterButtons = this.getElement().querySelectorAll('input');
-  //   filterButtons.forEach((button) => {
-  //     button.addEventListener('click', this._sortTimeChangeHandler);
-  //
-  //   });
-  //
-  // }
 }
 

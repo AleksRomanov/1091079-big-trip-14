@@ -23,4 +23,12 @@ const updateItem = (items, update) => {
 
 const sortByPrice = (eventA, eventB) => eventB.price - eventA.price;
 
-export {getRandomNumber, getRandomArrayItem, shuffle, updateItem, sortByPrice};
+const isOffersEqual = (arrayA, arrayB) => {
+  const res = arrayA.filter((item) => !arrayB.includes(item))
+    .concat(arrayB.filter((item) => !arrayA.includes(item)));
+  return res;
+};
+
+const isPriceEqual = (eventPrice, updatePrice) => eventPrice === updatePrice;
+
+export {getRandomNumber, getRandomArrayItem, shuffle, updateItem, sortByPrice, isOffersEqual, isPriceEqual};

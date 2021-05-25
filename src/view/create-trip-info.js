@@ -9,7 +9,8 @@ const getEventsSum = (state) => {
 
 const getSecondDestination = (state) => {
   const destinationSeparator = '...';
-  return state.length > 1 ? destinationSeparator : state[1].city;
+  console.log(state);
+  return state.length > 1 ? state[1].destination.city : destinationSeparator;
 };
 
 const createTripInfoTemplate = (state) => {
@@ -18,10 +19,20 @@ const createTripInfoTemplate = (state) => {
   const firstDate = getFormattedDate(state[0]['startDate'], 'MMM-DD');
   const finalDate = getFormattedDate(state[state.length - 1]['endDate'], 'DD');
   const totalCost = getEventsSum(state);
+  const getTripTotalDestination = () => {
+    // console.log(state.length);
+    if(state.length >= 2) {
+      return `${firstCity} &mdash; ${getSecondDestination(state)} &mdash; ${finalCity}`;
+    } else if (state.length === 1){
+      return `${firstCity} &mdash; ${finalCity}`;
+    } else {
+      return `${firstCity}`;
+    }
+  };
 
   return `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
-      <h1 class="trip-info__title">${firstCity} &mdash; ${getSecondDestination(state)} &mdash; ${finalCity}</h1>
+      <h1 class="trip-info__title">${getTripTotalDestination()}</h1>
 
       <p class="trip-info__dates">${firstDate}
           &nbsp;&mdash;&nbsp;
@@ -35,7 +46,7 @@ const createTripInfoTemplate = (state) => {
     `;
 };
 
-export default class TripInfo extends Abstract{
+export default class TripInfo extends Abstract {
   constructor(state) {
     super();
     this._state = state;

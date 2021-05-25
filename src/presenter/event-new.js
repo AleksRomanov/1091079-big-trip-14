@@ -8,7 +8,7 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
-export default class NewEvent {
+export default class EventNew {
   constructor(taskListContainer, changeEvent) {
     this._eventListContainer = taskListContainer;
     this._changeEvent = changeEvent;

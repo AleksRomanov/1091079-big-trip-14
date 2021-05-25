@@ -1,9 +1,11 @@
 import {CITIES, DESCRIPTIONS, EVENT_TYPES, OFFERS} from '../mocks/data';
-import {getFormattedDate} from '../utils/dates';
+import {getFormattedDate, isDateAfter} from '../utils/dates';
 import Smart from './smart';
 import {generateDescription, generatePhotos} from '../mocks/creating-destination';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import flatpickr from 'flatpickr';
+import dayjs from 'dayjs';
+import {isPriceEqual} from '../utils/common';
 
 const EMPTY_EVENT = {
   type: EVENT_TYPES[0],
@@ -163,6 +165,10 @@ export default class EventForm extends Smart {
     this._typeSelectHandler = this._typeSelectHandler.bind(this);
     this._endDateSelectHandler = this._endDateSelectHandler.bind(this);
     this._startDateSelectHandler = this._startDateSelectHandler.bind(this);
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._pricePickerHandler = this._pricePickerHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
+    // this._offerSelectHandler = this._offerSelectHandler.bind(this);
     this._setInnerHandlers();
   }
 
@@ -171,31 +177,56 @@ export default class EventForm extends Smart {
     this.getElement().querySelector('.event__input--destination').addEventListener('blur', this._destinationBlurHandler);
     this._setTypeSelectHandlers();
     this._setDatePickers();
+    this._setPricePicker();
+    // this._setOffersPickers();
+  }
+
+  _pricePickerHandler(evt) {
+    this.updateState({
+      price: parseInt(evt.target.value),
+    });
+  }
+
+  _setPricePicker() {
+    this.getElement().querySelector('.event__input--price').addEventListener('change', this._pricePickerHandler);
   }
 
   _setDatePicker(date, isStart) {
     const datePrefix = isStart ? 'startDate' : 'endDate';
     const cbStateName = `_${datePrefix}Picker`;
     const dateHandler = isStart ? this._startDateSelectHandler : this._endDateSelectHandler;
+    const getMinDate = isStart ? false : this._state.startDate;
+    const getMaxDate = isStart ? this._state.endDate : false;
+
     this[cbStateName] = flatpickr(
       date,
       {
-        dateFormat: 'd/m/y h:i',
+        minDate: getMinDate,
+        maxDate: getMaxDate,
+        enableTime: true,
+        dateFormat: 'Z',
+        altFormat: 'd/m/y H:i',
+        altInput: true,
         defaultDate: this._state[datePrefix],
         onChange: dateHandler,
       },
     );
   }
 
-  _setDatePickers() {
-    if (this._startDatePicker || this._endDatePicker) {
-      const datePickers = [this._startDatePicker, this._endDatePicker];
-      datePickers.forEach((picker) => {
+  // Перегружаем метод родителя removeElement,
+  // чтобы при удалении удалялся более ненужный календарь
+  removeElement() {
+    super.removeElement();
+    if (this._startDatePicker !== null || this._endDatePicker !== null) {
+      const dataPickers = [this._startDatePicker, this._endDatePicker];
+      dataPickers.forEach((picker) => {
         picker.destroy();
         picker = null;
       });
     }
+  }
 
+  _setDatePickers() {
     const startDate = this.getElement().querySelector('#event-start-time-1');
     const endDate = this.getElement().querySelector('#event-end-time-1');
     this._setDatePicker(startDate, true);
@@ -203,26 +234,24 @@ export default class EventForm extends Smart {
   }
 
   _startDateSelectHandler(evt) {
-    this.updateState({
-      startDate: evt,
-    });
+    this.updateState({startDate: dayjs(evt).format()});
   }
 
   _endDateSelectHandler(evt) {
     this.updateState({
-      endDate: evt,
+      endDate: dayjs(evt).format(),
     });
-  }
-
-  _setTypeSelectHandlers() {
-    const typeSelects = this.getElement().querySelector('.event__type-group').querySelectorAll('.event__type-input');
-    typeSelects.forEach((typeSelect) => typeSelect.addEventListener('change', this._typeSelectHandler));
   }
 
   _typeSelectHandler(evt) {
     this.updateState({
       type: evt.target.value,
     });
+  }
+
+  _setTypeSelectHandlers() {
+    const typeSelects = this.getElement().querySelectorAll('.event__type-input');
+    typeSelects.forEach((typeSelect) => typeSelect.addEventListener('change', this._typeSelectHandler));
   }
 
   _checkDestinationValidity(evtValue) {
@@ -260,6 +289,17 @@ export default class EventForm extends Smart {
   restoreHandlers() {
     this._setInnerHandlers();
     this.setCloseClickHandler(this._callback.closeClick);
+    this.setFormSubmitHandler(this._callback.formSubmit);
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(EventForm.parseStateToEvent(this._state));
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
   }
 
   reset(event) {
@@ -268,18 +308,51 @@ export default class EventForm extends Smart {
     );
   }
 
-  // _formSubmitHandler(evt) {
-  //   evt.preventDefault();
-  //   this._callback.formSubmit(EventForm.parseStateToEvent(this._state));
+  _getNewOffers() {
+    const newOffers = this.getElement().querySelectorAll('.event__offer-selector');
+    const newOffersArray = [];
+
+    newOffers.forEach((offer) => {
+      const isChecked = offer.querySelector('.event__offer-checkbox').checked;
+      if (isChecked) {
+        const newOfferTitle = offer.querySelector('.event__offer-title').innerHTML;
+        const newOfferPrice = offer.querySelector('.event__offer-price').innerHTML;
+        const newOffer = {title: newOfferTitle, price: newOfferPrice};
+        newOffersArray.push(newOffer);
+      }
+    });
+
+    this.updateState({
+      offers: newOffersArray,
+    });
+  }
+
+  // _getNewPrice() {
+  //   const eventPrice = this._state.price;
+  //   const newPrice = this.getElement().querySelector('.event__input--price').value;
+  //   console.log(newPrice);
+  //
+  //   if (!isPriceEqual(eventPrice, newPrice)) {
+  //     // console.log(eventPrice);
+  //     this.updateState({
+  //       price: newPrice,
+  //     });
+  //   }
   // }
 
-  // setFormSubmitHandler(callback) {
-  //   this._callback.formSubmit = callback;
-  //   this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
-  // }
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._getNewOffers();
+    // this._getNewPrice();
+    this._callback.formSubmit(EventForm.parseStateToEvent(this._state));
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().addEventListener('submit', this._formSubmitHandler);
+  }
 
   static parseEventToState(event) {
-    // console.log(event);
     return {
       ...event,
       isDestination: event.destination.city !== null,

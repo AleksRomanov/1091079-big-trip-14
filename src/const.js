@@ -1,4 +1,4 @@
-const WAYPOINT_COUNT = 10;
+const WAYPOINT_COUNT = 2;
 
 export const UserAction = {
   UPDATE_EVENT: 'UPDATE_EVENT',

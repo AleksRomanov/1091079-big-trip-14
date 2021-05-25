@@ -5,6 +5,7 @@ import EventsModel from './model/events';
 import FilterModel from './model/filter';
 
 const events = generateEvents(WAYPOINT_COUNT);
+// console.log(events);
 
 const eventsModel = new EventsModel();
 const filterModel = new FilterModel();

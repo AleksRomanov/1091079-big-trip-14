@@ -9,18 +9,14 @@ const getRandomArrayItem = (array) => array[getRandomNumber(0, array.length - 1)
 
 const shuffle = () => Math.random() - 0.5;
 
-const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
-
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.splice(index, 1, update),
-  ];
-};
-
 const sortByPrice = (eventA, eventB) => eventB.price - eventA.price;
 
-export {getRandomNumber, getRandomArrayItem, shuffle, updateItem, sortByPrice};
+const isOffersEqual = (arrayA, arrayB) => {
+  return arrayA.filter((item) => !arrayB.includes(item))
+    .concat(arrayB.filter((item) => !arrayA.includes(item)));
+
+};
+
+const isPriceEqual = (eventPrice, updatePrice) => eventPrice === updatePrice;
+
+export {getRandomNumber, getRandomArrayItem, shuffle, sortByPrice, isOffersEqual, isPriceEqual};

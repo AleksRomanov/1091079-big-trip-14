@@ -3,7 +3,6 @@ import {CITIES, DESCRIPTIONS, EVENT_TYPES, OFFERS} from './data';
 import {nanoid} from 'nanoid';
 import {getRandomArrayItem, getRandomNumber, shuffle} from '../utils/common';
 
-// class CreateEventsState {
 const generatePhotos = () => {
   const count = getRandomNumber(1, 6);
 

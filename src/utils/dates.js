@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import duration from 'dayjs/plugin/duration';
+
 dayjs.extend(utc);
 dayjs.extend(duration);
 import {getRandomNumber} from './common';
@@ -14,22 +15,27 @@ const generateDate = (firstDate = '', isFirstDate = false) => {
 };
 
 const getFormattedDate = (date, format) => {
-  return dayjs(date).utc().format(format);
+  return date !== null ? dayjs(date).utc().format(format) : '';
 };
 
 const filterPastEvents = (event) => !dayjs().isBefore(dayjs(event.startDate));
 const filterFutureEvents = (event) => !dayjs().isAfter(dayjs(event.startDate));
 
 const getDuration = (startTime, endTime) => {
-  const diff = dayjs.duration(dayjs(endTime).diff(startTime));
+  if (startTime !== null || endTime !== null) {
+    const diff = dayjs.duration(dayjs(endTime).diff(startTime));
+    const {hours, days, minutes} = diff.$d;
 
-  if (!diff.$d.hours && !diff.$d.days) {
-    return diff.$d.minutes;
-  }
-  if (diff.$d.hours && !diff.$d.days) {
-    return `${diff.$d.hours}H ${diff.$d.minutes}M`;
+    if (!hours && !days) {
+      return minutes;
+    }
+    if (hours && !days) {
+      return `${hours}H ${minutes}M`;
+    } else {
+      return `0${days}D ${hours}H ${minutes}M`;
+    }
   } else {
-    return `0${diff.$d.days}D ${diff.$d.hours}H ${diff.$d.minutes}M`;
+    return '';
   }
 };
 
@@ -43,6 +49,14 @@ const sortByTime = (eventA, eventB) => {
   return eventBDuration - eventADuration;
 };
 
+const sortByDay = (eventA, eventB) => {
+  return dayjs(eventB.startDate).isBefore(dayjs(eventA.startDate)) ? 1 : -1;
+};
 
-export {generateDate, getFormattedDate, filterPastEvents, filterFutureEvents, sortByTime, getDuration};
+const isDatesEqual = (dateA, dateB) => {
+  return (dateA === null && dateB === null) ? true : dayjs(dateA).isSame(dateB, 'd');
+};
+
+
+export {generateDate, getFormattedDate, filterPastEvents, filterFutureEvents, sortByTime, getDuration, isDatesEqual, sortByDay};
 

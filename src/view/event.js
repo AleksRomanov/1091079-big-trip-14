@@ -17,13 +17,15 @@ const isFavorite = (favoriteStatus) => {
 };
 
 const createEvent = ({startDate, endDate, type, destination, price, offers, favorite, id}) => {
+  const isDestination = destination.city !== null ? destination.city : '';
+  const isPrice = price !== null ? price : '';
   return `<li class="trip-events__item">
        <div class="event" id="${id}">
     <time class="event__date" datetime="${getFormattedDate(startDate, 'YYYY-MM-DD-hh:mm')}">${getFormattedDate(startDate, 'MMM DD')}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${type} ${destination.city}</h3>
+    <h3 class="event__title">${type} ${isDestination}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="${getFormattedDate(startDate, 'hh:mm')}">${getFormattedDate(startDate, 'HH:mm')}</time>
@@ -33,7 +35,7 @@ const createEvent = ({startDate, endDate, type, destination, price, offers, favo
       <p class="event__duration">${getDuration(startDate, endDate)}</p>
     </div>
     <p class="event__price">
-      &euro;&nbsp;<span class="event__price-value">${price}</span>
+      &euro;&nbsp;<span class="event__price-value">${isPrice}</span>
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">

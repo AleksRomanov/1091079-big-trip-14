@@ -1,11 +1,10 @@
 import {CITIES, DESCRIPTIONS, EVENT_TYPES, OFFERS} from '../mocks/data';
-import {getFormattedDate, isDateAfter} from '../utils/dates';
+import {getFormattedDate} from '../utils/dates';
 import Smart from './smart';
 import {generateDescription, generatePhotos} from '../mocks/creating-destination';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import flatpickr from 'flatpickr';
 import dayjs from 'dayjs';
-import {isPriceEqual} from '../utils/common';
 
 const EMPTY_EVENT = {
   type: EVENT_TYPES[0],
@@ -90,12 +89,9 @@ const getEventPhotos = ({destination, isDestination}) => {
 };
 
 const createEventForm = (event) => {
-  const {type, isDestination, isPrice, isStartDate, isEndDate, startDate, endDate, price, destination} = event;
+  const {type, isDestination, isPrice, price, destination} = event;
   const destinationValue = isDestination ? `value="${destination.city}"` : '';
   const eventPrice = isPrice ? `value="${price}"` : '';
-  const eventStartDate = isStartDate ? `value="${getFormattedDate(startDate, 'YY[/]MM[/]DD HH:MM')}"` : '';
-  const eventEndDate = isEndDate ? `value="${getFormattedDate(endDate, 'YY[/]MM[/]DD HH:MM')}"` : '';
-
 
   return `<form class="event event--edit" action="#" method="post">
     <header class="event__header">
@@ -126,10 +122,10 @@ const createEventForm = (event) => {
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" ${eventStartDate}>
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time">
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" ${eventEndDate}>
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time">
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -168,7 +164,6 @@ export default class EventForm extends Smart {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._pricePickerHandler = this._pricePickerHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
-    // this._offerSelectHandler = this._offerSelectHandler.bind(this);
     this._setInnerHandlers();
   }
 
@@ -178,43 +173,44 @@ export default class EventForm extends Smart {
     this._setTypeSelectHandlers();
     this._setDatePickers();
     this._setPricePicker();
-    // this._setOffersPickers();
   }
 
   _pricePickerHandler(evt) {
-    this.updateState({
-      price: parseInt(evt.target.value),
-    });
+    const newPrice = parseInt(evt.target.value);
+    if (!isNaN(newPrice)) {
+      this.updateState({
+        price: parseInt(evt.target.value),
+        isPrice: true,
+      });
+    } else {
+      evt.target.value = this._state.price;
+    }
   }
 
   _setPricePicker() {
     this.getElement().querySelector('.event__input--price').addEventListener('change', this._pricePickerHandler);
   }
 
-  _setDatePicker(date, isStart) {
+  _setDatePicker(dateElement, isStart) {
     const datePrefix = isStart ? 'startDate' : 'endDate';
     const cbStateName = `_${datePrefix}Picker`;
     const dateHandler = isStart ? this._startDateSelectHandler : this._endDateSelectHandler;
     const getMinDate = isStart ? false : this._state.startDate;
     const getMaxDate = isStart ? this._state.endDate : false;
-
     this[cbStateName] = flatpickr(
-      date,
+      dateElement,
       {
         minDate: getMinDate,
         maxDate: getMaxDate,
         enableTime: true,
-        dateFormat: 'Z',
-        altFormat: 'd/m/y H:i',
-        altInput: true,
-        defaultDate: this._state[datePrefix],
+        time_24hr: true,
+        dateFormat: 'y/m/d H:i',
+        defaultDate: getFormattedDate(this._state[datePrefix], 'YY/MM/DD HH:mm'),
         onChange: dateHandler,
       },
     );
   }
 
-  // Перегружаем метод родителя removeElement,
-  // чтобы при удалении удалялся более ненужный календарь
   removeElement() {
     super.removeElement();
     if (this._startDatePicker !== null || this._endDatePicker !== null) {
@@ -227,10 +223,10 @@ export default class EventForm extends Smart {
   }
 
   _setDatePickers() {
-    const startDate = this.getElement().querySelector('#event-start-time-1');
-    const endDate = this.getElement().querySelector('#event-end-time-1');
-    this._setDatePicker(startDate, true);
-    this._setDatePicker(endDate);
+    const startDateElement = this.getElement().querySelector('#event-start-time-1');
+    const endDateElement = this.getElement().querySelector('#event-end-time-1');
+    this._setDatePicker(startDateElement, true);
+    this._setDatePicker(endDateElement);
   }
 
   _startDateSelectHandler(evt) {
@@ -327,23 +323,9 @@ export default class EventForm extends Smart {
     });
   }
 
-  // _getNewPrice() {
-  //   const eventPrice = this._state.price;
-  //   const newPrice = this.getElement().querySelector('.event__input--price').value;
-  //   console.log(newPrice);
-  //
-  //   if (!isPriceEqual(eventPrice, newPrice)) {
-  //     // console.log(eventPrice);
-  //     this.updateState({
-  //       price: newPrice,
-  //     });
-  //   }
-  // }
-
   _formSubmitHandler(evt) {
     evt.preventDefault();
     this._getNewOffers();
-    // this._getNewPrice();
     this._callback.formSubmit(EventForm.parseStateToEvent(this._state));
   }
 

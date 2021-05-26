@@ -1,4 +1,4 @@
-const WAYPOINT_COUNT = 2;
+const WAYPOINT_COUNT = 1;
 
 export const UserAction = {
   UPDATE_EVENT: 'UPDATE_EVENT',
@@ -57,9 +57,4 @@ const OFFERS_SORT_OPTIONS = [
   'offers',
 ];
 
-const KeyType = {
-  ESCAPE: 'Escape',
-  ESC: 'Esc',
-};
-
-export {WAYPOINT_COUNT, DATA_VIEW_TYPES, DATA_VIEW_PERIOD, OFFERS_SORT_OPTIONS, KeyType};
+export {WAYPOINT_COUNT, DATA_VIEW_TYPES, DATA_VIEW_PERIOD, OFFERS_SORT_OPTIONS};

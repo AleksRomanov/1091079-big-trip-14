@@ -28,20 +28,15 @@ export default class App {
     this._eventsContainer = new EventsContainerView();
     this.viewModeToggleComponent = new ModesToggleView();
     this.totalTripInfoComponent = null;
-    // console.log(this._currentSortType);
     this._sortToggleComponent = null;
     this._noEventsView = new NoEventsView();
     this._eventsPresenters = {};
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
-    // this._handleAddFormClose = this._handleAddFormClose.bind(this);
-    // this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
-    // this._newEventForm = new NewEventForm();
     this._newEventPresenter = new EventNew(this._eventsContainer, this._handleViewAction);
     this._filterPresenter = new Filter(tripControlsNavigation, this._filterModel);
-    // filterPresenter = new FilterPresenter(siteMainElement, filterModel, tasksModel)
   }
 
   init() {
@@ -77,7 +72,6 @@ export default class App {
     if (eventsCount) {
       this._renderEventsContainer();
       this._renderEventsList(events);
-
       this._renderEventsTotal(this._eventsModel.getEvents());
       this._renderViewModeToggle();
       this._renderFilter();
@@ -90,6 +84,7 @@ export default class App {
   }
 
   _renderEventsTotal(events) {
+
     this.totalTripInfoComponent = new TripInfoView(events);
     render(tripMain, this.totalTripInfoComponent);
   }
@@ -101,7 +96,6 @@ export default class App {
 
     switch (this._currentSortType) {
       case SortTypes.DAY:
-        // console.log(events);
         return filteredEvents.sort(sortByDay);
       case SortTypes.TIME:
         return filteredEvents.sort(sortByTime);
@@ -115,6 +109,8 @@ export default class App {
       .values(this._eventsPresenters)
       .forEach((presenter) => presenter.destroy());
     this._eventsPresenters = {};
+    remove(this._sortToggleComponent);
+
     remove(this._noEventsView);
     if (resetSortType) {
       this._currentSortType = SortTypes.DAY;

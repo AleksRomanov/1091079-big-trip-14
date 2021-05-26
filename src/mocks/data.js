@@ -258,7 +258,6 @@ const OFFERS = [
   },
 ];
 
-
 const DESCRIPTIONS = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   'Cras aliquet varius magna, non porta ligula feugiat eget.',
@@ -272,9 +271,4 @@ const DESCRIPTIONS = [
   'Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.',
 ];
 
-const RenderPosition = {
-  AFTERBEGIN: 'afterbegin',
-  BEFOREEND: 'beforeend',
-};
-
-export {EVENT_TYPES, CITIES, OFFERS, DESCRIPTIONS, RenderPosition};
+export {EVENT_TYPES, CITIES, OFFERS, DESCRIPTIONS};

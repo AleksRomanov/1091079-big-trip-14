@@ -2,14 +2,19 @@ import {getFormattedDate} from '../utils/dates';
 import Abstract from './abstract';
 
 const getEventsSum = (state) => {
-  return state.reduce((accumulator, current) => {
-    return accumulator + current.price;
+  return state.reduce((accumulator, event) => {
+    let eventOfferSumm = 0;
+    if (event.offers.length) {
+      eventOfferSumm = event.offers.reduce((acc, cur) => {
+        return acc + cur.price;
+      }, 0);
+    }
+    return accumulator + eventOfferSumm + event.price;
   }, 0);
 };
 
 const getSecondDestination = (state) => {
   const destinationSeparator = '...';
-  console.log(state);
   return state.length > 1 ? state[1].destination.city : destinationSeparator;
 };
 
@@ -20,10 +25,9 @@ const createTripInfoTemplate = (state) => {
   const finalDate = getFormattedDate(state[state.length - 1]['endDate'], 'DD');
   const totalCost = getEventsSum(state);
   const getTripTotalDestination = () => {
-    // console.log(state.length);
-    if(state.length >= 2) {
+    if (state.length >= 3) {
       return `${firstCity} &mdash; ${getSecondDestination(state)} &mdash; ${finalCity}`;
-    } else if (state.length === 1){
+    } else if (state.length === 2) {
       return `${firstCity} &mdash; ${finalCity}`;
     } else {
       return `${firstCity}`;

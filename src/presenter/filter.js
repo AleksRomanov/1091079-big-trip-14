@@ -1,6 +1,5 @@
 import FilterView from '../view/creating-filter.js';
-import {render, RenderPosition, replace, remove} from '../utils/render.js';
-import {filter} from '../utils/filter.js';
+import {render, RenderPosition} from '../utils/render.js';
 import {FilterTypes, UpdateType} from '../const.js';
 
 export default class Filter {

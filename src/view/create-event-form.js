@@ -312,7 +312,7 @@ export default class EventForm extends Smart {
       const isChecked = offer.querySelector('.event__offer-checkbox').checked;
       if (isChecked) {
         const newOfferTitle = offer.querySelector('.event__offer-title').innerHTML;
-        const newOfferPrice = offer.querySelector('.event__offer-price').innerHTML;
+        const newOfferPrice = Number(offer.querySelector('.event__offer-price').innerHTML);
         const newOffer = {title: newOfferTitle, price: newOfferPrice};
         newOffersArray.push(newOffer);
       }
@@ -346,30 +346,14 @@ export default class EventForm extends Smart {
   }
 
   static parseStateToEvent(state) {
-    // data = Object.assign({}, data);
     state = {...state};
-
-    // if (!data.isDueDate) {
-    //   data.dueDate = null;
-    // }
-    //
-    // if (!data.isRepeating) {
-    //   data.repeating = {
-    //     mo: false,
-    //     tu: false,
-    //     we: false,
-    //     th: false,
-    //     fr: false,
-    //     sa: false,
-    //     su: false,
-    //   };
-
-    // delete state.isDueDate;
-    // delete state.isRepeating;
-
+    delete state.isDates;
+    delete state.isDestination;
+    delete state.isEndDate;
+    delete state.isStartDate;
+    delete state.isPrice;
     return state;
   }
-
 
   getTemplate() {
     return createEventForm(this._state);

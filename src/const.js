@@ -26,6 +26,25 @@ export const SortTypes = {
   OFFERS: 'offers',
 };
 
+const STATISTICS_SETTINGS = {
+  type: 'horizontalBar',
+  backgroundColor: '#ffffff',
+  hoverBackgroundColor: '#ffffff',
+  dataAnchor: 'start',
+  basicFontSize: 13,
+  datalabelsColor: '#000000',
+  fontColor: '#000000',
+  datalabelsAnchor: 'end',
+  datalabelsAlign: 'start',
+  titleFontSize: 23,
+  titlePosition: 'left',
+  padding: 5,
+  minBarLength: 85,
+  barHeight: 55,
+  barThickness: 44,
+};
+
+
 const DATA_VIEW_TYPES = [
   'Table',
   'Stats',
@@ -57,4 +76,4 @@ const OFFERS_SORT_OPTIONS = [
   'offers',
 ];
 
-export {WAYPOINT_COUNT, DATA_VIEW_TYPES, DATA_VIEW_PERIOD, OFFERS_SORT_OPTIONS};
+export {WAYPOINT_COUNT, DATA_VIEW_TYPES, DATA_VIEW_PERIOD, OFFERS_SORT_OPTIONS, STATISTICS_SETTINGS};

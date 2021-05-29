@@ -67,8 +67,8 @@ const eventExtraOffers = ({type, offers}) => {
 const getEventPhotos = ({destination, isDestination}) => {
 
   const getPhotos = (photos) => {
-    return photos.map((photo) => {
-      return `<img class="event__photo" src="${photo}" alt="Event photo">`;
+    return photos.map(({src, description}) => {
+      return `<img class="event__photo" src="${src}" alt="${description}">`;
     }).join('');
   };
 
@@ -88,7 +88,8 @@ const getEventPhotos = ({destination, isDestination}) => {
   }
 };
 
-const createEventForm = (event) => {
+const createEventForm = (event, destinations) => {
+  console.log(destinations);
   const {type, isDestination, isPrice, price, destination} = event;
   const destinationValue = isDestination ? `value="${destination.city}"` : '';
   const eventPrice = isPrice ? `value="${price}"` : '';
@@ -150,8 +151,9 @@ const createEventForm = (event) => {
 };
 
 export default class EventForm extends Smart {
-  constructor(event = EMPTY_EVENT) {
+  constructor(event = EMPTY_EVENT, destinations) {
     super();
+    this._destinations = destinations;
     this._state = EventForm.parseEventToState(event);
     this._startDatePicker = null;
     this._endDatePicker = null;
@@ -356,7 +358,7 @@ export default class EventForm extends Smart {
   }
 
   getTemplate() {
-    return createEventForm(this._state);
+    return createEventForm(this._state, this._destinations);
   }
 
   _closeClickHandler(evt) {

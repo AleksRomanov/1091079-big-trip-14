@@ -12,6 +12,7 @@ import NoEventsView from '../view/creating-no-events';
 import EventNew from './event-new';
 import Filter from './filter';
 import Statistics from '../view/statistics';
+import Api from '../api';
 
 const siteHeader = document.querySelector('.page-header');
 const tripMain = siteHeader.querySelector('.trip-main');
@@ -21,13 +22,14 @@ const siteBodyPageMain = document.querySelector('.page-body__page-main');
 const tripEvents = siteBodyPageMain.querySelector('.trip-events');
 const pageContainer = siteBodyPageMain.querySelector('.page-body__container');
 
-
 export default class App {
-  constructor(eventsModel, filterModel) {
+  constructor(eventsModel, filterModel, api, dataModel) {
+    this._api = api;
     this._currentSortType = SortTypes.DAY;
     this._currentViewMode = 'Table';
     this._eventsModel = eventsModel;
     this._filterModel = filterModel;
+    this._dataModel = dataModel;
     this._eventsContainer = new EventsContainerView();
     this._statisticsView = null;
     this.viewModeToggleComponent = new ModesToggleView();
@@ -35,6 +37,7 @@ export default class App {
     this._sortToggleComponent = null;
     this._noEventsView = new NoEventsView();
     this._eventsPresenters = {};
+    this._destinations = null;
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
@@ -44,11 +47,81 @@ export default class App {
     this._filterPresenter = new Filter(tripControlsNavigation, this._filterModel);
   }
 
+
+
   init() {
     this._eventsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
     this._renderApp();
+
+    this._getWebData();
+    // this._getDestinations();
+    this._getEvents();
+    // this._getDestinations();
   }
+  _getWebData() {
+
+  }
+
+
+  _handleModelEvent(updateType, data) {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this._eventsPresenters[data.id].init(data);
+        break;
+      case UpdateType.MINOR:
+        this._clearApp();
+        this._renderApp();
+        break;
+      case UpdateType.MAJOR:
+        this._clearApp({resetSortType: true});
+        this._renderApp();
+        break;
+      case UpdateType.INIT:
+        // console.log('init');
+        // this._isLoading = false;
+        // remove(this._loadingComponent);
+        // console.log('init');
+        this._clearApp();
+        // this._getDestinations();
+
+        this._renderApp();
+        // console.log(this._destinations);
+
+        break;
+    }
+  }
+
+  _getEvents() {
+    this._api.getEvents()
+      .then((events) => {
+        // console.log(events);
+
+        this._eventsModel.setEvents(UpdateType.INIT, events);
+        this._getDestinations();
+        // console.log('afterSet');
+
+        // render(siteHeaderElement, siteMenuComponent, RenderPosition.BEFOREEND);
+        // siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+      })
+      .catch(() => {
+        // console.log('catch');
+        this._eventsModel.setEvents(UpdateType.INIT, []);
+        // render(siteHeaderElement, siteMenuComponent, RenderPosition.BEFOREEND);
+        // siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+      });
+  }
+
+  _getDestinations() {
+    this._api.getDestinations()
+      .then((destinations) => {
+        this._dataModel.setDestinations(destinations);
+      })
+      .catch(() => {
+        // console.log('catch');
+      });
+  }
+
 
   _renderApp() {
     const events = this._getFilteredAndSortedEvents();
@@ -137,21 +210,6 @@ export default class App {
     });
   }
 
-  _handleModelEvent(updateType, data) {
-    switch (updateType) {
-      case UpdateType.PATCH:
-        this._eventsPresenters[data.id].init(data);
-        break;
-      case UpdateType.MINOR:
-        this._clearApp();
-        this._renderApp();
-        break;
-      case UpdateType.MAJOR:
-        this._clearApp({resetSortType: true});
-        this._renderApp();
-        break;
-    }
-  }
 
   _renderEventsTotal(events) {
     this.totalTripInfoComponent = new TripInfoView(events);
@@ -174,11 +232,14 @@ export default class App {
   }
 
   _destroyEventsSection() {
-    Object
-      .values(this._eventsPresenters)
-      .forEach((presenter) => presenter.destroy());
-    this._eventsPresenters = {};
-    remove(this._sortToggleComponent);
+    if (Object.keys(this._eventsPresenters).length) {
+      Object
+        .values(this._eventsPresenters)
+        .forEach((presenter) => presenter.destroy());
+      this._eventsPresenters = {};
+      remove(this._sortToggleComponent);
+    }
+
   }
 
   _clearApp(resetSortType = false) {
@@ -225,7 +286,8 @@ export default class App {
   }
 
   _renderEvent(event) {
-    const eventPresenter = new EventPresenter(this._eventsContainer, this._handleViewAction, this._handleModeChange);
+    // console.log(this._dataModel.getDestinations());
+    const eventPresenter = new EventPresenter(this._eventsContainer, this._handleViewAction, this._handleModeChange, this._dataModel.getDestinations());
     eventPresenter.init(event);
     this._eventsPresenters[event.id] = eventPresenter;
   }
@@ -258,6 +320,9 @@ export default class App {
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
         this._eventsModel.updateEvent(updateType, update);
+        // this._api.updateTask(update).then((response) => {
+        //   this._tasksModel.updateTask(updateType, response);
+        // });
         break;
       case UserAction.ADD_EVENT:
         this._eventsModel.addEvent(updateType, update);

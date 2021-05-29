@@ -11,11 +11,12 @@ const Mode = {
 };
 
 export default class Point {
-  constructor(taskListContainer, changeEvent, changeMode) {
+  constructor(taskListContainer, changeEvent, changeMode, destinations) {
     this._eventListContainer = taskListContainer;
     this._changeEvent = changeEvent;
     this._changeMode = changeMode;
     this._eventComponent = null;
+    this._destinations = destinations;
     this._eventEditComponent = null;
     this._mode = Mode.DEFAULT;
     this._handleEditClick = this._handleEditClick.bind(this);
@@ -31,8 +32,8 @@ export default class Point {
     const prevTaskComponent = this._eventComponent;
     const prevTaskEditComponent = this._eventEditComponent;
 
-    this._eventComponent = new Event(this._event);
-    this._eventEditComponent = new EventForm(this._event);
+    this._eventComponent = new Event(this._event, this._destinations);
+    this._eventEditComponent = new EventForm(this._event, this._destinations);
 
     this._eventComponent.setEditClickHandler(this._handleEditClick);
     this._eventComponent.setFavoriteClickHandler(this._handleFavoriteClick);

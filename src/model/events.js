@@ -6,8 +6,9 @@ export default class Events extends Observer {
     this._events = [];
   }
 
-  setEvents(events) {
+  setEvents(updateType, events) {
     this._events = events.slice();
+    this._notify(updateType);
   }
 
   getEvents() {
@@ -53,4 +54,48 @@ export default class Events extends Observer {
 
     this._notify(updateType);
   }
+
+  static adaptToClient(event) {
+
+    const adaptedEvent = {
+      ...event,
+      price: event.base_price,
+      startDate: event.date_from,
+      endDate: event.date_to,
+      destination: {
+        photos: event.destination.pictures,
+        city: event.destination.name,
+        description: event.destination.description,
+      },
+      favorite: event.is_favorite,
+    };
+
+
+    // Ненужные ключи мы удаляем
+    delete adaptedEvent.date_from;
+    delete adaptedEvent.date_to;
+    delete adaptedEvent.is_favorite;
+    delete adaptedEvent.base_price;
+    return adaptedEvent;
+  }
+
+  static adaptToServer(event) {
+    // console.log(event);
+    const adaptedEvent = {
+      ...event,
+      // 'due_date': event.dueDate instanceof Date ? event.dueDate.toISOString() : null, // На сервере дата хранится в ISO формате
+      // 'is_archived': event.isArchive,
+      // 'is_favorite': event.isFavorite,
+      // 'repeating_days': event.repeating,
+    }
+
+    // Ненужные ключи мы удаляем
+    // delete adaptedEvent.dueDate;
+    // delete adaptedEvent.isArchive;
+    // delete adaptedEvent.isFavorite;
+    // delete adaptedEvent.repeating;
+
+    return adaptedEvent;
+  }
+
 }

@@ -21,9 +21,9 @@ const siteBodyPageMain = document.querySelector('.page-body__page-main');
 const tripEvents = siteBodyPageMain.querySelector('.trip-events');
 const pageContainer = siteBodyPageMain.querySelector('.page-body__container');
 
-
 export default class App {
-  constructor(eventsModel, filterModel) {
+  constructor(eventsModel, filterModel, api) {
+    this._api = api;
     this._currentSortType = SortTypes.DAY;
     this._currentViewMode = 'Table';
     this._eventsModel = eventsModel;
@@ -35,19 +35,75 @@ export default class App {
     this._sortToggleComponent = null;
     this._noEventsView = new NoEventsView();
     this._eventsPresenters = {};
+    this._destinations = null;
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleViewModeToggle = this._handleViewModeToggle.bind(this);
-    this._newEventPresenter = new EventNew(this._eventsContainer, this._handleViewAction);
+    this._addEventButtonHandler = this._addEventButtonHandler.bind(this);
+    this._newEventPresenter = null;
     this._filterPresenter = new Filter(tripControlsNavigation, this._filterModel);
   }
+
 
   init() {
     this._eventsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
     this._renderApp();
+    this._getWebData();
+  }
+
+
+  _handleModelEvent(updateType, data) {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this._eventsPresenters[data.id].init(data);
+        break;
+      case UpdateType.MINOR:
+        this._clearApp();
+        this._renderApp();
+        break;
+      case UpdateType.MAJOR:
+        this._clearApp({resetSortType: true});
+        this._renderApp();
+        break;
+      case UpdateType.INIT:
+        // console.log('init');
+        // this._isLoading = false;
+        // remove(this._loadingComponent);
+        // console.log('init');
+        // console.log('123');
+
+        this._clearApp();
+        // this._getDestinations();
+        this._renderApp();
+        // console.log(this._destinations);
+        // console.log(this._eventsModel);
+        // console.log('init');
+
+        break;
+    }
+  }
+
+  _getWebData() {
+    this._api.getData()
+      .then((data) => {
+        this._eventsModel.setEvents(UpdateType.INIT, data);
+
+
+        // this._getDestinations();
+        // console.log('afterSet');
+
+        // render(siteHeaderElement, siteMenuComponent, RenderPosition.BEFOREEND);
+        // siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+      })
+      .catch(() => {
+        // console.log('catch');
+        // this._eventsModel.setEvents(UpdateType.INIT, []);
+        // render(siteHeaderElement, siteMenuComponent, RenderPosition.BEFOREEND);
+        // siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+      });
   }
 
   _renderApp() {
@@ -57,10 +113,12 @@ export default class App {
     if (this.totalTripInfoComponent !== null) {
       remove(this.totalTripInfoComponent);
     }
-
+    this._removeAddEventButtonHandler();
     if (eventsCount) {
       this._renderEventsContainer();
+
       this._renderEventsList(events);
+
       this._renderEventsTotal(this._eventsModel.getEvents());
       this._renderViewModeToggle();
       this._renderFilter();
@@ -137,21 +195,6 @@ export default class App {
     });
   }
 
-  _handleModelEvent(updateType, data) {
-    switch (updateType) {
-      case UpdateType.PATCH:
-        this._eventsPresenters[data.id].init(data);
-        break;
-      case UpdateType.MINOR:
-        this._clearApp();
-        this._renderApp();
-        break;
-      case UpdateType.MAJOR:
-        this._clearApp({resetSortType: true});
-        this._renderApp();
-        break;
-    }
-  }
 
   _renderEventsTotal(events) {
     this.totalTripInfoComponent = new TripInfoView(events);
@@ -159,6 +202,7 @@ export default class App {
   }
 
   _getFilteredAndSortedEvents() {
+
     const filterType = this._filterModel.getFilter();
     const events = this._eventsModel.getEvents();
     const filteredEvents = filter[filterType](events);
@@ -174,14 +218,18 @@ export default class App {
   }
 
   _destroyEventsSection() {
-    Object
-      .values(this._eventsPresenters)
-      .forEach((presenter) => presenter.destroy());
-    this._eventsPresenters = {};
-    remove(this._sortToggleComponent);
+    if (Object.keys(this._eventsPresenters).length) {
+      Object
+        .values(this._eventsPresenters)
+        .forEach((presenter) => presenter.destroy());
+      this._eventsPresenters = {};
+      remove(this._sortToggleComponent);
+    }
+
   }
 
   _clearApp(resetSortType = false) {
+    // console.log('clear');
     this._destroyEventsSection();
     remove(this._noEventsView);
     if (resetSortType) {
@@ -198,6 +246,7 @@ export default class App {
   }
 
   _createNewEventForm(callback) {
+    this._newEventPresenter = new EventNew(this._eventsContainer, this._handleViewAction, this._api._dataModel);
     this._newEventPresenter.init(callback);
   }
 
@@ -209,11 +258,17 @@ export default class App {
     addEventButton.disabled = false;
   }
 
+  _removeAddEventButtonHandler() {
+    document.removeEventListener('click', this._addEventButtonHandler);
+  }
+
   _setAddEventButtonHandler(button) {
-    button.addEventListener('click', () => {
-      button.disabled = true;
-      this._createNewEventForm(this._setAddEventButtonDisabled);
-    });
+    button.addEventListener('click', this._addEventButtonHandler);
+  }
+
+  _addEventButtonHandler(evt) {
+    evt.target.disabled = true;
+    this._createNewEventForm(this._setAddEventButtonEnabled);
   }
 
   _renderEventsContainer() {
@@ -221,11 +276,16 @@ export default class App {
   }
 
   _renderEventsList(events) {
-    events.slice().forEach((event) => this._renderEvent(event));
+    // events.slice().forEach((event) => this._renderEvent(event));
+    events.slice().forEach((event) => {
+      this._renderEvent(event);
+    });
   }
 
   _renderEvent(event) {
-    const eventPresenter = new EventPresenter(this._eventsContainer, this._handleViewAction, this._handleModeChange);
+    // console.log(event);
+
+    const eventPresenter = new EventPresenter(this._eventsContainer, this._handleViewAction, this._handleModeChange, this._api._dataModel);
     eventPresenter.init(event);
     this._eventsPresenters[event.id] = eventPresenter;
   }
@@ -256,8 +316,25 @@ export default class App {
 
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
+      // case UserAction.UPDATE_EVENT:
+      //   this._tripEventPresenter[update.id].setViewState(TripEventPresenterViewState.SAVING);
+      //   this._api.updateTripEvent(update)
+      //     .then((response) => {
+      //       this._tripEventsModel.updateTripEvent(updateType, response);
+      //     })
+      //     .catch(() => {
+      //       this._tripEventPresenter[update.id].setViewState(TripEventPresenterViewState.ABORTING);
+      //     });
+      //   break;
+
       case UserAction.UPDATE_EVENT:
-        this._eventsModel.updateEvent(updateType, update);
+        this._api.updatePoint(update)
+          .then((response) => {
+            this._eventsModel.updateEvent(updateType, response);
+          })
+          .catch(() => {
+            // this._tripEventPresenter[update.id].setViewState(TripEventPresenterViewState.ABORTING);
+          });
         break;
       case UserAction.ADD_EVENT:
         this._eventsModel.addEvent(updateType, update);

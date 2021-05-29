@@ -16,7 +16,8 @@ const isFavorite = (favoriteStatus) => {
   return favoriteStatus ? 'event__favorite-btn--active' : 'event__favorite-btn';
 };
 
-const createEvent = ({startDate, endDate, type, destination, price, offers, favorite, id}) => {
+const createEvent = (event) => {
+  const {startDate, endDate, type, destination, price, offers, favorite, id} = event;
   const isDestination = destination.city !== null ? destination.city : '';
   const isPrice = price !== null ? price : '';
   return `<li class="trip-events__item">
@@ -67,7 +68,9 @@ export default class Event extends AbstractView {
   }
 
   getTemplate() {
-    return createEvent(this._event);
+    // console.log(this._destinations);
+
+    return createEvent(this._event, this._destinations);
   }
 
   _editClickHandler(evt) {

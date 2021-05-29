@@ -11,7 +11,8 @@ const Mode = {
 };
 
 export default class Point {
-  constructor(taskListContainer, changeEvent, changeMode) {
+  constructor(taskListContainer, changeEvent, changeMode, dataModel) {
+    this._dataModel = dataModel;
     this._eventListContainer = taskListContainer;
     this._changeEvent = changeEvent;
     this._changeMode = changeMode;
@@ -32,7 +33,7 @@ export default class Point {
     const prevTaskEditComponent = this._eventEditComponent;
 
     this._eventComponent = new Event(this._event);
-    this._eventEditComponent = new EventForm(this._event);
+    this._eventEditComponent = new EventForm(this._event, this._dataModel);
 
     this._eventComponent.setEditClickHandler(this._handleEditClick);
     this._eventComponent.setFavoriteClickHandler(this._handleFavoriteClick);
@@ -72,15 +73,14 @@ export default class Point {
 
   _handleFormSubmit(update) {
     const isMinorUpdate = !isDatesEqual(this._event.startDate, update.startDate) ||
-                          !isDatesEqual(this._event.endDate, update.endDate) ||
-                          isOffersEqual(this._event.offers, update.offers) ||
-                          !isPriceEqual(this._event.price, update.price);
+      !isDatesEqual(this._event.endDate, update.endDate) ||
+      isOffersEqual(this._event.offers, update.offers) ||
+      !isPriceEqual(this._event.price, update.price);
     this._changeEvent(
       UserAction.UPDATE_EVENT,
       isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       update,
     );
-
     this._replaceFormToEvent();
   }
 

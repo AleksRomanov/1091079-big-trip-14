@@ -1,7 +1,6 @@
-import {CITIES, DESCRIPTIONS, EVENT_TYPES, OFFERS} from '../mocks/data';
+import {EVENT_TYPES} from '../mocks/data';
 import {getFormattedDate} from '../utils/dates';
 import Smart from './smart';
-import {generateDescription, generatePhotos} from '../mocks/creating-destination';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import flatpickr from 'flatpickr';
 import dayjs from 'dayjs';
@@ -28,22 +27,19 @@ const getEventsTypeList = (eventsType) => {
   }).join('');
 };
 
-const getDestinationOptions = (cities) => {
-  return cities.map((city) => {
-    return `<option value="${city}"></option>`;
+const getDestinationCities = (destinations) => {
+  // console.log(destinations);
+  return destinations.map((city) => {
+    return `<option value="${city.name}"></option>`;
   }).join('');
 };
 
-const eventExtraOffers = ({type, offers}) => {
-  const eventTypeOffersAll = OFFERS.find((offer) => {
-    return offer['type'] === type ? offer : null;
-  });
-
+const eventExtraOffers = ({type, offers}, offersList) => {
   const isChecked = (offer) => {
     return offers.find((eventOffer) => eventOffer.title === offer.title) ? 'checked' : '';
   };
 
-  const getOffers = eventTypeOffersAll.offers.map((offer, index) => {
+  const getOffers = offersList.get(type).map((offer, index) => {
     return `<div class="event__offer-selector">
 <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${index}" type="checkbox" name="event-offer-luggage" ${isChecked(offer)}>
 <label class="event__offer-label" for="event-offer-${type}-${index}">
@@ -67,8 +63,8 @@ const eventExtraOffers = ({type, offers}) => {
 const getEventPhotos = ({destination, isDestination}) => {
 
   const getPhotos = (photos) => {
-    return photos.map((photo) => {
-      return `<img class="event__photo" src="${photo}" alt="Event photo">`;
+    return photos.map(({src, description}) => {
+      return `<img class="event__photo" src="${src}" alt="${description}">`;
     }).join('');
   };
 
@@ -88,7 +84,11 @@ const getEventPhotos = ({destination, isDestination}) => {
   }
 };
 
-const createEventForm = (event) => {
+const createEventForm = (event, dataModel) => {
+  // if(!dataModel)
+  //   !dataModel ? dataModel.getDestinations()
+  const destinations = dataModel.getDestinations();
+  const offers = dataModel.getOffers();
   const {type, isDestination, isPrice, price, destination} = event;
   const destinationValue = isDestination ? `value="${destination.city}"` : '';
   const eventPrice = isPrice ? `value="${price}"` : '';
@@ -116,7 +116,7 @@ const createEventForm = (event) => {
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" ${destinationValue} list="destination-list-1">
         <datalist id="destination-list-1">
-          ${getDestinationOptions(CITIES)}
+          ${getDestinationCities(destinations)}
         </datalist>
       </div>
 
@@ -143,15 +143,16 @@ const createEventForm = (event) => {
       </button>
     </header>
     <section class="event__details">
-      ${eventExtraOffers(event)}
+      ${eventExtraOffers(event, offers)}
       ${getEventPhotos(event)}
     </section>
 </form>`;
 };
 
 export default class EventForm extends Smart {
-  constructor(event = EMPTY_EVENT) {
+  constructor(event = EMPTY_EVENT, dataModel) {
     super();
+    this._dataModel = dataModel;
     this._state = EventForm.parseEventToState(event);
     this._startDatePicker = null;
     this._endDatePicker = null;
@@ -193,10 +194,12 @@ export default class EventForm extends Smart {
 
   _setDatePicker(dateElement, isStart) {
     const datePrefix = isStart ? 'startDate' : 'endDate';
+
     const cbStateName = `_${datePrefix}Picker`;
     const dateHandler = isStart ? this._startDateSelectHandler : this._endDateSelectHandler;
     const getMinDate = isStart ? false : this._state.startDate;
     const getMaxDate = isStart ? this._state.endDate : false;
+
     this[cbStateName] = flatpickr(
       dateElement,
       {
@@ -230,13 +233,11 @@ export default class EventForm extends Smart {
   }
 
   _startDateSelectHandler(evt) {
-    this.updateState({startDate: dayjs(evt).format()});
+    this.updateState({startDate: dayjs(evt).utc().format()});
   }
 
   _endDateSelectHandler(evt) {
-    this.updateState({
-      endDate: dayjs(evt).format(),
-    });
+    this.updateState({endDate: dayjs(evt).utc().format()});
   }
 
   _typeSelectHandler(evt) {
@@ -251,26 +252,29 @@ export default class EventForm extends Smart {
   }
 
   _checkDestinationValidity(evtValue) {
-    let destination = null;
-    CITIES.forEach((city) => {
-      if (city === evtValue) {
-        destination = city;
+    let validDestination = null;
+    this._dataModel.getDestinations().forEach((destination) => {
+
+      if (destination.name === evtValue) {
+        validDestination = destination.name;
       }
     });
-    return destination;
+    return validDestination;
   }
 
   _destinationBlurHandler(evt) {
     evt.preventDefault();
+
     const destination = this._checkDestinationValidity(evt.target.value);
     if (destination === null) {
       evt.target.value = '';
     } else {
+      const chosenDestination = this._dataModel.getDestinationsByName(evt.target.value);
       this.updateState({
         destination: {
-          city: destination,
-          photos: generatePhotos(),
-          description: generateDescription(DESCRIPTIONS),
+          city: chosenDestination.name,
+          photos: chosenDestination.pictures,
+          description: chosenDestination.description,
         },
         isDestination: true,
       });
@@ -356,7 +360,7 @@ export default class EventForm extends Smart {
   }
 
   getTemplate() {
-    return createEventForm(this._state);
+    return createEventForm(this._state, this._dataModel);
   }
 
   _closeClickHandler(evt) {
@@ -366,6 +370,7 @@ export default class EventForm extends Smart {
 
   setCloseClickHandler(callback) {
     this._callback.closeClick = callback;
+
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeClickHandler);
   }
 }

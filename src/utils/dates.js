@@ -5,15 +5,6 @@ import advancedFormat from 'dayjs/plugin/advancedFormat';
 dayjs.extend(advancedFormat);
 dayjs.extend(utc);
 dayjs.extend(duration);
-import {getRandomNumber} from './common';
-
-const generateDate = (firstDate = '', isFirstDate = false) => {
-  if (isFirstDate) {
-    return dayjs().utc().subtract(getRandomNumber(1, 3), 'day').format();
-  } else {
-    return dayjs(firstDate).utc().add(getRandomNumber(1, 24), 'hour').format();
-  }
-};
 
 const getFormattedDate = (date, format) => {
   return date !== null ? dayjs(date).utc().format(format) : '';
@@ -66,5 +57,5 @@ const isDatesEqual = (dateA, dateB) => {
 };
 
 
-export {generateDate, getFormattedDate, filterPastEvents, filterFutureEvents, sortByTime, getDuration, isDatesEqual, sortByDay, getClearDuration, humanizeDuration};
+export {getFormattedDate, filterPastEvents, filterFutureEvents, sortByTime, getDuration, isDatesEqual, sortByDay, getClearDuration, humanizeDuration};
 

@@ -3,9 +3,10 @@ import EventForm from '../view/create-event-form';
 import {UpdateType, UserAction} from '../const';
 
 export default class EventNew {
-  constructor(taskListContainer, changeEvent) {
+  constructor(taskListContainer, changeEvent, dataModel) {
     this._eventListContainer = taskListContainer;
     this._changeEvent = changeEvent;
+    this._dataModel = dataModel;
 
     this._eventCreateComponent = null;
     this._destroyCallback = null;
@@ -14,18 +15,17 @@ export default class EventNew {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
   }
 
-  init(callback) {
-    this._destroyCallback = callback;
+  init(callbacks) {
+    this._destroyCallback = callbacks;
     if (this._eventCreateComponent !== null) {
       return;
     }
-
-    this._eventCreateComponent = new EventForm();
+    this._eventCreateComponent = new EventForm(undefined, this._dataModel);
     this._eventCreateComponent.setCloseClickHandler(this._closeClickHandler);
     this._eventCreateComponent.setFormSubmitHandler(this._handleFormSubmit);
+    document.addEventListener('keydown', this._escKeyDownHandler);
 
     render(this._eventListContainer, this._eventCreateComponent);
-    document.addEventListener('keydown', this._escKeyDownHandler);
   }
 
   _handleFormSubmit(update) {
@@ -39,7 +39,9 @@ export default class EventNew {
   }
 
   _closeClickHandler() {
+
     this.destroy();
+
   }
 
   _escKeyDownHandler(evt) {
@@ -60,6 +62,6 @@ export default class EventNew {
     this._eventCreateComponent = null;
     document.removeEventListener('keydown', this._escKeyDownHandler);
     document.removeEventListener('click', this._closeClickHandler);
-    document.removeEventListener('click', this._escKeyDownHandler);
+    document.removeEventListener('submit', this._handleFormSubmit);
   }
 }

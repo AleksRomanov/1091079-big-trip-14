@@ -1,5 +1,3 @@
-const WAYPOINT_COUNT = 1;
-
 export const UserAction = {
   UPDATE_EVENT: 'UPDATE_EVENT',
   ADD_EVENT: 'ADD_EVENT',
@@ -10,6 +8,7 @@ export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 export const FilterTypes = {
@@ -76,4 +75,4 @@ const OFFERS_SORT_OPTIONS = [
   'offers',
 ];
 
-export {WAYPOINT_COUNT, DATA_VIEW_TYPES, DATA_VIEW_PERIOD, OFFERS_SORT_OPTIONS, STATISTICS_SETTINGS};
+export {DATA_VIEW_TYPES, DATA_VIEW_PERIOD, OFFERS_SORT_OPTIONS, STATISTICS_SETTINGS};

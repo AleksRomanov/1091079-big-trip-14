@@ -11,7 +11,8 @@ const SuccessHTTPStatusRange = {
 };
 
 export default class Api {
-  constructor(endPoint, authorization) {
+  constructor(dataModel, endPoint, authorization) {
+    this._dataModel = dataModel;
     this._endPoint = endPoint;
     this._authorization = authorization;
   }
@@ -22,15 +23,38 @@ export default class Api {
       .then((events) => events.map(EventsModel.adaptToClient));
   }
 
-  getDestinations() {
-    return this._load({url: 'destinations'})
-      .then(Api.toJSON)
-      // .then((destinations) => destinations.map(EventsModel.adaptToClient));
-      // .then((destinations) => destinations.map(EventsModel.adaptToClient));
-      .then((destinations) => destinations);
+  getOffers() {
+    return this._load({url: 'offers'})
+      .then(Api.toJSON);
   }
 
-  updateEvent(event) {
+  getDestinations() {
+    return this._load({url: 'destinations'})
+      .then(Api.toJSON);
+  }
+
+
+  getData() {
+    return Promise.all([
+      this.getDestinations(),
+      this.getOffers(),
+      this.getEvents(),
+    ])
+      .then(([destinations, offers, tripEvents]) => {
+        this._dataModel.setDestinations(destinations);
+        this._dataModel.setOffers(offers);
+        return tripEvents;
+      })
+      .catch(() => {
+        this._dataModel.setDestinations([]);
+        this._dataModel.setOffers([]);
+        // document
+        //   .querySelector('.trip-main__event-add-btn')
+        //   .setAttribute('disabled', 'disabled');
+      });
+  }
+
+  updatePoint(event) {
     return this._load({
       url: `points/${event.id}`,
       method: Method.PUT,
@@ -39,6 +63,23 @@ export default class Api {
     })
       .then(Api.toJSON)
       .then(EventsModel.adaptToClient);
+  }
+
+
+
+  static checkStatus(response) {
+    if (
+      response.status < SuccessHTTPStatusRange.MIN ||
+      response.status > SuccessHTTPStatusRange.MAX
+    ) {
+      throw new Error(`${response.status}: ${response.statusText}`);
+    }
+
+    return response;
+  }
+
+  static toJSON(response) {
+    return response.json();
   }
 
   _load({
@@ -55,21 +96,6 @@ export default class Api {
     )
       .then(Api.checkStatus)
       .catch(Api.catchError);
-  }
-
-  static checkStatus(response) {
-    if (
-      response.status < SuccessHTTPStatusRange.MIN ||
-      response.status > SuccessHTTPStatusRange.MAX
-    ) {
-      throw new Error(`${response.status}: ${response.statusText}`);
-    }
-
-    return response;
-  }
-
-  static toJSON(response) {
-    return response.json();
   }
 
   static catchError(err) {

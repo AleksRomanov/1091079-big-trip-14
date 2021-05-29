@@ -16,6 +16,7 @@ const generateDate = (firstDate = '', isFirstDate = false) => {
 };
 
 const getFormattedDate = (date, format) => {
+  // console.log(date);
   return date !== null ? dayjs(date).utc().format(format) : '';
 };
 

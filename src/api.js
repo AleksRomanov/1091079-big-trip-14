@@ -33,7 +33,6 @@ export default class Api {
       .then(Api.toJSON);
   }
 
-
   getData() {
     return Promise.all([
       this.getDestinations(),
@@ -65,8 +64,6 @@ export default class Api {
       .then(EventsModel.adaptToClient);
   }
 
-
-
   static checkStatus(response) {
     if (
       response.status < SuccessHTTPStatusRange.MIN ||
@@ -74,7 +71,6 @@ export default class Api {
     ) {
       throw new Error(`${response.status}: ${response.statusText}`);
     }
-
     return response;
   }
 

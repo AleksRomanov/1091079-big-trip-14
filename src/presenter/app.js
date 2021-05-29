@@ -335,13 +335,6 @@ export default class App {
           .catch(() => {
             // this._tripEventPresenter[update.id].setViewState(TripEventPresenterViewState.ABORTING);
           });
-        console.log(update);
-
-
-
-        // this._api.updateTask(update).then((response) => {
-        //   this._tasksModel.updateTask(updateType, response);
-        // });
         break;
       case UserAction.ADD_EVENT:
         this._eventsModel.addEvent(updateType, update);

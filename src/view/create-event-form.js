@@ -1,7 +1,6 @@
-import {CITIES, DESCRIPTIONS, EVENT_TYPES} from '../mocks/data';
+import {EVENT_TYPES} from '../mocks/data';
 import {getFormattedDate} from '../utils/dates';
 import Smart from './smart';
-import {generateDescription, generatePhotos} from '../mocks/creating-destination';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import flatpickr from 'flatpickr';
 import dayjs from 'dayjs';

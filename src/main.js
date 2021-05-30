@@ -5,7 +5,7 @@ import Api from './api';
 import DataModel from './model/data';
 
 
-const AUTHORIZATION = 'Basic gA5vq8pnRlip8nw9f';
+const AUTHORIZATION = 'Basic gA5vq8pnRli34ns1s';
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
 
 

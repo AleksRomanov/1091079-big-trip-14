@@ -1,6 +1,7 @@
 import {remove, render} from '../utils/render';
-import EventForm from '../view/create-event-form';
+import EventForm from '../view/event-form';
 import {UpdateType, UserAction} from '../const';
+import {StateConditions} from './event';
 
 export default class EventNew {
   constructor(taskListContainer, changeEvent, dataModel) {
@@ -26,6 +27,35 @@ export default class EventNew {
     document.addEventListener('keydown', this._escKeyDownHandler);
 
     render(this._eventListContainer, this._eventCreateComponent);
+  }
+
+  setViewState(state) {
+    const resetFormState = () => {
+      this._eventCreateComponent.updateState({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+    switch (state) {
+      // case StateConditions.SAVING:
+      //   this._eventEditComponent.updateState({
+      //     isDisabled: true,
+      //     isSaving: true,
+      //   });
+      //   break;
+      // case StateConditions.DELETING:
+      //   this._eventEditComponent.updateState({
+      //     isDisabled: true,
+      //     isDeleting: true,
+      //   });
+      //   break;
+      case StateConditions.ABORTING:
+        // console.log(this._eventCreateComponent.getElement());
+        console.log('abort');
+        this._eventCreateComponent.getElement().shake(resetFormState);
+        break;
+    }
   }
 
   _handleFormSubmit(update) {

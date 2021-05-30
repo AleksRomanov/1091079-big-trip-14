@@ -3,6 +3,8 @@ import EventsModel from './model/events.js';
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
 };
 
 const SuccessHTTPStatusRange = {
@@ -39,10 +41,10 @@ export default class Api {
       this.getOffers(),
       this.getEvents(),
     ])
-      .then(([destinations, offers, tripEvents]) => {
+      .then(([destinations, offers, events]) => {
         this._dataModel.setDestinations(destinations);
         this._dataModel.setOffers(offers);
-        return tripEvents;
+        return events;
       })
       .catch(() => {
         this._dataModel.setDestinations([]);
@@ -57,6 +59,24 @@ export default class Api {
     return this._load({
       url: `points/${event.id}`,
       method: Method.PUT,
+      body: JSON.stringify(EventsModel.adaptToServer(event)),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    })
+      .then(Api.toJSON)
+      .then(EventsModel.adaptToClient);
+  }
+
+  deleteEvent(event) {
+    return this._load({
+      url: `points/${event.id}`,
+      method: Method.DELETE,
+    });
+  }
+
+  addEvent(event) {
+    return this._load({
+      url: 'points',
+      method: Method.POST,
       body: JSON.stringify(EventsModel.adaptToServer(event)),
       headers: new Headers({'Content-Type': 'application/json'}),
     })

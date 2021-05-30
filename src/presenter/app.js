@@ -1,17 +1,18 @@
 import {remove, render, RenderPosition} from '../utils/render';
 import {sortByPrice} from '../utils/common';
 import {sortByDay, sortByTime} from '../utils/dates';
-import {DATA_VIEW_TYPES, SortTypes, UpdateType, UserAction} from '../const.js';
+import {DATA_VIEW_TYPES, FilterTypes, SortTypes, UpdateType, UserAction} from '../const.js';
 import {filter} from '../utils/filter';
 import TripInfoView from '../view/create-trip-info';
 import ModesToggleView from '../view/creating-menu';
 import SortingToggleView from '../view/creating-sort';
 import EventsContainerView from '../view/events-container';
-import EventPresenter from './event';
+import EventPresenter, {StateConditions} from './event';
 import NoEventsView from '../view/creating-no-events';
 import EventNew from './event-new';
 import Filter from './filter';
 import Statistics from '../view/statistics';
+import Loading from '../view/loading';
 
 const siteHeader = document.querySelector('.page-header');
 const tripMain = siteHeader.querySelector('.trip-main');
@@ -24,10 +25,12 @@ const pageContainer = siteBodyPageMain.querySelector('.page-body__container');
 export default class App {
   constructor(eventsModel, filterModel, api) {
     this._api = api;
+    this._isLoading = true;
     this._currentSortType = SortTypes.DAY;
     this._currentViewMode = 'Table';
     this._eventsModel = eventsModel;
     this._filterModel = filterModel;
+    this._laodingView = new Loading();
     this._eventsContainer = new EventsContainerView();
     this._statisticsView = null;
     this.viewModeToggleComponent = new ModesToggleView();
@@ -52,6 +55,7 @@ export default class App {
     this._filterModel.addObserver(this._handleModelEvent);
     this._renderApp();
     this._getWebData();
+
   }
 
 
@@ -69,19 +73,9 @@ export default class App {
         this._renderApp();
         break;
       case UpdateType.INIT:
-        // console.log('init');
-        // this._isLoading = false;
-        // remove(this._loadingComponent);
-        // console.log('init');
-        // console.log('123');
-
+        this._isLoading = false;
         this._clearApp();
-        // this._getDestinations();
         this._renderApp();
-        // console.log(this._destinations);
-        // console.log(this._eventsModel);
-        // console.log('init');
-
         break;
     }
   }
@@ -90,23 +84,28 @@ export default class App {
     this._api.getData()
       .then((data) => {
         this._eventsModel.setEvents(UpdateType.INIT, data);
+        // console.log(this._eventsModel.getEvents());
 
-
-        // this._getDestinations();
-        // console.log('afterSet');
-
-        // render(siteHeaderElement, siteMenuComponent, RenderPosition.BEFOREEND);
-        // siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
       })
       .catch(() => {
-        // console.log('catch');
-        // this._eventsModel.setEvents(UpdateType.INIT, []);
+        this._eventsModel.setEvents(UpdateType.INIT, []);
         // render(siteHeaderElement, siteMenuComponent, RenderPosition.BEFOREEND);
         // siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
       });
   }
 
+  _renderLoading() {
+    render(pageContainer, this._laodingView);
+  }
+
   _renderApp() {
+
+    if (this._isLoading) {
+      this._renderLoading();
+      // this._newEventButtonComponent.disable();
+      return;
+    }
+
     const events = this._getFilteredAndSortedEvents();
     const eventsCount = events.length;
 
@@ -159,10 +158,7 @@ export default class App {
         this._setAddEventButtonEnabled();
         this._showEventsSection();
         this._hideStatsSection();
-
-        // remove(statisticsComponent);
-        // filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-        // siteMenuComponent.setItem(MenuItem.TABLE);
+        this._filterModel.setFilter(UpdateType.MAJOR, FilterTypes.EVERYTHING);
         break;
       case StatView:
         this._hideEventsSection();
@@ -195,7 +191,6 @@ export default class App {
     });
   }
 
-
   _renderEventsTotal(events) {
     this.totalTripInfoComponent = new TripInfoView(events);
     render(tripMain, this.totalTripInfoComponent);
@@ -223,14 +218,14 @@ export default class App {
         .values(this._eventsPresenters)
         .forEach((presenter) => presenter.destroy());
       this._eventsPresenters = {};
-      remove(this._sortToggleComponent);
+      // remove(this._sortToggleComponent);
     }
 
   }
 
   _clearApp(resetSortType = false) {
-    // console.log('clear');
     this._destroyEventsSection();
+    remove(this._laodingView);
     remove(this._noEventsView);
     if (resetSortType) {
       this._currentSortType = SortTypes.DAY;
@@ -244,12 +239,6 @@ export default class App {
   _renderFilter() {
     this._filterPresenter.init();
   }
-
-  _createNewEventForm(callback) {
-    this._newEventPresenter = new EventNew(this._eventsContainer, this._handleViewAction, this._api._dataModel);
-    this._newEventPresenter.init(callback);
-  }
-
   _setAddEventButtonDisabled() {
     addEventButton.disabled = true;
   }
@@ -271,20 +260,23 @@ export default class App {
     this._createNewEventForm(this._setAddEventButtonEnabled);
   }
 
+  _createNewEventForm(callback) {
+    this._newEventPresenter = new EventNew(this._eventsContainer, this._handleViewAction, this._api._dataModel);
+    this._newEventPresenter.init(callback);
+  }
+
   _renderEventsContainer() {
     render(tripEvents, this._eventsContainer, RenderPosition.BEFOREEND);
   }
 
   _renderEventsList(events) {
-    // events.slice().forEach((event) => this._renderEvent(event));
-    events.slice().forEach((event) => {
-      this._renderEvent(event);
-    });
+    events.slice().forEach((event) => this._renderEvent(event));
+    // events.slice().forEach((event) => {
+    //   this._renderEvent(event);
+    // });
   }
 
   _renderEvent(event) {
-    // console.log(event);
-
     const eventPresenter = new EventPresenter(this._eventsContainer, this._handleViewAction, this._handleModeChange, this._api._dataModel);
     eventPresenter.init(event);
     this._eventsPresenters[event.id] = eventPresenter;
@@ -307,8 +299,13 @@ export default class App {
   }
 
   _renderSort() {
+    // console.log('sort');
+    // console.log(this._sortToggleComponent);
     if (this._sortToggleComponent === null) {
+
       this._sortToggleComponent = new SortingToggleView();
+      // console.log(this._sortToggleComponent);
+
       render(tripEvents, this._sortToggleComponent);
       this._sortToggleComponent.setSortHandler(this._handleSortTypeChange);
     }
@@ -316,31 +313,37 @@ export default class App {
 
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
-      // case UserAction.UPDATE_EVENT:
-      //   this._tripEventPresenter[update.id].setViewState(TripEventPresenterViewState.SAVING);
-      //   this._api.updateTripEvent(update)
-      //     .then((response) => {
-      //       this._tripEventsModel.updateTripEvent(updateType, response);
-      //     })
-      //     .catch(() => {
-      //       this._tripEventPresenter[update.id].setViewState(TripEventPresenterViewState.ABORTING);
-      //     });
-      //   break;
-
       case UserAction.UPDATE_EVENT:
+        this._eventsPresenters[update.id].setViewState(StateConditions.SAVING);
         this._api.updatePoint(update)
           .then((response) => {
             this._eventsModel.updateEvent(updateType, response);
           })
           .catch(() => {
-            // this._tripEventPresenter[update.id].setViewState(TripEventPresenterViewState.ABORTING);
+            this._eventsPresenters[update.id].setViewState(StateConditions.ABORTING);
           });
         break;
       case UserAction.ADD_EVENT:
-        this._eventsModel.addEvent(updateType, update);
+        this._api.addEvent(update)
+          .then((response) => {
+            this._eventsModel.addEvent(updateType, response);
+          })
+          .catch(() => {
+            console.log('catch');
+            console.log(this._newEventPresenter);
+            this._newEventPresenter.setViewState(StateConditions.ABORTING);
+          });
         break;
       case UserAction.DELETE_EVENT:
-        this._eventsModel.deleteEvent(updateType, update);
+        this._eventsPresenters[update.id].setViewState(StateConditions.DELETING);
+
+        this._api.deleteEvent(update)
+          .then(() => {
+            this._eventsModel.deleteEvent(updateType, update);
+          })
+          .catch(() => {
+            this._eventsPresenters[update.id].setViewState(StateConditions.ABORTING);
+          });
         break;
     }
   }

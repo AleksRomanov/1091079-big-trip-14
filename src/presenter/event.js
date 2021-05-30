@@ -1,6 +1,6 @@
 import Event from '../view/event';
 import {remove, render, RenderPosition, replace} from '../utils/render';
-import EventForm from '../view/create-event-form';
+import EventForm from '../view/event-form';
 import {UpdateType, UserAction} from '../const';
 import {isDatesEqual} from '../utils/dates';
 import {isOffersEqual, isPriceEqual} from '../utils/common';
@@ -8,6 +8,11 @@ import {isOffersEqual, isPriceEqual} from '../utils/common';
 const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
+};
+export const StateConditions = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETE_EVENT',
+  ABORTING: 'ABORTING',
 };
 
 export default class Point {
@@ -58,12 +63,31 @@ export default class Point {
     remove(prevTaskEditComponent);
   }
 
-  _handleDeleteClick(event) {
-    this._changeEvent(
-      UserAction.DELETE_EVENT,
-      UpdateType.MINOR,
-      event,
-    );
+  setViewState(state) {
+    const resetFormState = () => {
+      this._eventEditComponent.updateState({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+    switch (state) {
+      case StateConditions.SAVING:
+        this._eventEditComponent.updateState({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case StateConditions.DELETING:
+        this._eventEditComponent.updateState({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+      case StateConditions.ABORTING:
+        this._eventEditComponent.shake(resetFormState);
+        break;
+    }
   }
 
   destroy() {
@@ -72,6 +96,7 @@ export default class Point {
   }
 
   _handleFormSubmit(update) {
+
     const isMinorUpdate = !isDatesEqual(this._event.startDate, update.startDate) ||
       !isDatesEqual(this._event.endDate, update.endDate) ||
       isOffersEqual(this._event.offers, update.offers) ||
@@ -81,7 +106,14 @@ export default class Point {
       isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       update,
     );
-    this._replaceFormToEvent();
+  }
+
+  _handleDeleteClick(event) {
+    this._changeEvent(
+      UserAction.DELETE_EVENT,
+      UpdateType.MINOR,
+      event,
+    );
   }
 
   _handleEditClick() {

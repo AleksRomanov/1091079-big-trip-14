@@ -1,7 +1,6 @@
 import {remove, render} from '../utils/render';
 import EventForm from '../view/event-form';
 import {UpdateType, UserAction} from '../const';
-import {StateConditions} from './event';
 
 export default class EventNew {
   constructor(taskListContainer, changeEvent, dataModel) {
@@ -23,13 +22,13 @@ export default class EventNew {
     }
     this._eventCreateComponent = new EventForm(undefined, this._dataModel);
     this._eventCreateComponent.setCloseClickHandler(this._closeClickHandler);
+    this._eventCreateComponent.setDeleteClickHandler(this._closeClickHandler);
     this._eventCreateComponent.setFormSubmitHandler(this._handleFormSubmit);
     document.addEventListener('keydown', this._escKeyDownHandler);
-
     render(this._eventListContainer, this._eventCreateComponent);
   }
 
-  setViewState(state) {
+  setAborting() {
     const resetFormState = () => {
       this._eventCreateComponent.updateState({
         isDisabled: false,
@@ -37,25 +36,8 @@ export default class EventNew {
         isDeleting: false,
       });
     };
-    switch (state) {
-      // case StateConditions.SAVING:
-      //   this._eventEditComponent.updateState({
-      //     isDisabled: true,
-      //     isSaving: true,
-      //   });
-      //   break;
-      // case StateConditions.DELETING:
-      //   this._eventEditComponent.updateState({
-      //     isDisabled: true,
-      //     isDeleting: true,
-      //   });
-      //   break;
-      case StateConditions.ABORTING:
-        // console.log(this._eventCreateComponent.getElement());
-        console.log('abort');
-        this._eventCreateComponent.getElement().shake(resetFormState);
-        break;
-    }
+
+    this._eventCreateComponent.shake(resetFormState);
   }
 
   _handleFormSubmit(update) {
@@ -64,14 +46,10 @@ export default class EventNew {
       UpdateType.MAJOR,
       update,
     );
-
-    this.destroy();
   }
 
   _closeClickHandler() {
-
     this.destroy();
-
   }
 
   _escKeyDownHandler(evt) {

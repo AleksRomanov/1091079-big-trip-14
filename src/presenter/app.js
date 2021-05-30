@@ -49,15 +49,12 @@ export default class App {
     this._filterPresenter = new Filter(tripControlsNavigation, this._filterModel);
   }
 
-
   init() {
     this._eventsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
     this._renderApp();
     this._getWebData();
-
   }
-
 
   _handleModelEvent(updateType, data) {
     switch (updateType) {
@@ -84,13 +81,9 @@ export default class App {
     this._api.getData()
       .then((data) => {
         this._eventsModel.setEvents(UpdateType.INIT, data);
-        // console.log(this._eventsModel.getEvents());
-
       })
       .catch(() => {
         this._eventsModel.setEvents(UpdateType.INIT, []);
-        // render(siteHeaderElement, siteMenuComponent, RenderPosition.BEFOREEND);
-        // siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
       });
   }
 
@@ -99,10 +92,8 @@ export default class App {
   }
 
   _renderApp() {
-
     if (this._isLoading) {
       this._renderLoading();
-      // this._newEventButtonComponent.disable();
       return;
     }
 
@@ -128,19 +119,15 @@ export default class App {
     }
     this._setAddEventButtonHandler(addEventButton);
     this._renderStatistics();
-    // this._eventsContainer.hide();
-
   }
 
   _renderStatistics() {
     this._statisticsView = new Statistics(this._eventsModel.getEvents());
     render(pageContainer, this._statisticsView, 'beforeend');
     this._setViewModeToggle();
-
   }
 
   _handleViewModeToggle(evt) {
-
     if (evt.target.innerText === this._currentViewMode) {
       return;
     }
@@ -209,6 +196,8 @@ export default class App {
         return filteredEvents.sort(sortByTime);
       case SortTypes.PRICE:
         return filteredEvents.sort(sortByPrice);
+      default:
+        return filteredEvents;
     }
   }
 
@@ -218,7 +207,6 @@ export default class App {
         .values(this._eventsPresenters)
         .forEach((presenter) => presenter.destroy());
       this._eventsPresenters = {};
-      // remove(this._sortToggleComponent);
     }
 
   }
@@ -239,6 +227,7 @@ export default class App {
   _renderFilter() {
     this._filterPresenter.init();
   }
+
   _setAddEventButtonDisabled() {
     addEventButton.disabled = true;
   }
@@ -271,9 +260,6 @@ export default class App {
 
   _renderEventsList(events) {
     events.slice().forEach((event) => this._renderEvent(event));
-    // events.slice().forEach((event) => {
-    //   this._renderEvent(event);
-    // });
   }
 
   _renderEvent(event) {
@@ -299,13 +285,8 @@ export default class App {
   }
 
   _renderSort() {
-    // console.log('sort');
-    // console.log(this._sortToggleComponent);
     if (this._sortToggleComponent === null) {
-
       this._sortToggleComponent = new SortingToggleView();
-      // console.log(this._sortToggleComponent);
-
       render(tripEvents, this._sortToggleComponent);
       this._sortToggleComponent.setSortHandler(this._handleSortTypeChange);
     }
@@ -327,11 +308,10 @@ export default class App {
         this._api.addEvent(update)
           .then((response) => {
             this._eventsModel.addEvent(updateType, response);
+            this._newEventPresenter.destroy();
           })
           .catch(() => {
-            console.log('catch');
-            console.log(this._newEventPresenter);
-            this._newEventPresenter.setViewState(StateConditions.ABORTING);
+            this._newEventPresenter.setAborting();
           });
         break;
       case UserAction.DELETE_EVENT:

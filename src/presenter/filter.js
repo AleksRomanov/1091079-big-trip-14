@@ -20,7 +20,7 @@ export default class Filter {
   }
 
   _handleFilterTypeChange(filterType) {
-    if (this._filterModel.getFilter() === filterType) {
+    if (this._filterModel.getFilter() === filterType || filterType === 'event' || filterType === 'offers') {
       return;
     }
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);

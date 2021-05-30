@@ -1,4 +1,3 @@
-import {EVENT_TYPES} from '../mocks/data';
 import {getFormattedDate} from '../utils/dates';
 import Smart from './smart';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
@@ -7,19 +6,10 @@ import dayjs from 'dayjs';
 import {nanoid} from 'nanoid';
 
 const EMPTY_EVENT = {
-  type: EVENT_TYPES[0],
+  type: 'taxi',
   destination: {city: null, photos: null, description: ''},
-  // startDate: getFormattedDate(dayjs(),'YY/MM/DD HH:mm'),
-  // startDate: dayjs().utc().subtract(1, 'day'),
-  // startDate: 'Wed Jun 09 2021 08:43:00 GMT+0700 (Красноярск, стандартное время)',
   startDate: new Date(),
   endDate: new Date(),
-  // endDate: new Date(2021, 6, 1),
-  // endDate: dayjs().utc(),
-  // endDate: 'Wed Jun 09 2021 09:42:00 GMT+0700 (Красноярск, стандартное время)',
-  // startDate: null,
-  // endDate: null,
-  // endDate: getFormattedDate(dayjs(),'YY/MM/DD HH:mm'),
   price: null,
   offers: [],
   id: nanoid(),
@@ -39,7 +29,6 @@ const getEventsTypeList = (eventsType) => {
 };
 
 const getDestinationCities = (destinations) => {
-  // console.log(destinations);
   return destinations.map((city) => {
     return `<option value="${city.name}"></option>`;
   }).join('');
@@ -96,10 +85,9 @@ const getEventPhotos = ({destination, isDestination}) => {
 };
 
 const eventForm = (event, dataModel) => {
-  // if(!dataModel)
-  //   !dataModel ? dataModel.getDestinations()
   const destinations = dataModel.getDestinations();
   const offers = dataModel.getOffers();
+  const offersTypes = dataModel.getOffersTypes();
   const {type, isDestination, isPrice, price, destination, isSaving, isDeleting, isDisabled} = event;
   const destinationValue = isDestination ? `value="${destination.city}"` : '';
   const eventPrice = isPrice ? `value="${price}"` : '';
@@ -116,7 +104,7 @@ const eventForm = (event, dataModel) => {
         <div class="event__type-list">
           <fieldset class="event__type-group">
             <legend class="visually-hidden">Event type</legend>
-            ${getEventsTypeList(EVENT_TYPES)}
+            ${getEventsTypeList(offersTypes)}
           </fieldset>
         </div>
       </div>
@@ -365,7 +353,6 @@ export default class EventForm extends Smart {
   }
 
   static parseStateToEvent(state) {
-    // console.log(state);
     state = {
       ...state,
       favorite: false,

@@ -39,7 +39,6 @@ export default class Point {
 
     this._eventComponent = new Event(this._event);
     this._eventEditComponent = new EventForm(this._event, this._dataModel);
-
     this._eventComponent.setEditClickHandler(this._handleEditClick);
     this._eventComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._eventEditComponent.setCloseClickHandler(this._handleFormClose);

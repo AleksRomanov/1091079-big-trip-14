@@ -1,17 +1,18 @@
-import {EVENT_TYPES} from '../mocks/data';
 import {getFormattedDate} from '../utils/dates';
 import Smart from './smart';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import flatpickr from 'flatpickr';
 import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
 
 const EMPTY_EVENT = {
-  type: EVENT_TYPES[0],
+  type: 'taxi',
   destination: {city: null, photos: null, description: ''},
-  startDate: null,
-  endDate: null,
+  startDate: new Date(),
+  endDate: new Date(),
   price: null,
   offers: [],
+  id: nanoid(),
 };
 
 const makeStringUppercase = ([first, ...rest]) => {
@@ -28,20 +29,19 @@ const getEventsTypeList = (eventsType) => {
 };
 
 const getDestinationCities = (destinations) => {
-  // console.log(destinations);
   return destinations.map((city) => {
     return `<option value="${city.name}"></option>`;
   }).join('');
 };
 
-const eventExtraOffers = ({type, offers}, offersList) => {
+const eventExtraOffers = ({type, offers}, offersList, isDisabled) => {
   const isChecked = (offer) => {
     return offers.find((eventOffer) => eventOffer.title === offer.title) ? 'checked' : '';
   };
 
   const getOffers = offersList.get(type).map((offer, index) => {
     return `<div class="event__offer-selector">
-<input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${index}" type="checkbox" name="event-offer-luggage" ${isChecked(offer)}>
+<input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${index}" type="checkbox" name="event-offer-luggage" ${isChecked(offer)} ${isDisabled ? 'disabled' : ''}>
 <label class="event__offer-label" for="event-offer-${type}-${index}">
   <span class="event__offer-title">${offer.title}</span>
   &plus;&euro;&nbsp;
@@ -84,12 +84,11 @@ const getEventPhotos = ({destination, isDestination}) => {
   }
 };
 
-const createEventForm = (event, dataModel) => {
-  // if(!dataModel)
-  //   !dataModel ? dataModel.getDestinations()
+const eventForm = (event, dataModel) => {
   const destinations = dataModel.getDestinations();
   const offers = dataModel.getOffers();
-  const {type, isDestination, isPrice, price, destination} = event;
+  const offersTypes = dataModel.getOffersTypes();
+  const {type, isDestination, isPrice, price, destination, isSaving, isDeleting, isDisabled} = event;
   const destinationValue = isDestination ? `value="${destination.city}"` : '';
   const eventPrice = isPrice ? `value="${price}"` : '';
 
@@ -100,12 +99,12 @@ const createEventForm = (event, dataModel) => {
           <span class="visually-hidden">Choose event type</span>
           <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
         </label>
-        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
         <div class="event__type-list">
           <fieldset class="event__type-group">
             <legend class="visually-hidden">Event type</legend>
-            ${getEventsTypeList(EVENT_TYPES)}
+            ${getEventsTypeList(offersTypes)}
           </fieldset>
         </div>
       </div>
@@ -114,7 +113,7 @@ const createEventForm = (event, dataModel) => {
         <label class="event__label  event__type-output" for="event-destination-1">
           ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" ${destinationValue} list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" ${destinationValue} list="destination-list-1" ${isDisabled ? 'disabled' : ''} required>
         <datalist id="destination-list-1">
           ${getDestinationCities(destinations)}
         </datalist>
@@ -122,10 +121,10 @@ const createEventForm = (event, dataModel) => {
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time">
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" required>
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time">
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" required>
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -133,17 +132,17 @@ const createEventForm = (event, dataModel) => {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" ${eventPrice}>
+        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" ${eventPrice} required>
       </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? 'Saving...' : 'Save'}</button>
+      <button class="event__reset-btn" type="reset">${isDeleting ? 'Deleting...' : 'Delete'}</button>
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
       </button>
     </header>
     <section class="event__details">
-      ${eventExtraOffers(event, offers)}
+      ${eventExtraOffers(event, offers, isDisabled)}
       ${getEventPhotos(event)}
     </section>
 </form>`;
@@ -199,7 +198,6 @@ export default class EventForm extends Smart {
     const dateHandler = isStart ? this._startDateSelectHandler : this._endDateSelectHandler;
     const getMinDate = isStart ? false : this._state.startDate;
     const getMaxDate = isStart ? this._state.endDate : false;
-
     this[cbStateName] = flatpickr(
       dateElement,
       {
@@ -290,16 +288,7 @@ export default class EventForm extends Smart {
     this._setInnerHandlers();
     this.setCloseClickHandler(this._callback.closeClick);
     this.setFormSubmitHandler(this._callback.formSubmit);
-  }
-
-  _formDeleteClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.deleteClick(EventForm.parseStateToEvent(this._state));
-  }
-
-  setDeleteClickHandler(callback) {
-    this._callback.deleteClick = callback;
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   reset(event) {
@@ -327,10 +316,21 @@ export default class EventForm extends Smart {
     });
   }
 
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(EventForm.parseStateToEvent(this._state));
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
+  }
+
   _formSubmitHandler(evt) {
     evt.preventDefault();
     this._getNewOffers();
     this._callback.formSubmit(EventForm.parseStateToEvent(this._state));
+
   }
 
   setFormSubmitHandler(callback) {
@@ -346,21 +346,30 @@ export default class EventForm extends Smart {
       isPrice: event.price !== null,
       isStartDate: event.startDate !== null,
       isEndDate: event.endDate !== null,
+      isSaving: false,
+      isDeleting: false,
+      isDisabled: false,
     };
   }
 
   static parseStateToEvent(state) {
-    state = {...state};
+    state = {
+      ...state,
+      favorite: false,
+    };
     delete state.isDates;
     delete state.isDestination;
     delete state.isEndDate;
     delete state.isStartDate;
     delete state.isPrice;
+    delete state.isSaving;
+    delete state.isDeleting;
+    delete state.isDisabled;
     return state;
   }
 
   getTemplate() {
-    return createEventForm(this._state, this._dataModel);
+    return eventForm(this._state, this._dataModel);
   }
 
   _closeClickHandler(evt) {

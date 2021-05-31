@@ -3,17 +3,17 @@ import Abstract from './abstract';
 
 const createViewTimeElements = (typeTitles) => {
 
-  return typeTitles.map((element, index) => {
+  return typeTitles.map(({type, id, title}, index) => {
     if (index === 0) {
       return `<div class="trip-filters__filter">
 
-<input id="${element.id}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${element.type}" data-sort-type=${element.type} checked>
-    <label class="trip-filters__filter-label" for="${element.id}">${element.title}</label></div>`;
+<input id="${id}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" data-sort-type=${type} checked>
+    <label class="trip-filters__filter-label" for="${id}">${title}</label></div>`;
     } else {
       return `<div class="trip-filters__filter">
 
-<input id="${element.id}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${element.type}" data-sort-type=${element.type}>
-    <label class="trip-filters__filter-label" for="${element.id}">${element.title}</label></div>`;
+<input id="${id}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" data-sort-type=${type}>
+    <label class="trip-filters__filter-label" for="${id}">${title}</label></div>`;
     }
   }).join('');
 };

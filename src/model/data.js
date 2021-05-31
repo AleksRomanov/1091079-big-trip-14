@@ -1,11 +1,16 @@
 export default class Data {
   constructor() {
     this._offers = new Map();
+    this._offersTypes = [];
     this._destinations = [];
   }
 
   getOffers() {
     return this._offers;
+  }
+
+  getOffersTypes() {
+    return this._offersTypes;
   }
 
   getDestinations() {
@@ -20,26 +25,16 @@ export default class Data {
 
   setOffers(offers) {
     offers.forEach((offer) => this._offers.set(offer.type, offer.offers));
+    this.setOffersTypes(this._offers.keys());
   }
 
   setDestinations(destinations) {
     this._destinations = destinations.slice();
   }
 
-  // _adaptDestinationsToClient(destinations) {
-  //
-  //   const adaptedEvent = {
-  //     ...event,
-  //     price: event.base_price,
-  //     startDate: event.date_from,
-  //     endDate: event.date_to,
-  //     destination: {
-  //       photos: event.destination.pictures,
-  //       city: event.destination.name,
-  //       description: event.destination.description,
-  //     },
-  //     favorite: event.is_favorite,
-  //   };
-  //   return adaptedEvent;
-  // }
+  setOffersTypes(offers) {
+    for (const element of offers) {
+      this._offersTypes.push(element);
+    }
+  }
 }

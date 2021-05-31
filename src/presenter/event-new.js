@@ -1,5 +1,5 @@
 import {remove, render} from '../utils/render';
-import EventForm from '../view/create-event-form';
+import EventForm from '../view/event-form';
 import {UpdateType, UserAction} from '../const';
 
 export default class EventNew {
@@ -22,10 +22,22 @@ export default class EventNew {
     }
     this._eventCreateComponent = new EventForm(undefined, this._dataModel);
     this._eventCreateComponent.setCloseClickHandler(this._closeClickHandler);
+    this._eventCreateComponent.setDeleteClickHandler(this._closeClickHandler);
     this._eventCreateComponent.setFormSubmitHandler(this._handleFormSubmit);
     document.addEventListener('keydown', this._escKeyDownHandler);
-
     render(this._eventListContainer, this._eventCreateComponent);
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._eventCreateComponent.updateState({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this._eventCreateComponent.shake(resetFormState);
   }
 
   _handleFormSubmit(update) {
@@ -34,14 +46,10 @@ export default class EventNew {
       UpdateType.MAJOR,
       update,
     );
-
-    this.destroy();
   }
 
   _closeClickHandler() {
-
     this.destroy();
-
   }
 
   _escKeyDownHandler(evt) {

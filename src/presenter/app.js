@@ -13,6 +13,9 @@ import EventNew from './event-new';
 import Filter from './filter';
 import Statistics from '../view/statistics';
 import Loading from '../view/loading';
+import {showToast} from '../utils/toast';
+import Provider from '../api/provider';
+import Store from '../api/store';
 
 const siteHeader = document.querySelector('.page-header');
 const tripMain = siteHeader.querySelector('.trip-main');
@@ -21,10 +24,23 @@ const addEventButton = document.querySelector('.trip-main__event-add-btn');
 const siteBodyPageMain = document.querySelector('.page-body__page-main');
 const tripEvents = siteBodyPageMain.querySelector('.trip-events');
 const pageContainer = siteBodyPageMain.querySelector('.page-body__container');
+export const OFFLINE_TITLE = ' [offline]';
+export const OfflineMessages = {
+  CONNECTION: 'Connection is lost',
+  CREATE: 'You can\'t create new event offline',
+  SAVE: 'You can\'t save event offline',
+  DELETE: 'You can\'t delete event offline',
+  EDIT: 'You can\'t edit event offline',
+};
+const STORE_PREFIX = 'trip-manager-localstorage';
+const STORE_VER = 'v14';
+export const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
 export default class App {
   constructor(eventsModel, filterModel, api) {
-    this._api = api;
+    this._store = new Store(STORE_NAME, window.localStorage);
+    this._apiWeb = api;
+    this._api = new Provider(this._apiWeb, this._store);
     this._isLoading = true;
     this._currentSortType = SortTypes.DAY;
     this._currentViewMode = 'Table';
@@ -54,6 +70,22 @@ export default class App {
     this._filterModel.addObserver(this._handleModelEvent);
     this._renderApp();
     this._getWebData();
+    this._setServiceWorkerRegistrationOnLoad();
+    window.addEventListener('online', () => {
+      // newEventButtonComponent.enable();
+      document.title = document.title.replace(OFFLINE_TITLE, '');
+      this._api.sync();
+
+    });
+
+    window.addEventListener('offline', () => {
+      // newEventButtonComponent.disable();
+
+      document.title = document.title.replace(OFFLINE_TITLE, '');
+
+      showToast(OfflineMessages.CONNECTION);
+      document.title += OFFLINE_TITLE;
+    });
   }
 
   _handleModelEvent(updateType, data) {
@@ -79,12 +111,20 @@ export default class App {
 
   _getWebData() {
     this._api.getData()
-      .then((data) => {
-        this._eventsModel.setEvents(UpdateType.INIT, data);
+      .then((events) => {
+        // console.log(this._eventsModel.getEvents());
+        this._eventsModel.setEvents(UpdateType.INIT, events);
+
       })
       .catch(() => {
         this._eventsModel.setEvents(UpdateType.INIT, []);
       });
+  }
+
+  _setServiceWorkerRegistrationOnLoad() {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js');
+    });
   }
 
   _renderLoading() {
@@ -119,6 +159,8 @@ export default class App {
     }
     this._setAddEventButtonHandler(addEventButton);
     this._renderStatistics();
+
+
   }
 
   _renderStatistics() {
@@ -250,7 +292,7 @@ export default class App {
   }
 
   _createNewEventForm(callback) {
-    this._newEventPresenter = new EventNew(this._eventsContainer, this._handleViewAction, this._api._dataModel);
+    this._newEventPresenter = new EventNew(this._eventsContainer, this._handleViewAction, this._api._api._dataModel);
     this._newEventPresenter.init(callback);
   }
 
@@ -259,11 +301,12 @@ export default class App {
   }
 
   _renderEventsList(events) {
+
     events.slice().forEach((event) => this._renderEvent(event));
   }
 
   _renderEvent(event) {
-    const eventPresenter = new EventPresenter(this._eventsContainer, this._handleViewAction, this._handleModeChange, this._api._dataModel);
+    const eventPresenter = new EventPresenter(this._eventsContainer, this._handleViewAction, this._handleModeChange, this._api._api._dataModel);
     eventPresenter.init(event);
     this._eventsPresenters[event.id] = eventPresenter;
   }

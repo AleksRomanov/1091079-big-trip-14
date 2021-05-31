@@ -1,4 +1,4 @@
-import EventsModel from './model/events.js';
+import EventsModel from '../model/events.js';
 
 const Method = {
   GET: 'GET',
@@ -22,7 +22,9 @@ export default class Api {
   getEvents() {
     return this._load({url: 'points'})
       .then(Api.toJSON)
-      .then((events) => events.map(EventsModel.adaptToClient));
+      .then((events) => {
+        return events.map(EventsModel.adaptToClient);
+      });
   }
 
   getOffers() {
@@ -36,12 +38,18 @@ export default class Api {
   }
 
   getData() {
+    // console.log('online!!!');
+    // console.log(tripEvents);
     return Promise.all([
       this.getDestinations(),
       this.getOffers(),
       this.getEvents(),
     ])
       .then(([destinations, offers, events]) => {
+        // console.log('online!!!!');
+        // console.log(destinations);
+        // console.log(offers);
+
         this._dataModel.setDestinations(destinations);
         this._dataModel.setOffers(offers);
         return events;
@@ -53,6 +61,16 @@ export default class Api {
         //   .querySelector('.trip-main__event-add-btn')
         //   .setAttribute('disabled', 'disabled');
       });
+  }
+
+  sync(data) {
+    return this._load({
+      url: 'points/sync',
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    })
+      .then(Api.toJSON);
   }
 
   updatePoint(event) {

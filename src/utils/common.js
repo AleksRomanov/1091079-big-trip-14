@@ -7,4 +7,9 @@ const isOffersEqual = (arrayA, arrayB) => {
 
 const isPriceEqual = (eventPrice, updatePrice) => eventPrice === updatePrice;
 
-export {sortByPrice, isOffersEqual, isPriceEqual};
+const isOnline = () => {
+  // console.log(window.navigator.onLine);
+  return window.navigator.onLine;
+};
+
+export {sortByPrice, isOffersEqual, isPriceEqual, isOnline};

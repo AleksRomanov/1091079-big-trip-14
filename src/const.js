@@ -15,6 +15,7 @@ export const FilterTypes = {
   EVERYTHING: 'everything',
   IN_PAST: 'in-past',
   IN_FUTURE: 'in-future',
+  AS_IS: 'as-is',
 };
 
 export const SortTypes = {
@@ -49,24 +50,6 @@ const DATA_VIEW_TYPES = [
   'Stats',
 ];
 
-const DATA_VIEW_PERIOD = [
-  {
-    type: 'everything',
-    id: 'filter-everything',
-    title: 'EVERYTHING',
-  },
-  {
-    type: 'in-future',
-    id: 'filter-future',
-    title: 'FUTURE',
-  },
-  {
-    type: 'in-past',
-    id: 'filter-past',
-    title: 'PAST',
-  },
-];
-
 const OFFERS_SORT_OPTIONS = [
   'day',
   'event',
@@ -75,4 +58,4 @@ const OFFERS_SORT_OPTIONS = [
   'offers',
 ];
 
-export {DATA_VIEW_TYPES, DATA_VIEW_PERIOD, OFFERS_SORT_OPTIONS, STATISTICS_SETTINGS};
+export {DATA_VIEW_TYPES, OFFERS_SORT_OPTIONS, STATISTICS_SETTINGS};

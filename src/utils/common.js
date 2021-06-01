@@ -7,4 +7,14 @@ const isOffersEqual = (arrayA, arrayB) => {
 
 const isPriceEqual = (eventPrice, updatePrice) => eventPrice === updatePrice;
 
-export {sortByPrice, isOffersEqual, isPriceEqual};
+const isOnline = () => {
+  return window.navigator.onLine;
+};
+
+const makeRandomString = (length) => {
+  let result = 'Basic ';
+  while (result.length < length) result += Math.random().toString(36).substr(2, length - result.length);
+  return result;
+};
+
+export {sortByPrice, isOffersEqual, isPriceEqual, isOnline, makeRandomString};

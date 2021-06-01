@@ -57,7 +57,6 @@ const eventExtraOffers = ({type, offers}, offersList, isDisabled) => {
   ${getOffers}
 </div>
 </section>`;
-
 };
 
 const getEventPhotos = ({destination, isDestination}) => {

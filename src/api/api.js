@@ -1,4 +1,4 @@
-import EventsModel from './model/events.js';
+import EventsModel from '../model/events.js';
 
 const Method = {
   GET: 'GET',
@@ -22,7 +22,9 @@ export default class Api {
   getEvents() {
     return this._load({url: 'points'})
       .then(Api.toJSON)
-      .then((events) => events.map(EventsModel.adaptToClient));
+      .then((events) => {
+        return events.map(EventsModel.adaptToClient);
+      });
   }
 
   getOffers() {
@@ -49,10 +51,17 @@ export default class Api {
       .catch(() => {
         this._dataModel.setDestinations([]);
         this._dataModel.setOffers([]);
-        // document
-        //   .querySelector('.trip-main__event-add-btn')
-        //   .setAttribute('disabled', 'disabled');
       });
+  }
+
+  sync(data) {
+    return this._load({
+      url: 'points/sync',
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    })
+      .then(Api.toJSON);
   }
 
   updatePoint(event) {

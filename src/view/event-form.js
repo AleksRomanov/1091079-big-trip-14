@@ -1,4 +1,3 @@
-import {getFormattedDate} from '../utils/dates';
 import Smart from './smart';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import flatpickr from 'flatpickr';

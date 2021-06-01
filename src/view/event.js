@@ -22,7 +22,7 @@ const createEvent = (event) => {
   const isPrice = price !== null ? price : '';
   return `<li class="trip-events__item">
        <div class="event" id="${id}">
-    <time class="event__date" datetime="${getFormattedDate(startDate, 'YYYY-MM-DD-hh:mm')}">${getFormattedDate(startDate, 'MMM DD')}</time>
+    <time class="event__date" datetime="${getFormattedDate(startDate, 'YYYY-MM-DD-HH:mm')}">${getFormattedDate(startDate, 'MMM DD')}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>

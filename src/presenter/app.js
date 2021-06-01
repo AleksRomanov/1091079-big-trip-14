@@ -70,7 +70,7 @@ export default class App {
     this._filterModel.addObserver(this._handleModelEvent);
     this._renderApp();
     this._getWebData();
-    this._setServiceWorkerRegistrationOnLoad();
+    // this._setServiceWorkerRegistrationOnLoad();
     this._setOnlineStatusHandlers();
   }
 

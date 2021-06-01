@@ -7,7 +7,7 @@ dayjs.extend(utc);
 dayjs.extend(duration);
 
 const getFormattedDate = (date, format) => {
-  return date !== null ? dayjs(date).utc().format(format) : '';
+  return date !== null ? dayjs(date).format(format) : '';
 };
 
 const filterPastEvents = (event) => !dayjs().isBefore(dayjs(event.startDate));

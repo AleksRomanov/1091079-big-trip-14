@@ -192,21 +192,25 @@ export default class EventForm extends Smart {
 
   _setDatePicker(dateElement, isStart) {
     const datePrefix = isStart ? 'startDate' : 'endDate';
-
     const cbStateName = `_${datePrefix}Picker`;
     const dateHandler = isStart ? this._startDateSelectHandler : this._endDateSelectHandler;
-    const getMinDate = isStart ? false : this._state.startDate;
-    const getMaxDate = isStart ? this._state.endDate : false;
+    const getMinDate = isStart ? null : this._state.startDate;
+    const getMaxDate = isStart ? this._state.endDate : null;
+
     this[cbStateName] = flatpickr(
       dateElement,
       {
         minDate: getMinDate,
         maxDate: getMaxDate,
+
         enableTime: true,
         time_24hr: true,
         dateFormat: 'y/m/d H:i',
-        defaultDate: getFormattedDate(this._state[datePrefix], 'YY/MM/DD HH:mm'),
+        defaultDate: this._state[datePrefix],
         onChange: dateHandler,
+        formatDate: (date) => {
+          return dayjs(date).format('YY/MM/DD HH:mm');
+        },
       },
     );
   }

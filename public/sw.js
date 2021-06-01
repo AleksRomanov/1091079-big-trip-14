@@ -80,8 +80,13 @@ const handleFetch = (evt) => {
             caches.open(CACHE_NAME)
               .then((cache) => cache.put(request, clonedResponse));
             return response;
+          })
+          .catch(() => {
+            return Promise.reject(request);
           });
+
       }),
+
   );
 };
 

@@ -3,11 +3,13 @@ import EventsModel from './model/events';
 import FilterModel from './model/filter';
 import Api from './api/api';
 import DataModel from './model/data';
+// import {makeRandomString} from './utils/common';
 
+// usage
+// console.log(makeRandomString(17));
 
-const AUTHORIZATION = 'Basic gb13s1106s590136s';
+const AUTHORIZATION = 'Basic l6bp397ywsfd6x9sc';
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
-
 
 const eventsModel = new EventsModel();
 const filterModel = new FilterModel();
@@ -20,7 +22,7 @@ const app = new App(eventsModel, filterModel, api);
 
 // _setServiceWorkerRegistrationOnLoad() {
 window.addEventListener('load', () => {
-  navigator.serviceWorker.register('/sw.js');
+  navigator.serviceWorker.register('./sw.js');
 });
 // }
 // this._setServiceWorkerRegistrationOnLoad();

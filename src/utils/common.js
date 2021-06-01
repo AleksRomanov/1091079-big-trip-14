@@ -8,8 +8,13 @@ const isOffersEqual = (arrayA, arrayB) => {
 const isPriceEqual = (eventPrice, updatePrice) => eventPrice === updatePrice;
 
 const isOnline = () => {
-  // console.log(window.navigator.onLine);
   return window.navigator.onLine;
 };
 
-export {sortByPrice, isOffersEqual, isPriceEqual, isOnline};
+const makeRandomString = (length) => {
+  let result = '';
+  while (result.length < length) result += Math.random().toString(36).substr(2, length - result.length);
+  return result;
+};
+
+export {sortByPrice, isOffersEqual, isPriceEqual, isOnline, makeRandomString};

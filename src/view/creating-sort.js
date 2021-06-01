@@ -36,7 +36,5 @@ export default class SortingToggle extends Abstract {
     sortButtons.forEach((button) => {
       button.addEventListener('click', this._sortChangeHandler);
     });
-
   }
-
 }

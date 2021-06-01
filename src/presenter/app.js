@@ -62,7 +62,7 @@ export default class App {
     this._handleViewModeToggle = this._handleViewModeToggle.bind(this);
     this._addEventButtonHandler = this._addEventButtonHandler.bind(this);
     this._newEventPresenter = null;
-    this._filterPresenter = new Filter(tripControlsNavigation, this._filterModel);
+    this._filterPresenter = new Filter(tripControlsNavigation, this._filterModel, this._eventsModel);
   }
 
   init() {
@@ -70,24 +70,29 @@ export default class App {
     this._filterModel.addObserver(this._handleModelEvent);
     this._renderApp();
     this._getWebData();
-    // this._setServiceWorkerRegistrationOnLoad();
-    // window.addEventListener('online', () => {
-    //   // newEventButtonComponent.enable();
-    //   document.title = document.title.replace(OFFLINE_TITLE, '');
-    //   this._api.sync();
-    //
-    // });
+    this._setServiceWorkerRegistrationOnLoad();
+    this._setOnlineStatusHandlers();
+  }
+
+  _setServiceWorkerRegistrationOnLoad() {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js');
+    });
+  }
+
+  _setOnlineStatusHandlers() {
+    window.addEventListener('online', () => {
+      // newEventButtonComponent.enable();
+      document.title = document.title.replace(OFFLINE_TITLE, '');
+      // this._api.sync();
+    });
 
     window.addEventListener('offline', () => {
-      // newEventButtonComponent.disable();
-
       document.title = document.title.replace(OFFLINE_TITLE, '');
-
       showToast(OfflineMessages.CONNECTION);
       document.title += OFFLINE_TITLE;
     });
   }
-
 
   _handleModelEvent(updateType, data) {
     switch (updateType) {
@@ -103,7 +108,6 @@ export default class App {
         this._renderApp();
         break;
       case UpdateType.INIT:
-        // console.log('init');
         this._isLoading = false;
         this._clearApp();
         this._renderApp();
@@ -114,9 +118,7 @@ export default class App {
   _getWebData() {
     this._api.getData()
       .then((events) => {
-        // console.log(events);
         this._eventsModel.setEvents(UpdateType.INIT, events);
-
       })
       .catch(() => {
         this._eventsModel.setEvents(UpdateType.INIT, []);
@@ -155,8 +157,6 @@ export default class App {
     }
     this._setAddEventButtonHandler(addEventButton);
     this._renderStatistics();
-
-
   }
 
   _renderStatistics() {
@@ -235,7 +235,7 @@ export default class App {
       case SortTypes.PRICE:
         return filteredEvents.sort(sortByPrice);
       default:
-        return filteredEvents;
+        return events;
     }
   }
 
@@ -246,13 +246,13 @@ export default class App {
         .forEach((presenter) => presenter.destroy());
       this._eventsPresenters = {};
     }
-
   }
 
   _clearApp(resetSortType = false) {
     this._destroyEventsSection();
     remove(this._laodingView);
     remove(this._noEventsView);
+    this._filterPresenter.init();
     if (resetSortType) {
       this._currentSortType = SortTypes.DAY;
     }
@@ -318,6 +318,9 @@ export default class App {
   }
 
   _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType || sortType === 'event' || sortType === 'offers') {
+      return;
+    }
     this._currentSortType = sortType;
     this._clearApp();
     this._renderApp();

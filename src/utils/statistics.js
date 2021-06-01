@@ -1,5 +1,3 @@
-// import {getDuration} from './trip-event.js';
-
 import {getClearDuration} from './dates';
 
 const sortMapByValues = (mapToSort) => {
@@ -62,20 +60,6 @@ const mapDurationByType = (events) => {
 
   return eventsByType;
 };
-//
-// const mapDurationByTypeHumanized = (events) => {
-//   const eventsByType = new Map();
-//   events.forEach((event) => {
-//     if (eventsByType.has(event.type)) {
-//       eventsByType.set(event[`${event.type}Format`], getDuration(event.startDate, event.endDate));
-//
-//     } else {
-//       eventsByType.set(event[`${event.type}Format`], getDuration(event.startDate, event.endDate));
-//     }
-//   });
-//   return eventsByType;
-// };
-
 
 export {
   sortMapByValues,

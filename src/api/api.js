@@ -38,15 +38,12 @@ export default class Api {
   }
 
   getData() {
-    // console.log('online!!!');
-    // console.log(tripEvents);
     return Promise.all([
       this.getDestinations(),
       this.getOffers(),
       this.getEvents(),
     ])
       .then(([destinations, offers, events]) => {
-
         this._dataModel.setDestinations(destinations);
         this._dataModel.setOffers(offers);
         return events;
@@ -54,9 +51,6 @@ export default class Api {
       .catch(() => {
         this._dataModel.setDestinations([]);
         this._dataModel.setOffers([]);
-        // document
-        //   .querySelector('.trip-main__event-add-btn')
-        //   .setAttribute('disabled', 'disabled');
       });
   }
 

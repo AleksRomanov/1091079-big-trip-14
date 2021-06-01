@@ -18,6 +18,4 @@ export default class ModesToggle extends Abstract{
   getTemplate() {
     return createModesToggle();
   }
-
 }
-

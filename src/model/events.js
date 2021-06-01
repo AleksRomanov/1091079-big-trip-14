@@ -56,7 +56,6 @@ export default class Events extends Observer {
   }
 
   static adaptToClient(event) {
-    // console.log(event);
     const adaptedEvent = {
       ...event,
       price: event.base_price,
@@ -97,5 +96,4 @@ export default class Events extends Observer {
     delete adaptedEvent.favorite;
     return adaptedEvent;
   }
-
 }

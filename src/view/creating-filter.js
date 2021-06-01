@@ -1,38 +1,34 @@
-import {DATA_VIEW_PERIOD} from '../const';
 import Abstract from './abstract';
+import {filter} from '../utils/filter';
 
-const createViewTimeElements = (typeTitles) => {
+const createViewTimeElements = (filters, events) => {
+  return filters.map(({type, name}, index) => {
+    const filteredEvents = filter[type](events);
+    const isChecked = index === 0 ? 'checked' : '';
+    const isDisabled = filteredEvents.length === 0 ? 'disabled' : '';
 
-  return typeTitles.map(({type, id, title}, index) => {
-    if (index === 0) {
-      return `<div class="trip-filters__filter">
-
-<input id="${id}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" data-sort-type=${type} checked>
-    <label class="trip-filters__filter-label" for="${id}">${title}</label></div>`;
-    } else {
-      return `<div class="trip-filters__filter">
-
-<input id="${id}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" data-sort-type=${type}>
-    <label class="trip-filters__filter-label" for="${id}">${title}</label></div>`;
-    }
+    return `<div class="trip-filters__filter">
+<input id="${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" data-sort-type=${type} ${isDisabled} ${isChecked}>
+    <label class="trip-filters__filter-label" for="${type}">${name}</label></div>`;
   }).join('');
 };
 
-const createFilters = () => {
+const createFilters = (filters, events) => {
   return `<form class="trip-filters" action="#" method="get">
-       ${createViewTimeElements(DATA_VIEW_PERIOD)}
+       ${createViewTimeElements(filters, events)}
 </form>`;
 };
 
-
 export default class Filters extends Abstract {
-  constructor() {
+  constructor(filters, events) {
     super();
+    this._filters = filters;
+    this._events = events;
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createFilters();
+    return createFilters(this._filters, this._events);
   }
 
   _filterTypeChangeHandler(evt) {

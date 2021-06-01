@@ -5,7 +5,7 @@ import Api from './api/api';
 import DataModel from './model/data';
 
 
-const AUTHORIZATION = 'Basic gL3vq1921ei3LLL4s';
+const AUTHORIZATION = 'Basic gb13q1200sz91504s';
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
 
 
@@ -18,6 +18,13 @@ const api = new Api(dataModel, END_POINT, AUTHORIZATION);
 // eventsModel.setEvents(events);
 const app = new App(eventsModel, filterModel, api);
 
+// _setServiceWorkerRegistrationOnLoad() {
+
+// }
+// this._setServiceWorkerRegistrationOnLoad();
+
 app.init();
 
-
+window.addEventListener('load', () => {
+  navigator.serviceWorker.register('./sw.js');
+});

@@ -70,13 +70,13 @@ export default class App {
     this._filterModel.addObserver(this._handleModelEvent);
     this._renderApp();
     this._getWebData();
-    this._setServiceWorkerRegistrationOnLoad();
-    window.addEventListener('online', () => {
-      // newEventButtonComponent.enable();
-      document.title = document.title.replace(OFFLINE_TITLE, '');
-      this._api.sync();
-
-    });
+    // this._setServiceWorkerRegistrationOnLoad();
+    // window.addEventListener('online', () => {
+    //   // newEventButtonComponent.enable();
+    //   document.title = document.title.replace(OFFLINE_TITLE, '');
+    //   this._api.sync();
+    //
+    // });
 
     window.addEventListener('offline', () => {
       // newEventButtonComponent.disable();
@@ -87,6 +87,7 @@ export default class App {
       document.title += OFFLINE_TITLE;
     });
   }
+
 
   _handleModelEvent(updateType, data) {
     switch (updateType) {
@@ -119,12 +120,6 @@ export default class App {
       .catch(() => {
         this._eventsModel.setEvents(UpdateType.INIT, []);
       });
-  }
-
-  _setServiceWorkerRegistrationOnLoad() {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js');
-    });
   }
 
   _renderLoading() {

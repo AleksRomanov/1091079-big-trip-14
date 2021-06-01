@@ -46,9 +46,6 @@ export default class Api {
       this.getEvents(),
     ])
       .then(([destinations, offers, events]) => {
-        // console.log('online!!!!');
-        // console.log(destinations);
-        // console.log(offers);
 
         this._dataModel.setDestinations(destinations);
         this._dataModel.setOffers(offers);

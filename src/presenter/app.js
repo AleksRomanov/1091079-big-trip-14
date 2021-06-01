@@ -103,6 +103,7 @@ export default class App {
         this._renderApp();
         break;
       case UpdateType.INIT:
+        // console.log('init');
         this._isLoading = false;
         this._clearApp();
         this._renderApp();
@@ -113,7 +114,7 @@ export default class App {
   _getWebData() {
     this._api.getData()
       .then((events) => {
-        // console.log(this._eventsModel.getEvents());
+        // console.log(events);
         this._eventsModel.setEvents(UpdateType.INIT, events);
 
       })

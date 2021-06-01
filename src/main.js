@@ -3,12 +3,14 @@ import EventsModel from './model/events';
 import FilterModel from './model/filter';
 import Api from './api/api';
 import DataModel from './model/data';
-// import {makeRandomString} from './utils/common';
+import {makeRandomString} from './utils/common';
 
-// usage
-// console.log(makeRandomString(17));
+const AUTHORIZATION = makeRandomString(23);
+const AUTHORIZATION_KEY = 'AUTHORIZATION';
+if (localStorage.getItem(AUTHORIZATION_KEY) === null ) {
+  localStorage.setItem(AUTHORIZATION_KEY, AUTHORIZATION);
+}
 
-const AUTHORIZATION = 'Basic l6bp397ywsfd6x9sc';
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
 
 const eventsModel = new EventsModel();

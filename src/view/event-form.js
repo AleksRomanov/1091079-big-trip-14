@@ -162,7 +162,7 @@ export default class EventForm extends Smart {
     this._endDatePicker = null;
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._destinationFocusHandler = this._destinationFocusHandler.bind(this);
-    this._destinationBlurHandler = this._destinationBlurHandler.bind(this);
+    this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._typeSelectHandler = this._typeSelectHandler.bind(this);
     this._endDateSelectHandler = this._endDateSelectHandler.bind(this);
     this._startDateSelectHandler = this._startDateSelectHandler.bind(this);
@@ -174,7 +174,7 @@ export default class EventForm extends Smart {
 
   _setInnerHandlers() {
     this.getElement().querySelector('.event__input--destination').addEventListener('focus', this._destinationFocusHandler);
-    this.getElement().querySelector('.event__input--destination').addEventListener('blur', this._destinationBlurHandler);
+    this.getElement().querySelector('.event__input--destination').addEventListener('change', this._destinationChangeHandler);
     this._setTypeSelectHandlers();
     this._setDatePickers();
     this._setPricePicker();
@@ -269,13 +269,13 @@ export default class EventForm extends Smart {
     return validDestination;
   }
 
-  _destinationBlurHandler(evt) {
-    evt.preventDefault();
-
+  _destinationChangeHandler(evt) {
     const destination = this._checkDestinationValidity(evt.target.value);
     if (destination === null) {
       evt.target.value = '';
     } else {
+
+      evt.target.value = destination;
       const chosenDestination = this._dataModel.getDestinationsByName(evt.target.value);
       this.updateState({
         destination: {

@@ -203,7 +203,7 @@ export default class EventForm extends Smart {
         maxDate: getMaxDate,
 
         enableTime: true,
-        time_24hr: true,
+        'time_24hr': true,
         dateFormat: 'y/m/d H:i',
         defaultDate: this._state[datePrefix],
         onChange: dateHandler,

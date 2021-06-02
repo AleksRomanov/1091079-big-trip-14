@@ -21,3 +21,7 @@ const api = new Api(dataModel, END_POINT, localStorage.AUTHORIZATION);
 const app = new App(eventsModel, filterModel, api);
 
 app.init();
+
+window.addEventListener('load', () => {
+  navigator.serviceWorker.register('./sw.js');
+});

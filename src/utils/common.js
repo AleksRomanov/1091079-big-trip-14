@@ -13,7 +13,9 @@ const isOnline = () => {
 
 const makeRandomString = (length) => {
   let result = 'Basic ';
-  while (result.length < length) result += Math.random().toString(36).substr(2, length - result.length);
+  while (result.length < length) {
+    result += Math.random().toString(36).substr(2, length - result.length);
+  }
   return result;
 };
 

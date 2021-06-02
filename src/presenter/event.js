@@ -16,8 +16,9 @@ export const StateConditions = {
 };
 
 export default class Point {
-  constructor(taskListContainer, changeEvent, changeMode, dataModel) {
+  constructor(taskListContainer, changeEvent, changeMode, dataModel, newEvent) {
     this._dataModel = dataModel;
+    this._newEvent = newEvent;
     this._eventListContainer = taskListContainer;
     this._changeEvent = changeEvent;
     this._changeMode = changeMode;
@@ -117,6 +118,7 @@ export default class Point {
 
   _handleEditClick() {
     this._replaceEventToForm();
+    this._newEvent.destroy();
   }
 
   _handleFormClose() {

@@ -61,7 +61,7 @@ export default class App {
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleViewModeToggle = this._handleViewModeToggle.bind(this);
     this._addEventButtonHandler = this._addEventButtonHandler.bind(this);
-    this._newEventPresenter = null;
+    this._newEventPresenter = new EventNew(this._eventsContainer, this._handleViewAction, this._api._api._dataModel);
     this._filterPresenter = new Filter(tripControlsNavigation, this._filterModel, this._eventsModel);
   }
 
@@ -70,21 +70,12 @@ export default class App {
     this._filterModel.addObserver(this._handleModelEvent);
     this._renderApp();
     this._getWebData();
-    this._setServiceWorkerRegistrationOnLoad();
     this._setOnlineStatusHandlers();
-  }
-
-  _setServiceWorkerRegistrationOnLoad() {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js');
-    });
   }
 
   _setOnlineStatusHandlers() {
     window.addEventListener('online', () => {
-      // newEventButtonComponent.enable();
       document.title = document.title.replace(OFFLINE_TITLE, '');
-      // this._api.sync();
     });
 
     window.addEventListener('offline', () => {
@@ -108,6 +99,8 @@ export default class App {
         this._renderApp();
         break;
       case UpdateType.INIT:
+        // console.log('init');
+
         this._isLoading = false;
         this._clearApp();
         this._renderApp();
@@ -288,8 +281,8 @@ export default class App {
   }
 
   _createNewEventForm(callback) {
-    this._newEventPresenter = new EventNew(this._eventsContainer, this._handleViewAction, this._api._api._dataModel);
     this._newEventPresenter.init(callback);
+    this._handleModeChange();
   }
 
   _renderEventsContainer() {
@@ -302,7 +295,7 @@ export default class App {
   }
 
   _renderEvent(event) {
-    const eventPresenter = new EventPresenter(this._eventsContainer, this._handleViewAction, this._handleModeChange, this._api._api._dataModel);
+    const eventPresenter = new EventPresenter(this._eventsContainer, this._handleViewAction, this._handleModeChange, this._api._api._dataModel, this._newEventPresenter);
     eventPresenter.init(event);
     this._eventsPresenters[event.id] = eventPresenter;
   }

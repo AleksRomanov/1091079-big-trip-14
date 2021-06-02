@@ -1,5 +1,6 @@
-import {getFormattedDate} from '../utils/dates';
+import {getFormattedDate, sortByDay} from '../utils/dates';
 import Abstract from './abstract';
+import {TRIP_LENGTH_DATA} from '../const';
 
 const getEventsSum = (state) => {
   return state.reduce((accumulator, event) => {
@@ -15,19 +16,22 @@ const getEventsSum = (state) => {
 
 const getSecondDestination = (state) => {
   const destinationSeparator = '...';
-  return state.length > 1 ? state[1].destination.city : destinationSeparator;
+
+  return state.length > 3 ? destinationSeparator : state[1].destination.city;
 };
 
-const createTripInfoTemplate = (state) => {
-  const firstCity = state[0].destination['city'];
-  const finalCity = state[state.length - 1].destination['city'];
-  const firstDate = getFormattedDate(state[0]['startDate'], 'MMM-DD');
-  const finalDate = getFormattedDate(state[state.length - 1]['endDate'], 'DD');
-  const totalCost = getEventsSum(state);
+const createTripInfoTemplate = (events) => {
+  const sortedEvents = events.sort(sortByDay);
+  const firstCity = sortedEvents[0].destination['city'];
+  const finalCity = sortedEvents[sortedEvents.length - 1].destination['city'];
+
+  const firstDate = getFormattedDate(sortedEvents[0]['startDate'], 'MMM DD');
+  const finalDate = getFormattedDate(sortedEvents[sortedEvents.length - 1]['endDate'], 'MMM DD');
+  const totalCost = getEventsSum(events);
   const getTripTotalDestination = () => {
-    if (state.length >= 3) {
-      return `${firstCity} &mdash; ${getSecondDestination(state)} &mdash; ${finalCity}`;
-    } else if (state.length === 2) {
+    if (sortedEvents.length >= TRIP_LENGTH_DATA.LONG_TRIP) {
+      return `${firstCity} &mdash; ${getSecondDestination(sortedEvents)} &mdash; ${finalCity}`;
+    } else if (sortedEvents.length === TRIP_LENGTH_DATA.SHORT_TRIP) {
       return `${firstCity} &mdash; ${finalCity}`;
     } else {
       return `${firstCity}`;
@@ -46,8 +50,7 @@ const createTripInfoTemplate = (state) => {
     <p class="trip-info__cost">
       Total: &euro;&nbsp;<span class="trip-info__cost-value">${totalCost}</span>
     </p>
-</section>
-    `;
+</section>`;
 };
 
 export default class TripInfo extends Abstract {

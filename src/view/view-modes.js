@@ -14,7 +14,7 @@ const createModesToggle = () => {
     `;
 };
 
-export default class ModesToggle extends Abstract{
+export default class ViewModes extends Abstract{
   getTemplate() {
     return createModesToggle();
   }

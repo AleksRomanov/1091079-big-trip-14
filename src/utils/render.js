@@ -30,11 +30,9 @@ export const createElement = (template) => {
   if(template === null) {
     return null;
   }
-
-  const newElement = document.createElement('div'); // 1
-  newElement.innerHTML = template; // 2
-
-  return newElement.firstChild; // 3
+  const newElement = document.createElement('div');
+  newElement.innerHTML = template;
+  return newElement.firstChild;
 };
 
 export const replace = (newChild, oldChild) => {

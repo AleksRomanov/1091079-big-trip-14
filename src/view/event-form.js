@@ -89,6 +89,13 @@ const eventForm = (event, dataModel) => {
   const {type, isDestination, isPrice, price, destination, isSaving, isDeleting, isDisabled} = event;
   const destinationValue = isDestination ? `value="${destination.city}"` : '';
   const eventPrice = isPrice ? `value="${price}"` : '';
+  const getDeletingTitle = () => {
+    if (event.destination.city !== null) {
+      return isDeleting ? 'Deleting...' : 'Delete';
+    } else {
+      return isDeleting ? 'Canceling...' : 'Cancel';
+    }
+  };
 
   return `<form class="event event--edit" action="#" method="post">
     <header class="event__header">
@@ -134,7 +141,7 @@ const eventForm = (event, dataModel) => {
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? 'Saving...' : 'Save'}</button>
-      <button class="event__reset-btn" type="reset">${isDeleting ? 'Deleting...' : 'Delete'}</button>
+      <button class="event__reset-btn" type="reset">${getDeletingTitle()}</button>
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
       </button>
